@@ -22,6 +22,10 @@ S.I.M.P.L.E. is :  **S**ervices for **I**nformation and **M**edia **P**ayments, 
 
 
 ### Getting started for dev
+
+* git clone https://github.com/Guer-co/hackfs-mdc.git
+* cd /whateverdirectoryyoucloneditin
+
 (Blockchain)
 * install Truffle : npm install -g truffle
 * install Ganache (local ethereum blockchain) : [https://www.trufflesuite.com/ganache](https://www.trufflesuite.com/ganache)
