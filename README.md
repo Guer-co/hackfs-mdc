@@ -23,15 +23,16 @@ S.I.M.P.L.E. is :  **S**ervices for **I**nformation and **M**edia **P**ayments, 
 
 ### Getting started for dev
 
-* git clone https://github.com/Guer-co/hackfs-mdc.git
-* cd /whateverdirectoryyoucloneditin
+* **clone the repo:** git clone https://github.com/Guer-co/hackfs-mdc.git
+* **open the dir:**cd /whateverdirectoryyoucloneditin
 
 (Blockchain)
-* install Truffle : npm install -g truffle
-* install Ganache (local ethereum blockchain) : [https://www.trufflesuite.com/ganache](https://www.trufflesuite.com/ganache)
-* BUILD: truffle build --network development --reset    (I like doing reset each time)
+* **install Truffle: ** npm install -g truffle
+* **install Ganache (local ethereum blockchain): ** [https://www.trufflesuite.com/ganache](https://www.trufflesuite.com/ganache)
+* **BUILD: ** truffle build --network development --reset    (I like doing reset each time)
 
 (Frontend)
+* //once you are in the directory
 * npm i
 * npm start
 
