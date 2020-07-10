@@ -19,3 +19,18 @@ S.I.M.P.L.E. is :  **S**ervices for **I**nformation and **M**edia **P**ayments, 
 * [FileCoin](https://www.google.com)
 * [Textile](https://www.google.com)
 * [React](https://www.google.com)
+
+
+### Getting started for dev
+(Blockchain)
+* install Truffle : npm install -g truffle
+* install Ganache (local ethereum blockchain) : [https://www.trufflesuite.com/ganache](https://www.trufflesuite.com/ganache)
+* BUILD: truffle build --network development --reset    (I like doing reset each time)
+
+(Frontend)
+* npm i
+* npm start
+
+(Other)
+* I'm sure there will be some steps for Textile? 
+* ??????
