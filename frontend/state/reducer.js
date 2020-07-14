@@ -1,5 +1,5 @@
 function dappReducer(state = {}, action) {
-  console.log('dappReducer', state, action);
+  //', state, action);
   let newState = {};
   switch (action.type) {
     case 'SET_ADDRESS':

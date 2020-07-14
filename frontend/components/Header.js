@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useStateValue } from '../state';
 import Link from 'next/link';
-import { Menu, Message } from 'semantic-ui-react';
-import MiningIndicator from './MiningIndicator';
+import { Menu, Message, Icon } from 'semantic-ui-react';
+//import MiningIndicator from './MiningIndicator';
 import addrShortener from '../utils/addrShortener';
 import web3 from '../utils/getWeb3';
 
@@ -75,13 +75,13 @@ const Header = () => {
       <Menu style={{ marginTop: '10px' }}>
         <Link href='/'>
           <a>
-            <Menu.Item>BoilerPlate</Menu.Item>
+            <Menu.Item><Icon name="home"/></Menu.Item>
           </a>
         </Link>
         <Menu.Menu position='right'>
           <Menu.Item onClick={handleSignInClick} onKeyUp={handleSignInClick}>
             {dapp.address === undefined
-              ? 'Connect Wallet'
+              ? <div><Icon name="ethereum"/ > Connect Wallet</div>
               : addrShortener(dapp.address)}
           </Menu.Item>
         </Menu.Menu>

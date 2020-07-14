@@ -1,5 +1,6 @@
 {
-  "name": "next-web3-boilerplate",
+  "proxy": "http://localhost:8888/",
+  "name": "pay3",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,6 +13,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "buffer": "^5.6.0",
+    "ipfs-http-client": "^44.3.0",
     "next": "^9.4.4",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
