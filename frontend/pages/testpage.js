@@ -16,15 +16,14 @@ const [filehash,setFilehash] = useState('');
 const uploadToIPFS = async () => {
     const data = new FormData();
     const file = document.getElementById("data_file").files[0];
-    console.log(file);
     data.append("file", file);
-    console.log(data);
+    setFilename(file.name);
     fetch('/api/ipfs', {
         body: data,
         method: 'POST'
     })
     .then(res => res.json())
-    .then(res => {console.log(res); setFile(res);})
+    .then(res => {console.log(res); setFilehash(res);})
     .catch(error => error.message)
 }
 
