@@ -8,6 +8,10 @@ package-lock.json
 # testing
 /coverage
 
+# next.js
+.next
+next.config.js
+
 # production
 /build
 
