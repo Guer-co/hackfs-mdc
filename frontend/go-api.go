@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	shell "github.com/ipfs/go-ipfs-api"
 	"net/http"
@@ -31,17 +32,23 @@ func main() {
 
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
+	router.Use(cors.New(cors.Config{
+		AllowOrigins:     []string{"http://localhost:3000"},
+		AllowMethods:     []string{"PUT", "PATCH", "GET", "POST", "OPTIONS"},
+		AllowHeaders:     []string{"Origin"},
+		ExposeHeaders:    []string{"Content-Length"},
+		AllowCredentials: true,
+		AllowOriginFunc: func(origin string) bool {
+			return origin == "http://localhost:3000"
+		},
+		//MaxAge: 12 * time.Hour,
+	}))
 
 	router.GET("/api/ping", func(c *gin.Context) {
+		fmt.Println("ping hit")
 		c.JSON(200, gin.H{
 			"message": "pong",
 		})
-	})
-
-	router.POST("/api/encrypt", func(c *gin.Context) {
-	})
-
-	router.POST("/api/decrypt", func(c *gin.Context) {
 	})
 
 	router.POST("/api/ipfs", func(c *gin.Context) {
@@ -55,6 +62,12 @@ func main() {
 			os.Exit(1)
 		}
 		c.JSON(http.StatusOK, cid)
+	})
+
+	router.POST("/api/encrypt", func(c *gin.Context) {
+	})
+
+	router.POST("/api/decrypt", func(c *gin.Context) {
 	})
 
 	router.Run(":8888")
