@@ -26,16 +26,21 @@ S.I.M.P.L.E. is :  **S**ervices for **I**nformation and **M**edia **P**ayments, 
 * **clone the repo:** git clone https://github.com/Guer-co/hackfs-mdc.git
 * **open the dir:** cd /whateverdirectoryyoucloneditin
 
+(Backend)
+* cd frontend
+* go run go-api.go 
+* (You may have to install go / and do all the go-gets found in the go file)
+
 (Blockchain)
 * **install Truffle:** npm install -g truffle
-* **install Ganache (local ethereum blockchain):** [https://www.trufflesuite.com/ganache](https://www.trufflesuite.com/ganache)
+* **install Ganache (local ethereum blockchain):** [https://www.trufflesuite.com/ganache](https://www.trufflesuite.com/ganache) and run it
 * **BUILD:** truffle build --network development --reset    (I like doing reset each time)
 
 (Frontend)
 * //once you are in the directory
+* cd frontend
 * npm i
-* npm start
+* npm run dev
 
 (Other)
-* I'm sure there will be some steps for Textile? 
 * ??????
