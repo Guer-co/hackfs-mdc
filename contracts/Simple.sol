@@ -1,36 +1,42 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.4.17 <0.7.0;
+pragma experimental ABIEncoderV2;
+
 
 contract Simple {
+//This is the smart contract that the user creates, via gateway.sol
 
-// I  feel like this contract should work to create other contracts
-// The primary purpose of this contract would be to launch other contracts, and write to the database?
-// We might need a 'simple_child' contract that this creates that just stores the content hash and database, and checks if someone trying to access the data can access it.
+    address contractid;
+    uint creationDate;
+    uint public contentCount;
 
-//whoever launches this contract - will be this wallet.
-address simpleWallet;
-    constructor() public {
-        simpleWallet = msg.sender;
+    struct Content {
+        string locationhash;
+        string name;
+        uint date;
+        //guessing an array of addreses who can access this content is needed?? Still thinking on how to best store that info
     }
 
+    mapping(uint => Content) public contentgroup;
 
-    //just a check, should return address of creator
-    function getCreatorAddress() public view returns(address){
-        return simpleWallet;
+    constructor() payable public {
+        contractid = address(this);
+        creationDate = now;
     }
 
-    //potential function needs
+    function addContent(string memory _contenthash, string memory _name) public {
+        contentCount ++;
+        contentgroup[contentCount].locationhash = _contenthash;
+        contentgroup[contentCount].name = _name;
+        contentgroup[contentCount].date = now;
+    }
 
-    //addUserToAccessDatabase
+    function getContentCount() public view returns (uint) {
+        return contentCount;
+    }
 
-    //removeUserFromAccessDatabase
-
-    //addContent
-
-    //removeContent
-
-    //
-
-
+    function getContentDetails(uint _id) public view returns (string memory, string memory, uint) {
+        return (contentgroup[_id].locationhash, contentgroup[_id].name, contentgroup[_id].date);
+    }
 
 }

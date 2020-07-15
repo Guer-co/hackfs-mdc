@@ -1,5 +1,5 @@
-const Simple = artifacts.require("Simple");
+const Gateway = artifacts.require("Gateway");
 
 module.exports = function(deployer) {
-  deployer.deploy(Simple);
+  deployer.deploy(Gateway);
 };
