@@ -6,29 +6,29 @@ pragma experimental ABIEncoderV2;
 contract Simple {
 //This is the smart contract that the user creates, via gateway.sol
 
-    address contractid;
+    address contractId;
     uint creationDate;
     uint public contentCount;
 
     struct Content {
-        string locationhash;
+        string locationHash;
         string name;
         uint date;
         //guessing an array of addreses who can access this content is needed?? Still thinking on how to best store that info
     }
 
-    mapping(uint => Content) public contentgroup;
+    mapping(uint => Content) public contentGroup;
 
     constructor() payable public {
-        contractid = address(this);
+        contractId = address(this);
         creationDate = now;
     }
 
-    function addContent(string memory _contenthash, string memory _name) public {
+    function addContent(string memory _contentHash, string memory _name) public {
         contentCount ++;
-        contentgroup[contentCount].locationhash = _contenthash;
-        contentgroup[contentCount].name = _name;
-        contentgroup[contentCount].date = now;
+        contentGroup[contentCount].locationHash = _contentHash;
+        contentGroup[contentCount].name = _name;
+        contentGroup[contentCount].date = now;
     }
 
     function getContentCount() public view returns (uint) {
@@ -36,7 +36,7 @@ contract Simple {
     }
 
     function getContentDetails(uint _id) public view returns (string memory, string memory, uint) {
-        return (contentgroup[_id].locationhash, contentgroup[_id].name, contentgroup[_id].date);
+        return (contentGroup[_id].locationHash, contentGroup[_id].name, contentGroup[_id].date);
     }
 
 }

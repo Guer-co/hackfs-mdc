@@ -24,7 +24,7 @@ contract Gateway {
 
     mapping(address => userProfile) public profile;
 
-    function updateUserProfile(string memory _name, string  memory _email, string memory _logo) public payable {
+    function updateUserProfile(string memory _name, string  memory _email, string memory _logo) public {
         profile[msg.sender] = userProfile(msg.sender, _name, _email, _logo);
     }
 
@@ -34,7 +34,7 @@ contract Gateway {
     }
 
     function getUserContracts(address _user) public view returns (address[] memory){
-        return (userContracts[_user]);
+        return userContracts[_user];
     }
 
 ////////////////////////////// ******* OK here we start to write functions that interact with the Simple.sol ******* ///////////////////////////////////////
@@ -42,8 +42,8 @@ contract Gateway {
 ////////////////////////////// ******* OK here we start to write functions that interact with the Simple.sol ******* ///////////////////////////////////////
 
     function createSimple() public payable {
-            Simple contractid = new Simple();
-            userContracts[msg.sender].push(address(contractid));
+            Simple contractId = new Simple();
+            userContracts[msg.sender].push(address(contractId));
     }
 
     function doAddContent(address payable _contract, string memory _contenthash, string memory _name) public {
