@@ -57,7 +57,6 @@ const Header = () => {
   }, [dapp.address]);
 
   const handleSignInClick = async () => {
-    console.log()
     try {
       let [address] = await ethereum.enable();
       dispatch({
