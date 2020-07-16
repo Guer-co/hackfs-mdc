@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useStateValue } from '../state';
 import Layout from '../components/Layout';
 import { Menu, Message, Icon, Button, Grid } from 'semantic-ui-react';
-import IPFS from 'ipfs-http-client';
 import Loader from 'react-loader-spinner';
 import buffer from 'buffer';
 import GatewayContractObjSetup from '../utils/GatewayConstructor';
@@ -16,7 +15,6 @@ const Publish = () => {
     const [errorMessage, setError] = useState('');
     const [mycontract, setMycontract] = useState('');
     const [contentcount, setContentcount] = useState(0);
-    const [publishedcontent, setPublishedcontent] = useState('');
     const [allcontent, setAllcontent] = useState([]);
     
     const GatewayContractObj = GatewayContractObjSetup(dapp.web3);
@@ -83,18 +81,21 @@ useEffect(() => {
     const loadGatewayData = async () => {
         if (dapp.address && mycontract === '') {
             setLoading(true);
-            //need to fix this line to only look for message sender
+            //need to fix this line in solidity to only look for message sender
             const contractfetch = await GatewayContractObj.methods.getUserContracts(dapp.address).call({from:dapp.address});
             setMycontract(contractfetch[0]);
             setLoading(false);
         }
-        if (dapp.address && mycontract && publishedcontent === ''){
+        console.log(dapp.address);
+        console.log(mycontract);
+        if (dapp.address && mycontract && allcontent === ''){
             setLoading(true);
             const contentcount = await GatewayContractObj.methods.doGetContentCount(mycontract).call({from:dapp.address});
             setContentcount(contentcount);
             setLoading(false);
         }
         if (contentcount > 0) {
+            console.log(contentcount);
             const contentdetails = async () => {
             let temparray = [];
             for (let i = 0;i < contentcount;i++){
@@ -111,7 +112,7 @@ useEffect(() => {
     }
     loadGatewayData();
     setLoading(false);
-},[mycontract]);
+},[mycontract,dapp.address]);
 
   return (
     <Layout style={{ backgroundColor: '#041727' }}>

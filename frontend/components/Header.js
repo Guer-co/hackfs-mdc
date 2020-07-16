@@ -23,7 +23,7 @@ const Header = () => {
           payload: network
         });
         if (await ethereum._metamask.isApproved()) {
-          let [address] = await ethereum.enable();
+          let [address] = await ethereum.eth_requestAccounts;
           dispatch({
             type: 'SET_ADDRESS',
             payload: address
