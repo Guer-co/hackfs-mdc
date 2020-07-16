@@ -5,6 +5,7 @@ let web3;
 if (typeof window !== 'undefined') {
   // Modern dapp browsers...
   if (typeof window.ethereum !== 'undefined') {
+    window.ethereum.autoRefreshOnNetworkChange = false;
     web3 = new Web3(window.ethereum);
     console.log('web3!');
 
@@ -12,6 +13,7 @@ if (typeof window !== 'undefined') {
   // Legacy dapp browsers...
   else if (typeof window.web3 !== 'undefined') {
     // Use Mist/MetaMask's provider.
+    window.ethereum.autoRefreshOnNetworkChange = false;
     web3 = new Web3(window.web3.currentProvider);
     console.log('Injected web3 detected.');
   }      

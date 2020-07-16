@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useStateValue } from '../state';
 import Link from 'next/link';
 import { Menu, Message, Icon } from 'semantic-ui-react';
-import MiningIndicator from './MiningIndicator';
+//import MiningIndicator from './MiningIndicator';
 import addrShortener from '../utils/addrShortener';
 import web3 from '../utils/getWeb3';
 
@@ -23,7 +23,7 @@ const Header = () => {
           payload: network
         });
         if (await ethereum._metamask.isApproved()) {
-          let [address] = await ethereum.eth_requestAccounts;
+          let [address] = await ethereum.enable();
           dispatch({
             type: 'SET_ADDRESS',
             payload: address
@@ -57,6 +57,7 @@ const Header = () => {
   }, [dapp.address]);
 
   const handleSignInClick = async () => {
+    console.log()
     try {
       let [address] = await ethereum.enable();
       dispatch({
