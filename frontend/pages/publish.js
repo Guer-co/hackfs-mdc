@@ -81,23 +81,26 @@ useEffect(() => {
         if (dapp.address && mycontract === '') {
             //need to fix this line in solidity to only look for message sender
             const contractfetch = await GatewayContractObj.methods.getUserContracts(dapp.address).call({from:dapp.address});
-            setMycontract(contractfetch[0]);
+            if (contractfetch.length > 0) {
+                setMycontract(contractfetch[0]);
+            }
         }
         if (dapp.address && mycontract && allcontent.length === 0){ 
             const contentcount = await GatewayContractObj.methods.doGetContentCount(mycontract).call({from:dapp.address});
             setContentcount(contentcount);
         }
         if (contentcount > 0) {
-            console.log(contentcount);
             //finally, lets read and dump any uploaded content into the console. This should be used on the 'dashboard' page that doesn't exist yet.
             //(this works, but I think you have to upload 2 pieces of data before it starts returning results --- need to review =( --- probably an issue in the smart contract
             const contentdetails = async () => {
             let temparray = [];
-            for (let i = 0;i < contentcount;i++){
+            for (let i = 1;i < contentcount;i++){
                 await GatewayContractObj.methods.doGetContent(mycontract, i).call({from: dapp.address})
                 .then(function(result){
+                    if (result[0].length > 0) {
                     console.log(result);
                     temparray.push(result);
+                    }
                 });
             }
             setAllcontent(temparray);
@@ -106,8 +109,6 @@ useEffect(() => {
         }
     }
     loadGatewayData();
-
-    setLoading(false);
 },[dapp.address,mycontract,contentcount]);
 
   return (
@@ -119,7 +120,7 @@ useEffect(() => {
         <Grid.Column>
           <div style={{ marginTop: '100px' }}>
             <hr />
-            {mycontract === '' ?
+            {mycontract === '' || mycontract === undefined || mycontract.length === 0 ?
                 <>
                 <h3>
                 1. Create your smart contract
@@ -140,7 +141,7 @@ useEffect(() => {
                     <h3>
                     1. Your Pay3 contract is created! Whats next???
                     </h3>
-                    <p> (this should probably just go away)</p>
+                    <p> <strong>Contract address:</strong> {mycontract}</p>
                 </>
             }
             <br />

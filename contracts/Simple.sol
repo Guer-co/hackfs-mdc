@@ -8,7 +8,7 @@ contract Simple {
 
     address contractId;
     uint creationDate;
-    uint public contentCount;
+    uint public contentCount = 1;
 
     struct Content {
         string locationHash;
@@ -25,10 +25,11 @@ contract Simple {
     }
 
     function addContent(string memory _contentHash, string memory _name) public {
-        contentCount ++;
         contentGroup[contentCount].locationHash = _contentHash;
         contentGroup[contentCount].name = _name;
         contentGroup[contentCount].date = now;
+        contentCount ++;
+
     }
 
     function getContentCount() public view returns (uint) {
