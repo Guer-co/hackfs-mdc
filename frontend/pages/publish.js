@@ -67,41 +67,36 @@ const Publish = () => {
 };
 
     const addContentToContract = async () => {
-        console.log(mycontract + ' ' + filehash + ' ' + filename + ' ' + dapp.address);
         await GatewayContractObj.methods.doAddContent(mycontract, filehash, filename).send({ from: dapp.address })
             .then(function(result){
                 window.location.reload(false);
             }).catch(function(error){
                 console.log(error);
         });
+        //redirect to '/dashboard/ maybe????'''
     }
 
 useEffect(() => {
-    
     const loadGatewayData = async () => {
         if (dapp.address && mycontract === '') {
-            setLoading(true);
             //need to fix this line in solidity to only look for message sender
             const contractfetch = await GatewayContractObj.methods.getUserContracts(dapp.address).call({from:dapp.address});
             setMycontract(contractfetch[0]);
-            setLoading(false);
         }
-        console.log(dapp.address);
-        console.log(mycontract);
-        if (dapp.address && mycontract && allcontent === ''){
-            setLoading(true);
+        if (dapp.address && mycontract && allcontent.length === 0){ 
             const contentcount = await GatewayContractObj.methods.doGetContentCount(mycontract).call({from:dapp.address});
             setContentcount(contentcount);
-            setLoading(false);
         }
         if (contentcount > 0) {
             console.log(contentcount);
+            //finally, lets read and dump any uploaded content into the console. This should be used on the 'dashboard' page that doesn't exist yet.
+            //(this works, but I think you have to upload 2 pieces of data before it starts returning results --- need to review =( --- probably an issue in the smart contract
             const contentdetails = async () => {
             let temparray = [];
             for (let i = 0;i < contentcount;i++){
-                await GatewayContractObj.methods.doGetContent(mycontract, i).call({from: props.myaccount})
+                await GatewayContractObj.methods.doGetContent(mycontract, i).call({from: dapp.address})
                 .then(function(result){
-                    //console.log(result);
+                    console.log(result);
                     temparray.push(result);
                 });
             }
@@ -111,8 +106,9 @@ useEffect(() => {
         }
     }
     loadGatewayData();
+
     setLoading(false);
-},[mycontract,dapp.address]);
+},[dapp.address,mycontract,contentcount]);
 
   return (
     <Layout style={{ backgroundColor: '#041727' }}>
@@ -123,7 +119,7 @@ useEffect(() => {
         <Grid.Column>
           <div style={{ marginTop: '100px' }}>
             <hr />
-            {mycontract !== '' ?
+            {mycontract === '' ?
                 <>
                 <h3>
                 1. Create your smart contract
@@ -144,6 +140,7 @@ useEffect(() => {
                     <h3>
                     1. Your Pay3 contract is created! Whats next???
                     </h3>
+                    <p> (this should probably just go away)</p>
                 </>
             }
             <br />

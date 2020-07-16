@@ -7,8 +7,6 @@ if (typeof window !== 'undefined') {
   if (typeof window.ethereum !== 'undefined') {
     window.ethereum.autoRefreshOnNetworkChange = false;
     web3 = new Web3(window.ethereum);
-    console.log('web3!');
-
   }
   // Legacy dapp browsers...
   else if (typeof window.web3 !== 'undefined') {
