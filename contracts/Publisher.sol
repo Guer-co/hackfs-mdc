@@ -44,16 +44,13 @@ contract Publisher {
     function createContent() public {
             Content contractId = new Content();
             contentContracts[msg.sender].push(address(contractId));
-            Content(contractId).addSubscribers(); // incomplete
+            // Content(contractId).addSubscribers(); // incomplete
     }
 
     function doAddContent(address payable _contract, string memory _contenthash, string memory _name) public {
         Content(_contract).addContent(_contenthash, _name);
     }
 
-    function doGetContentCount(address payable _contract) public view returns (uint) {
-        return Content(_contract).getContentCount();
-    }
 
     function doGetContent(address payable _contract, uint _id) public view returns (string memory, string memory, uint) {
         return Content(_contract).getContentDetails(_id);

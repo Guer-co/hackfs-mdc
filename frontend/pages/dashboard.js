@@ -7,8 +7,8 @@ import PublisherContractObjSetup from '../utils/PublisherConstructor';
 import Moment from 'react-moment';
 
 const Publish = () => {
-    const [{ dapp }, dispatch] = useStateValue();
-    const [loading, setLoading] = useState(false);
+  const [{ dapp }, dispatch] = useStateValue();
+  const [loading, setLoading] = useState(false);
   const [file, setFile] = useState('');
   const [filename, setFilename] = useState('');
   const [filehash, setFilehash] = useState('');
@@ -16,7 +16,7 @@ const Publish = () => {
   const [mycontract, setMycontract] = useState('');
   const [contentcount, setContentcount] = useState(0);
   const [allcontent, setAllcontent] = useState([]);
-  
+
   const PublisherContractObj = PublisherContractObjSetup(dapp.web3);
 
   useEffect(() => {
@@ -30,40 +30,40 @@ const Publish = () => {
           setMycontract(contractfetch[0]);
         }
       }
-      if (dapp.address && mycontract && allcontent.length === 0) {
-        const contentcount = await PublisherContractObj.methods
-          .doGetContentCount(mycontract)
-          .call({ from: dapp.address });
-        setContentcount(contentcount);
-      }
-      if (contentcount > 0) {
-        //finally, lets read and dump any uploaded content into the console. This should be used on the 'dashboard' page that doesn't exist yet.
-        //(this works, but I think you have to upload 2 pieces of data before it starts returning results --- need to review =( --- probably an issue in the smart contract
-        const contentdetails = async () => {
-          let temparray = [];
-          for (let i = 1; i < contentcount; i++) {
-            await PublisherContractObj.methods
-              .doGetContent(mycontract, i)
-              .call({ from: dapp.address })
-              .then(function (result) {
-                if (result[0].length > 0) {
-                  console.log(result);
-                  temparray.push(result);
-                }
-              });
-          }
-          setAllcontent(temparray);
-        };
-        contentdetails();
-      }
+      //   if (dapp.address && mycontract && allcontent.length === 0) {
+      //     const contentcount = await PublisherContractObj.methods
+      //       .doGetContentCount(mycontract)
+      //       .call({ from: dapp.address });
+      //     setContentcount(contentcount);
+      //   }
+      //   if (contentcount > 0) {
+      //     //finally, lets read and dump any uploaded content into the console. This should be used on the 'dashboard' page that doesn't exist yet.
+      //     //(this works, but I think you have to upload 2 pieces of data before it starts returning results --- need to review =( --- probably an issue in the smart contract
+      //     const contentdetails = async () => {
+      //       let temparray = [];
+      //       for (let i = 1; i < contentcount; i++) {
+      //         await PublisherContractObj.methods
+      //           .doGetContent(mycontract, i)
+      //           .call({ from: dapp.address })
+      //           .then(function (result) {
+      //             if (result[0].length > 0) {
+      //               console.log(result);
+      //               temparray.push(result);
+      //             }
+      //           });
+      //       }
+      //       setAllcontent(temparray);
+      //     };
+      //     contentdetails();
+      //   }
     };
     loadPublisherData();
-  }, [dapp.address, mycontract, contentcount]);
+  }, [dapp.address, mycontract]);
 
   const enterPublisher = async () => {
     try {
       await PublisherContractObj.methods
-        .createSimple()
+        .createContent()
         .send({ from: dapp.address })
         .on('transactionHash', (hash) => {
           dispatch({
@@ -81,7 +81,7 @@ const Publish = () => {
       setError(err.message);
       setTimeout(() => setError(''), 3000);
     }
-    window.location.reload(false);
+    // window.location.reload(false);
   };
 
   return (

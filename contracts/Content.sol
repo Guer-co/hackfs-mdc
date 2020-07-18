@@ -16,34 +16,27 @@ contract Content {
         //guessing an array of addreses who can access this content is needed?? Still thinking on how to best store that info
     }
 
-    mapping(address => ContentInfo) public Content;
+    mapping(address => ContentInfo) public ContentMap;
 
     constructor() public {
         contractId = address(this);
     }
 
     // Needs testing
-    function addSubscribers(address[] _subscribers) public {
+    function addSubscribers(address[] memory _subscribers) public {
         for (uint i = 0; i < _subscribers.length; i++) {
-            ContentInfo.whiteListed[_subscribers[i]];
+            whiteListed[_subscribers[i]];
         }
     }
 
     // Needs testing
     function addContent(string memory _contentHash, string memory _name) public {
-        Content[contractId].locationHash = _contentHash;
-        Content[contractId].name = _name;
-        Content[contractId].date = now;
-    }
-
-    function getContentCount() public view returns (uint) {
-        return contentCount;
+        ContentMap[contractId].locationHash = _contentHash;
+        ContentMap[contractId].name = _name;
+        ContentMap[contractId].date = now;
     }
 
     function getContentDetails(uint _id) public view returns (string memory, string memory, uint) {
-        return (contentGroup[_id].locationHash, contentGroup[_id].name, contentGroup[_id].date);
+        return (ContentMap[contractId].locationHash, ContentMap[contractId].name, ContentMap[contractId].date);
     }
-
-    
-
 }
