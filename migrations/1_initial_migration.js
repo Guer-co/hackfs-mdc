@@ -1,5 +1,5 @@
-const Gateway = artifacts.require("Gateway");
+const Publisher = artifacts.require("Publisher");
 
 module.exports = function(deployer) {
-  deployer.deploy(Gateway);
+  deployer.deploy(Publisher);
 };

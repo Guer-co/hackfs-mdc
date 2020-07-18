@@ -18,7 +18,7 @@ contract Content {
 
     mapping(address => ContentInfo) public ContentMap;
 
-    constructor() public {
+    constructor() payable public {
         contractId = address(this);
     }
 
