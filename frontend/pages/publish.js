@@ -4,7 +4,7 @@ import Layout from '../components/Layout';
 import { Menu, Message, Icon, Button, Grid } from 'semantic-ui-react';
 import Loader from 'react-loader-spinner';
 import buffer from 'buffer';
-import GatewayContractObjSetup from '../utils/GatewayConstructor';
+import PublisherContractObjSetup from '../utils/PublisherConstructor';
 
 const Publish = () => {
   const [{ dapp }, dispatch] = useStateValue();
@@ -17,13 +17,13 @@ const Publish = () => {
   const [contentcount, setContentcount] = useState(0);
   const [allcontent, setAllcontent] = useState([]);
 
-  const GatewayContractObj = GatewayContractObjSetup(dapp.web3);
+  const PublisherObj = PublisherObjSetup(dapp.web3);
 
   useEffect(() => {
-    const loadGatewayData = async () => {
+    const loadPublisherData = async () => {
       if (dapp.address && mycontract === '') {
         //need to fix this line in solidity to only look for message sender
-        const contractfetch = await GatewayContractObj.methods
+        const contractfetch = await PublisherContractObj.methods
           .getUserContracts(dapp.address)
           .call({ from: dapp.address });
         if (contractfetch.length > 0) {
@@ -31,7 +31,7 @@ const Publish = () => {
         }
       }
       if (dapp.address && mycontract && allcontent.length === 0) {
-        const contentcount = await GatewayContractObj.methods
+        const contentcount = await PublisherContractObj.methods
           .doGetContentCount(mycontract)
           .call({ from: dapp.address });
         setContentcount(contentcount);
@@ -42,7 +42,7 @@ const Publish = () => {
         const contentdetails = async () => {
           let temparray = [];
           for (let i = 1; i < contentcount; i++) {
-            await GatewayContractObj.methods
+            await PublisherContractObj.methods
               .doGetContent(mycontract, i)
               .call({ from: dapp.address })
               .then(function (result) {
@@ -57,7 +57,7 @@ const Publish = () => {
         contentdetails();
       }
     };
-    loadGatewayData();
+    loadPublisherData();
   }, [dapp.address, mycontract, contentcount]);
 
   const uploadToIPFS = async () => {
@@ -82,9 +82,9 @@ const Publish = () => {
       });
   };
 
-  const enterGateway = async () => {
+  const enterPublisher = async () => {
     try {
-      await GatewayContractObj.methods
+      await PublisherContractObj.methods
         .createSimple()
         .send({ from: dapp.address })
         .on('transactionHash', (hash) => {
@@ -107,7 +107,7 @@ const Publish = () => {
   };
 
   const addContentToContract = async () => {
-    await GatewayContractObj.methods
+    await PublisherContractObj.methods
       .doAddContent(mycontract, filehash, filename)
       .send({ from: dapp.address })
       .then(function (result) {
@@ -138,7 +138,7 @@ const Publish = () => {
                   based on the address you are using when you land on the site.
                 </div>
                 <br />
-                <Button onClick={enterGateway}>
+                <Button onClick={enterPublisher}>
                   Create your own smart contract on Pay3!
                 </Button>
               </>
