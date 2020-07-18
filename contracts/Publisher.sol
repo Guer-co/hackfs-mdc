@@ -41,7 +41,7 @@ contract Publisher {
 ////////////////////////////// ******* OK here we start to write functions that interact with the Content.sol ******* ///////////////////////////////////////
 ////////////////////////////// ******* OK here we start to write functions that interact with the Content.sol ******* ///////////////////////////////////////
 
-    function createContent() payable public {
+    function createContent() public {
             Content contractId = new Content();
             contentContracts[msg.sender].push(address(contractId));
             // Content(contractId).addSubscribers(); // incomplete
