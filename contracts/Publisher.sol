@@ -4,63 +4,56 @@ pragma experimental ABIEncoderV2;
 import './Content.sol';
 
 contract Publisher {
-// the primary purpose of this contract is to launch contracts for users
-// user hits gateway, gateway points them where they need to go.
-    address payable owner;
-    address[] subscribers;
-    mapping(address => address[]) contentContracts;
 
-    constructor() public {
-        owner = msg.sender;
-    }
 
     struct publisherProfile{
         address id;
         string name;
         string email;
         string logo;
+        address[] subscribers;
+        mapping(address => address[]) contentContracts;
     }
 
     mapping(address => publisherProfile) public profile;
 
-    // needs testing
     function updatePublisherProfile(string memory _name, string  memory _email, string memory _logo) public {
-        profile[msg.sender] = publisherProfile(msg.sender, _name, _email, _logo);
-    }
-
-    //just a check, should return our address, we launched this contract
-    function getCreatorAddress() public view returns(address){
-        return owner;
+        profile[msg.sender].name = _name;
+        profile[msg.sender].email = _email;
+        profile[msg.sender].logo = _logo;
     }
 
     function getContentContracts(address _user) public view returns (address[] memory){
-        return contentContracts[_user];
+        return profile[msg.sender].contentContracts[_user];
     }
 
-////////////////////////////// ******* OK here we start to write functions that interact with the Content.sol ******* ///////////////////////////////////////
-////////////////////////////// ******* OK here we start to write functions that interact with the Content.sol ******* ///////////////////////////////////////
-////////////////////////////// ******* OK here we start to write functions that interact with the Content.sol ******* ///////////////////////////////////////
+    ////// ******* Here we start to write functions that interact with the Content.sol ******* //////
+    ////// ******* Here we start to write functions that interact with the Content.sol ******* //////
+    ////// ******* Here we start to write functions that interact with the Content.sol ******* //////
 
-    function createContent() public {
-            Content contractId = new Content();
-            contentContracts[msg.sender].push(address(contractId));
+    function createContent(string memory _contentHash, string memory _name, string memory _accessType) public {
+            Content contractId = new Content(_contentHash, _name, _accessType);
+            profile[msg.sender].contentContracts[msg.sender].push(address(contractId));
             // Content(contractId).addSubscribers(); // incomplete
     }
 
-    function doAddContent(address payable _contract, string memory _contenthash, string memory _name) public {
-        Content(_contract).addContent(_contenthash, _name);
+    function getContentInformation(address _contract) public view returns (string memory, string memory, uint) {
+        return Content(_contract).getContentDetails();
     }
 
-
-    function doGetContent(address payable _contract, uint _id) public view returns (string memory, string memory, uint) {
-        return Content(_contract).getContentDetails(_id);
+    function getFile(address _contract) public view returns (string memory) {
+        return Content(_contract).getFile();
     }
 
-    //removeUserFromAccessDatabase
-    
-    //unsure on exactly how this will work at this moment
-    //
+    function addSubscribersToContent(address _contract) public returns (bool) {
+        return Content(_contract).addSubscribers(profile[msg.sender].subscribers);
+    }
 
+    function addPayorToWhitelist(address _contract, address _payor, uint256 _amount) public returns (bool) {
+        return Content(_contract).addPurchaser(_payor, _amount);
+    }
 
-
+    function getContractFile(address _contract) public view returns (string memory) {
+        return Content(_contract).getFile();
+    }
 }

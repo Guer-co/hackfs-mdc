@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useStateValue } from '../state';
 import Layout from '../components/Layout';
-import { Menu, Message, Icon, Button, Grid } from 'semantic-ui-react';
+import {  Message, Icon, Button, Grid,Modal,Form  } from 'semantic-ui-react';
 import Loader from 'react-loader-spinner';
 import buffer from 'buffer';
 import PublisherObjSetup from '../utils/PublisherConstructor';
@@ -16,6 +16,10 @@ const Publish = () => {
   const [mycontract, setMycontract] = useState('');
   const [contentcount, setContentcount] = useState(0);
   const [allcontent, setAllcontent] = useState([]);
+  const [name,setName] = useState('');
+  const [email,setEmail] = useState('');
+  const [logo,setLogo] = useState('');
+
 
   const PublisherContractObj = PublisherObjSetup(dapp.web3);
 
@@ -87,10 +91,10 @@ const Publish = () => {
       });
   };
 
-  const enterPublisher = async () => {
+  const createPublisherProfile = async () => {
     try {
       await PublisherContractObj.methods
-        .createContent()
+        .updatePublisherProfile(name,email,logo)
         .send({ from: dapp.address })
         .on('transactionHash', (hash) => {
           dispatch({
@@ -135,17 +139,30 @@ const Publish = () => {
             mycontract === undefined ||
             mycontract.length === 0 ? (
               <>
-                <h3>1. Create your smart contract</h3>
+                <h3>1. Create your publisher profile so you can start to upload content</h3>
                 <br />
                 <div>
-                  First, a prompt if you don't already have a smart contract
-                  launched via our smart contract, we will auto detect this
-                  based on the address you are using when you land on the site.
+                  First, a prompt if you don't already have publisher profile.
                 </div>
                 <br />
-                <Button onClick={enterPublisher}>
-                  Create your own smart contract on Pay3!
-                </Button>
+                <Modal trigger={<Button>Create Profile</Button>}>
+                    <Modal.Header>Input your name and email to create a new profile</Modal.Header>
+                    <Modal.Content image>
+                    <Modal.Description>
+                        <Form>
+                        <Form.Field>
+                        <label>Name</label>
+                        <input value={name} onChange={(e) => setName(e.target.value)}/>
+                        </Form.Field>
+                        <Form.Field>
+                        <label>Email</label>
+                        <input value={email} onChange={(e) => setEmail(e.target.value)}/>                        
+                        </Form.Field>
+                        </Form>
+                        <Button onClick={createPublisherProfile}>Submit Profile!</Button>
+                    </Modal.Description>
+                    </Modal.Content>
+                </Modal>
               </>
             ) : (
               <>

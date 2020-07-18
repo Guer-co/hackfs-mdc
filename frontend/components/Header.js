@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useStateValue } from '../state';
 import Link from 'next/link';
 import { Menu, Message, Icon } from 'semantic-ui-react';
-//import MiningIndicator from './MiningIndicator';
+import MiningIndicator from './MiningIndicator';
 import addrShortener from '../utils/addrShortener';
 import web3 from '../utils/getWeb3';
 
