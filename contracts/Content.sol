@@ -19,25 +19,20 @@ contract Content is Owned {
         string locationHash;
         string name;
         uint256 date;
-        string accessType; //free, onepayment, subscription, budget
+        bool paid;
         uint256 price;
         //guessing an array of addreses who can access this content is needed?? Still thinking on how to best store that info
     }
 
     mapping(address => ContentInfo) public Info;
 
-    constructor(string memory _contentHash, string memory _name, string memory _accessType, uint _price, address[] _subscribers) public {
+    constructor(string memory _contentHash, string memory _name, bool _paid, uint _price, address[] memory _subscribers) public {
         contractId = address(this);
         Info[contractId].locationHash = _contentHash;
         Info[contractId].name = _name;
         Info[contractId].date = now;
-        Info[contractId].accessType = _accessType;
-
-        if(_accessType == 'free') {
-            Info[contractId].price = 0;
-        } else {
-            Info[contractId].price = _price;
-        }
+        Info[contractId].paid = _paid;
+        Info[contractId].price = _price;
 
         numberOfWhitelisted = _subscribers.length;
         for (uint256 i = 0; i < _subscribers.length; i++) {
@@ -45,12 +40,12 @@ contract Content is Owned {
         }
     }
 
-    function getContentDetails() public view returns (string memory, string memory, uint, string memory) {
+    function getContentDetails() public view returns (string memory, string memory, uint, bool, uint) {
         return (
             Info[contractId].locationHash,
             Info[contractId].name,
             Info[contractId].date,
-            Info[contractId].accessType,
+            Info[contractId].paid,
             Info[contractId].price
         );
     }
@@ -76,7 +71,7 @@ contract Content is Owned {
 
     // WIP
     function getFile() public view returns (string memory) {
-        // if Info[contractId].accessType == "free" ||
+        // if Info[contractId].paid == "free" ||
         if (whiteListed[msg.sender] == true) {
             return "file"; //placeholder
             //decrypt the content at locationhash and serve to customer?
@@ -91,6 +86,6 @@ contract Content is Owned {
     }
 
     receive() external payable {
-        purchaseContent();
+        purchaseContent(msg.sender, msg.value);
     }
 }
