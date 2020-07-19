@@ -2,15 +2,16 @@
 pragma solidity >=0.4.17 <0.7.0;
 pragma experimental ABIEncoderV2;
 
-import './lib/OpenZeppelin/Ownable.sol';
+import './Owned.sol';
+import './lib/OpenZeppelin/SafeMath.sol';
 
-contract Content is Ownable {
+contract Content is Owned {
     using SafeMath for uint;
     //This is the smart contract that the user creates, via Publsher.sol
     //assume every function needs testing
 
     address contractId;
-    uint256 totalCollected;
+    uint earnings;
     mapping(address => bool) whiteListed;
     uint256 numberOfWhitelisted = 0;
 
@@ -49,7 +50,8 @@ contract Content is Ownable {
             Info[contractId].locationHash,
             Info[contractId].name,
             Info[contractId].date,
-            Info[contractId].accessType
+            Info[contractId].accessType,
+            Info[contractId].price
         );
     }
 
@@ -59,19 +61,20 @@ contract Content is Ownable {
         return true;
     }
 
-    function remoteFromWhiteList(address _newUser) public onlyOwner returns (bool) {
+    function removeFromWhiteList(address _newUser) public onlyOwner returns (bool) {
         numberOfWhitelisted--;
         whiteListed[_newUser] = false;
         return true;
     }
 
-    function addPurchaser(address _payor, uint256 _amount) public returns (bool) {
-        payable(owner).call.value(_amount)("");
-        whiteListed[_payor] = true;
-        totalCollected = totalCollected + _amount;
+    function purchaseContent(address _consumer, uint256 _amount) public payable returns (bool) {
+        require(_amount == Info[contractId].price, 'Amount sent is less than what this content is priced at. Please send the exact amount') ;
+        earnings += msg.value;
+        whiteListed[_consumer] = true;
         return true;
     }
 
+    // WIP
     function getFile() public view returns (string memory) {
         // if Info[contractId].accessType == "free" ||
         if (whiteListed[msg.sender] == true) {
@@ -79,5 +82,15 @@ contract Content is Ownable {
             //decrypt the content at locationhash and serve to customer?
             //I know the hash is currently available in the struct, but we are trying to make it secure, so something like this will be needed
         }
+    }
+
+    function withdrawEarnings(address payable _to, uint _amount) public onlyOwner {
+        require(_amount <= earnings, 'The amount you are trying to withdraw exceeds the contract earnings');
+        earnings = earnings.sub(_amount);
+        _to.transfer(_amount);
+    }
+
+    receive() external payable {
+        purchaseContent();
     }
 }
