@@ -5,6 +5,7 @@ import './Content.sol';
 
 contract Publisher {
 
+    mapping(address => address[]) contentContracts;
 
     struct publisherProfile{
         address id;
@@ -12,17 +13,27 @@ contract Publisher {
         string email;
         string logo;
         address[] subscribers;
-        mapping(address => address[]) contentContracts;
     }
 
     mapping(address => publisherProfile) public profile;
 
+    /**
+     * @notice Update the publishers Profile
+     * @param _name Publisher's Name
+     * @param _email Publisher's Email
+     * @param _logo Publisher's Logo
+     */
     function updatePublisherProfile(string memory _name, string  memory _email, string memory _logo) public {
         profile[msg.sender].name = _name;
         profile[msg.sender].email = _email;
         profile[msg.sender].logo = _logo;
     }
 
+    /**
+     * @notice Get the content contracts of a Publisher
+     * @param _user Publisher's address
+     * @return All the content contracts associated with the Publisher
+     */
     function getContentContracts(address _user) public view returns (address[] memory){
         return profile[msg.sender].contentContracts[_user];
     }
@@ -31,13 +42,24 @@ contract Publisher {
     ////// ******* Here we start to write functions that interact with the Content.sol ******* //////
     ////// ******* Here we start to write functions that interact with the Content.sol ******* //////
 
+    /**
+     * @notice Create a new Content Contract
+     * @param _contentHash The hash of the content (IPFS / FIlecoin)
+     * @param _name Content title
+     * @param _accessType Free or Paid (pay-as-you-go / Subscription)
+     */
     function createContent(string memory _contentHash, string memory _name, string memory _accessType) public {
-            Content contractId = new Content(_contentHash, _name, _accessType);
-            profile[msg.sender].contentContracts[msg.sender].push(address(contractId));
-            // Content(contractId).addSubscribers(); // incomplete
+        Content contractId = new Content(_contentHash, _name, _accessType, _subscribers);
+        profile[msg.sender].contentContracts[msg.sender].push(address(contractId));
     }
 
-    function getContentInformation(address _contract) public view returns (string memory, string memory, uint) {
+    /**
+     * @notice Fetches Content Contract information
+     * @param _contract Content Contract address
+     * @return All the content contracts associated with the Publisher
+     * @return All the content contracts associated with the Publisher
+     */
+    function getContentInformation(address _contract) public view returns (string memory, string memory, uint, string memory) {
         return Content(_contract).getContentDetails();
     }
 
