@@ -24,3 +24,5 @@ vendor
 *.bac
 
 .idea
+cmd/server/server
+cmd/server/pb/p2p.pb.go

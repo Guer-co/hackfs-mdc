@@ -4,9 +4,9 @@ import (
 	"flag"
 	"strings"
 
+	"github.com/Guer-co/hackfs-mdc/backend/pkg/common"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	maddr "github.com/multiformats/go-multiaddr"
-	"github.com/Guer-co/hackfs-mdc/backend/pkg/common"
 )
 
 // A new type we need for writing a custom flag parser
@@ -44,26 +44,29 @@ type Config struct {
 	RendezvousString string
 	BootstrapPeers   addrList
 	ListenAddresses  addrList
-	//ProtocolID       string
 	TestFilePath string
+	IsClientMode bool
 }
 
-func ParseFlags() (Config, error) {
-	config := Config{}
+func ParseFlags() Config {
+	cfg := Config{}
 	randomStr := common.GetUlid().String()
 	defaultRendezvous := "pay3-rendezvous-" + randomStr
-	flag.StringVar(&config.RendezvousString, "rend", defaultRendezvous,
-		"Unique string to identify group of nodes. Share this with your friends to let them connect with you")
-	flag.Var(&config.BootstrapPeers, "peer", "Adds a peer multiaddress to the bootstrap list")
-	flag.Var(&config.ListenAddresses, "listen", "Adds a multiaddress to the listen list")
-	//flag.StringVar(&config.ProtocolID, "pid", "/pay3/0.0.1", "Sets a protocol id for stream headers")
-	flag.StringVar(&config.TestFilePath, "testfile", "",
+	flag.StringVar(&cfg.RendezvousString, "rend", defaultRendezvous,
+		"Unique string to identify group of nodes. Share this with client nodes")
+	flag.Var(&cfg.BootstrapPeers, "peer", "Adds a peer multiaddress to the bootstrap list")
+	flag.Var(&cfg.ListenAddresses, "listen", "Adds a multiaddress to the listen list")
+	flag.StringVar(&cfg.TestFilePath, "testfile", "",
 		"a test file to be uploaded")
+	flag.BoolVar(&cfg.IsClientMode, "client", false, "true to enable client mode")
 	flag.Parse()
-
-	if len(config.BootstrapPeers) == 0 {
-		config.BootstrapPeers = dht.DefaultBootstrapPeers
+	if len(cfg.BootstrapPeers) == 0 {
+		cfg.BootstrapPeers = dht.DefaultBootstrapPeers
 	}
 
-	return config, nil
+	if cfg.IsClientMode && len(cfg.TestFilePath) == 0 {
+		logger.Fatalf("Please specify a test file with -testfile with client mode")
+	}
+
+	return cfg
 }

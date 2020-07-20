@@ -2,6 +2,7 @@ syntax = "proto3";
 
 package protocols.p2p;
 
+// from libp2p
 // designed to be shared between all app protocols
 message MessageData {
     // shared between all requests
@@ -14,20 +15,53 @@ message MessageData {
     bytes sign = 7;         // signature of message data + method specific data by message authoring node.
 }
 
+// data record in upload request
+message UploadData {
+    string ownerId = 1; //TBD
+    string fileName = 2; //file name
+    string fileType = 3; //i.e. image, video, text, html
+    int64 fileSize = 4; //plain file size
+    string description = 5; //description of content
+    bytes fileBytes = 6; //file payload in bytes
+    bool generatePreview = 7; //true to generate preview automatically
+    bytes previewBytes = 8; //optional: payload of user provided preview
+}
+
+// general response data
+message ResponseData {
+    int32 code = 1; //response code i.e. 200 for OK
+    string err = 2; //error message if there is any
+}
+
+// uploaded content data record
+message ContentData {
+    string id = 1; //ID of this content data
+    string ownerId = 2; //TBD
+    string fileName = 3; //i.e. test01.png
+    string fileType = 4; //i.e. image, video, text, html
+    int64 fileSize = 5; //plain file size
+    string description = 6; //description of content
+    string threadKey = 7; //Textile thread key, should be the same for all content
+    string bucketKey = 8; //Textile bucket key, unique for each content
+    string encryptedUrl = 9; //IPNS url for encrypted content
+    string previewUrl = 10; //IPNS url for public preview
+    int64 receivedAt = 11; //unix timestamp at milli sec
+    int64 updatedAt = 12; //unix timestamp at milli sec
+}
+
 ////very simple upload protocol
 // a protocol define a set of request and responses
 message UploadRequest {
     MessageData messageData = 1;
 
     // request specific data
-    string msg = 2;
-    bytes fileBytes = 3;
+    UploadData uploadData = 2;
 }
 
 message UploadResponse {
     MessageData messageData = 1;
 
     // response specific data
-    string msg = 2;
-    int32 code = 3;
+    ResponseData responseData = 2;
+    ContentData contentData = 3;
 }

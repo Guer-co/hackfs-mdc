@@ -2,32 +2,28 @@ package main
 
 import (
 	"context"
-	"github.com/ipfs/go-log"
+	"github.com/Guer-co/hackfs-mdc/backend/pkg/common"
+	"github.com/Guer-co/hackfs-mdc/backend/pkg/textilehelper"
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/peer"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	multiaddr "github.com/multiformats/go-multiaddr"
-	"io/ioutil"
 	"sync"
 )
 
-var logger = log.Logger("server")
+var logger = common.Logger
+var config Config
 
 func main() {
-	log.SetAllLoggers(log.LevelWarn)
-	_ = log.SetLogLevel("server", "info")
+	common.SetupLogger()
+	ctx := context.Background()
+	textilehelper.Setup(ctx)
 
 	//read config from args
-	config, err := ParseFlags()
-	if err != nil {
-		panic(err)
-	}
+	config = ParseFlags()
 
-	ctx := context.Background()
-
-	// libp2p.New constructs a new libp2p Host. Other options can be added
-	// here.
+	// libp2p.New constructs a new libp2p Host. Other options can be added here.
 	host, err := libp2p.New(ctx,
 		libp2p.ListenAddrs([]multiaddr.Multiaddr(config.ListenAddresses)...),
 	)
@@ -38,7 +34,7 @@ func main() {
 	logger.Info("host.Addrs: ", host.Addrs())
 
 	//TODO: pass ctx to node, close the node upon ctx.Done()
-	//create new server node
+	//create new node
 	node := NewNode(host)
 
 	// Start a DHT, for use in peer discovery. We can't just make a new DHT
@@ -76,38 +72,14 @@ func main() {
 
 	// We use a rendezvous point "meet me here" to announce our location.
 	// This is like telling your friends to meet you at the Eiffel Tower.
-	logger.Info("Announcing ourselves...")
 	routingDiscovery := discovery.NewRoutingDiscovery(kademliaDHT)
-	discovery.Advertise(ctx, routingDiscovery, config.RendezvousString)
-	logger.Debug("Successfully announced!")
 
-	// Now, look for others who have announced
-	// This is like your friend telling you the location to meet you.
-	logger.Info("Searching for other peers with rend: ", config.RendezvousString)
-	peerChan, err := routingDiscovery.FindPeers(ctx, config.RendezvousString)
-	if err != nil {
-		panic(err)
+	if config.IsClientMode {
+		go runClientModeWith(ctx, routingDiscovery, host, node)
+	} else {
+		logger.Infof("Announcing this server node with rendezvous string: %+v", config.RendezvousString)
+		discovery.Advertise(ctx, routingDiscovery, config.RendezvousString)
 	}
-
-	for p := range peerChan {
-		if p.ID == host.ID() {
-			continue
-		}
-		logger.Info("Found peer:", p)
-
-		//test upload
-		if len(config.TestFilePath) > 0 {
-			fileBytes, err := ioutil.ReadFile(config.TestFilePath)
-			if err != nil {
-				logger.Errorf("ioutil.ReadFile failed: %+v", err)
-				continue
-			}
-			//N.B. if one kill this server and start again quickly, its old ID will be found as a peer here, and connection will fail
-			node.UploadTo(p.ID, fileBytes)
-		}
-	}
-
-	logger.Info("routingDiscovery ended")
 
 	select {}
 }
