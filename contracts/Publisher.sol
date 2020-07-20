@@ -28,12 +28,7 @@ contract Publisher {
      * @param _email Publisher's Email
      * @param _logo Publisher's Logo
      */
-    function updatePublisherProfile(
-        string memory _name,
-        string memory _email,
-        string memory _logo,
-        uint256 _subscriptionCost
-    ) public {
+    function updatePublisherProfile(string memory _name,string memory _email,string memory _logo, uint256 _subscriptionCost) public {
         profile[msg.sender].name = _name;
         profile[msg.sender].email = _email;
         profile[msg.sender].logo = _logo;
@@ -41,14 +36,19 @@ contract Publisher {
     }
 
     /**
+    * @notice Get Publisher information
+    * @param _useraddress Publisher's address
+    */
+    function getPublisherProfile(address _useraddress) public view returns(string memory _name,string memory _email,string memory _logo, uint256 _subscriptionCost) {
+        return (profile[msg.sender].name, profile[msg.sender].email, profile[msg.sender].logo, profile[msg.sender].subscriptionCost);
+    }
+
+    /**
      * @notice Get the content contracts of a Publisher
      * @param _publisher Publisher's address
      * @return All the content contracts associated with the Publisher
      */
-    function getContentContracts(address _publisher)
-        public
-        view
-        returns (address[] memory)
+    function getContentContracts(address _publisher) public view returns (address[] memory)
     {
         return contentContracts[_publisher];
     }
