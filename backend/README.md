@@ -1,6 +1,14 @@
 For now, this is just a simple libp2p based server node,
 which accept a libp2p UploadRequest protocol for pushing file into Textile Bucket securely.
 
+ENV
+```
+export TEXTILE_HUB_USER_KEY=XXX
+export TEXTILE_HUB_USER_SECRET=XXX
+export TEXTILE_DB_THREAD_ID=XXX
+export TEXTILE_TEST_DB_THREAD_ID=XXX
+```
+
 Build
 ```
 cd cmd/server
