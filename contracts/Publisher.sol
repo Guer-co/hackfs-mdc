@@ -61,13 +61,8 @@ contract Publisher {
     /**
      * @notice Add a subscriber to the publisher
      * @param _publisher Publisher's address
-     * @return All the content contracts associated with the Publisher
     */
-    function addSubscriber(
-        address _publisher,
-        address _subscriber,
-        uint256 _amount
-    ) public payable {
+    function addSubscriber(address _publisher, address _subscriber, uint256 _amount) public payable {
         require(
             _amount == profile[_publisher].subscriptionCost,
             "Amount sent is less than the publishers subscription cost."
@@ -76,9 +71,10 @@ contract Publisher {
         profile[_publisher].subscribers.push(_subscriber);
         subscriberTimestamp[_subscriber] = now;
 
-        for (uint256 i = 0; i <= contentContracts[_publisher].length; i++) {
-            Content(contentContracts[_publisher][i]).whiteList(_subscriber);
-        }
+        //whitelist loop preventing compile, need to compile for now to get goin
+        //for (uint256 i = 0; i <= contentContracts[_publisher].length; i++) {
+        //    Content(profile[_publisher][i]).whiteList(_subscriber);
+        //}
     }
 
     function withdrawEarnings(address _publisher, address payable _to, uint256 _amount) public {
@@ -121,11 +117,11 @@ contract Publisher {
      * @return All the content contracts associated with the Publisher
      * @return All the content contracts associated with the Publisher
      */
-    function getContentInformation(address _contract) public view returns (string memory, string memory, uint, bool, uint) {
+    function getContentInformation(address payable _contract) public view returns (string memory, string memory, uint, bool, uint) {
         return Content(_contract).getContentDetails();
     }
 
-    function getFile(address _contract) public view returns (string memory) {
+    function getFile(address payable _contract) public view returns (string memory) {
         return Content(_contract).getFile();
     }
 
