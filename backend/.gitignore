@@ -1,0 +1,28 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+.deploy/.secrets/*.json
+
+*.xlsx
+*.csv
+*.zip
+
+
+.env
+*.DS_Store
+vendor
+*.bac
+
+.idea
+cmd/server/server
+cmd/server/pb/p2p.pb.go
