@@ -13,4 +13,10 @@
     <PackageReference Include="coverlet.collector" Version="1.2.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Primitives\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TEELib\TEELib.csproj" />
+  </ItemGroup>
 </Project>

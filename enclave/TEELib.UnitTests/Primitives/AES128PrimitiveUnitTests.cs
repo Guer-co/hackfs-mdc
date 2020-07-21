@@ -1,9 +1,9 @@
 using System;
 using Xunit;
 
-namespace TEELib.UnitTests
+namespace TEELib.UnitTests.Primitives
 {
-    public class UnitTest1
+    public class AES128PrimitiveUnitTests
     {
         [Fact]
         public void Test1()
