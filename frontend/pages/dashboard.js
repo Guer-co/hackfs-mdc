@@ -3,7 +3,7 @@ import { useStateValue } from '../state';
 import Layout from '../components/Layout';
 import { Message, Icon, Button, Grid } from 'semantic-ui-react';
 import Loader from 'react-loader-spinner';
-import PublisherContractObjSetup from '../utils/PublisherConstructor';
+import GatewayContractObjSetup from '../utils/GatewayConstructor';
 import Moment from 'react-moment';
 
 
@@ -20,19 +20,19 @@ const Publish = () => {
     const [myprofile, setMyprofile] = useState('');
 
 
-    const PublisherContractObj = PublisherContractObjSetup(dapp.web3);
+    const GatewayContractObj = GatewayContractObjSetup(dapp.web3);
 
     useEffect(() => {
         const loadProfile = async () => {
             if (dapp.address && myprofile === '') {
-            const profilefetch = await PublisherContractObj.methods
+            const profilefetch = await GatewayContractObj.methods
                 .getPublisherProfile(dapp.address)
                 .call({ from: dapp.address });
                 setMyprofile(profilefetch);
             }
             if (dapp.address && contentarray.length === 0) {
-            const contentaddresses = await PublisherContractObj.methods
-                .getContentContracts(dapp.address)
+            const contentaddresses = await GatewayContractObj.methods
+                .getPublisherContracts(dapp.address)
                 .call({ from: dapp.address });
                 setContentarray(contentaddresses);
             }
@@ -41,8 +41,8 @@ const Publish = () => {
                 console.log('contentdetails');
                 let temparray = [];
                 for (let i = 0; i < contentarray.length; i++) {
-                await PublisherContractObj.methods
-                    .getContentInformation(contentarray[i])
+                await GatewayContractObj.methods
+                    .getContentInformation(myprofile[0],contentarray[i])
                     .call({ from: dapp.address })
                     .then(function (result) {
                         console.log(result);
@@ -80,8 +80,8 @@ const Publish = () => {
     };
 
     const addContentToContract = async () => {
-        await PublisherContractObj.methods
-        .createContent(filehash, filename, true, 1)
+        await GatewayContractObj.methods
+        .createContent(myprofile[0], filehash, filename, true, 1)
         .send({ from: dapp.address })
         .then(function (result) {
             console.log(result);
@@ -103,7 +103,7 @@ const Publish = () => {
                 <div style={{textAlign:'center'}}>
                     <h3>Publisher Dashboard P3 [logo]</h3>
                     <hr />
-                    <div>Publisher Address: {dapp.address}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name:  {myprofile[0]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Email: {myprofile[1]} </div>
+                    <div>Publisher Address: {myprofile[0]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name:  {myprofile[1]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Email: {myprofile[2]} </div>
                 </div>
             </Grid.Column>
             <Grid.Column width={3}>
@@ -189,7 +189,7 @@ const Publish = () => {
                                 </a>
                             </div>
                             <Button onClick={addContentToContract}>
-                                Create a new content entry
+                                Publish this content
                             </Button>
                         </>
                         )}                    
