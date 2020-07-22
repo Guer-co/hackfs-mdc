@@ -103,7 +103,7 @@ const Publish = () => {
                 <div style={{textAlign:'center'}}>
                     <h3>Publisher Dashboard P3 [logo]</h3>
                     <hr />
-                    <div>Publisher Address: {dapp.address}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name:  {myprofile[0]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Email: {myprofile[1]} </div>
+                    <div>Publisher Address: {myprofile[0]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name:  {myprofile[1]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Email: {myprofile[2]} </div>
                 </div>
             </Grid.Column>
             <Grid.Column width={3}>
@@ -189,7 +189,7 @@ const Publish = () => {
                                 </a>
                             </div>
                             <Button onClick={addContentToContract}>
-                                Create a new content entry
+                                Publish this content
                             </Button>
                         </>
                         )}                    

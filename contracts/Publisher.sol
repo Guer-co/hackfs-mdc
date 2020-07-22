@@ -62,7 +62,10 @@ contract Publisher {
         return contentContracts;
     }
 
-
+    /**
+    * @notice Get the subscribers to a publisher
+    * @return All the subscribers to your content
+    */
     function getSubscribers() public view returns (address[] memory) {
         return subscribers;
     }
@@ -117,14 +120,11 @@ contract Publisher {
         return Content(_contract).getContentDetails();
     }
 
-    //function getFile(address payable _contract) public view returns (string memory) {
-    //    return Content(_contract).getFile();
+    //this should probably come back soon, was just causing me issues tonight
+    //receive() external payable {
     //}
 
-    function purchaseContent(address payable _contract, uint256 _amount) public returns (bool) {
-        return Content(_contract).purchaseContent(msg.sender, _amount);
-    }
-
-    //receive() external payable {
+    //function getFile(address payable _contract) public view returns (string memory) {
+    //    return Content(_contract).getFile();
     //}
 }

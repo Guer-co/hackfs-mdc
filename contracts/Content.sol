@@ -8,10 +8,9 @@ import './lib/OpenZeppelin/SafeMath.sol';
 contract Content is Owned {
     using SafeMath for uint;
 
+    address ownerId;
     address contractId;
     uint earnings;
-    mapping(address => bool) contentWhitelist;
-    uint256 numberOfWhitelisted = 0;
 
     struct ContentInfo {
         string locationHash;
@@ -24,17 +23,13 @@ contract Content is Owned {
     mapping(address => ContentInfo) public Info;
 
     constructor(string memory _contentHash, string memory _name, bool _free, uint _price) public {
+        ownerId = msg.sender;
         contractId = address(this);
         Info[contractId].locationHash = _contentHash;
         Info[contractId].name = _name;
         Info[contractId].date = now;
         Info[contractId].free = _free;
         Info[contractId].price = _price;
-
-        //possibly pass current count of publisher whitelisted.length here
-        numberOfWhitelisted = 0;
-            //whiteListed[_subscribers[i]] = true;
-            //reference the publisher's whitelist
     }
 
     function getContentDetails() public view returns (string memory, string memory, uint, bool, uint) {
@@ -47,25 +42,16 @@ contract Content is Owned {
         );
     }
 
-    //function whiteList(address _newUser) public onlyOwner returns (bool) {
-    //    numberOfWhitelisted++;
-    //    whiteListed[_newUser] = true;
-    //    return true;
-    //}
-//
-    //function removeFromWhiteList(address _newUser) public onlyOwner returns (bool) {
-    //    numberOfWhitelisted--;
-    //    whiteListed[_newUser] = false;
-    //    return true;
-    //}
-
    function purchaseContent(address _consumer, uint256 _amount) public payable returns (bool) {
        require(_amount == Info[contractId].price, 'Amount sent is less than what this content is priced at. Please send the exact amount') ;
        earnings += msg.value;
-       contentWhitelist[_consumer] = true;
        return true;
-        
    }
+
+   //need a function to checkwhitelist of parent (publisher) contract.
+//need a function to checkwhitelist of parent (publisher) contract.
+//need a function to checkwhitelist of parent (publisher) contract.
+
 
    //// WIP
    //function getFile() public view returns (string memory) {

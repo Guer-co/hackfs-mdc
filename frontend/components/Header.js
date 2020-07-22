@@ -74,7 +74,7 @@ const Header = () => {
     <>
       <Menu style={{ marginTop: '10px' }}>
         <Link href='/'>
-          <a>
+          <a href="/">
             <Menu.Item><Icon name="home"/></Menu.Item>
           </a>
         </Link>
