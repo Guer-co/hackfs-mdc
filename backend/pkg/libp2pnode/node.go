@@ -1,11 +1,9 @@
-package main
+package libp2pnode
 
 import (
 	"context"
-	"log"
-	"time"
-
-	p2p "github.com/Guer-co/hackfs-mdc/backend/cmd/server/pb"
+	commontools "github.com/Guer-co/hackfs-mdc/backend/pkg/common"
+	p2p "github.com/Guer-co/hackfs-mdc/backend/pkg/libp2pnode/pb"
 	ggio "github.com/gogo/protobuf/io"
 	proto "github.com/gogo/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/crypto"
@@ -13,9 +11,13 @@ import (
 	"github.com/libp2p/go-libp2p-core/host"
 	"github.com/libp2p/go-libp2p-core/peer"
 	"github.com/libp2p/go-libp2p-core/protocol"
+	"log"
+	"time"
 )
 
 //go:generate protoc pb/p2p.proto -I. --gofast_out=.
+
+var logger = commontools.Logger
 
 // node client version
 const clientVersion = "pay3-server-node/0.0.1"
