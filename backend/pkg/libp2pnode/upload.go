@@ -1,8 +1,8 @@
-package main
+package libp2pnode
 
 import (
-	pb "github.com/Guer-co/hackfs-mdc/backend/cmd/server/pb"
 	commontools "github.com/Guer-co/hackfs-mdc/backend/pkg/common"
+	pb "github.com/Guer-co/hackfs-mdc/backend/pkg/libp2pnode/pb"
 	"github.com/Guer-co/hackfs-mdc/backend/pkg/models"
 	"github.com/Guer-co/hackfs-mdc/backend/pkg/textilehelper"
 	"github.com/gogo/protobuf/proto"
@@ -19,10 +19,11 @@ const uploadResponseProtocolName = "/hackfspay3/uploadresponse/0.0.2"
 type UploadProtocol struct {
 	node     *Node                          // local host
 	requests map[string]*pb.UploadRequest   // used to access request data from response handlers
+	ChResponse chan *pb.UploadResponse      // channel for outputting response
 }
 
 func NewUploadProtocol(node *Node) *UploadProtocol {
-	e := UploadProtocol{node: node, requests: make(map[string]*pb.UploadRequest)}
+	e := UploadProtocol{node: node, requests: make(map[string]*pb.UploadRequest), ChResponse: make(chan *pb.UploadResponse)}
 	node.SetStreamHandler(uploadRequestProtocolName, e.onUploadRequest)
 	node.SetStreamHandler(uploadResponseProtocolName, e.onUploadResponse)
 
@@ -202,6 +203,8 @@ func (e *UploadProtocol) onUploadResponse(s network.Stream) {
 	}
 
 	logger.Infof("%s Received upload response from %s. Message id:%s. resp: %+v", s.Conn().LocalPeer(), s.Conn().RemotePeer(), resp.MessageData.Id, resp)
+
+	e.ChResponse <- resp
 }
 
 //return (req.MessageData.Id, error)

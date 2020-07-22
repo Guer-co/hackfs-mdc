@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/Guer-co/hackfs-mdc/backend/pkg/common"
+	"github.com/Guer-co/hackfs-mdc/backend/pkg/httpproxy"
 	"github.com/Guer-co/hackfs-mdc/backend/pkg/libp2pnode"
 	"github.com/Guer-co/hackfs-mdc/backend/pkg/textilehelper"
 	"github.com/libp2p/go-libp2p"
@@ -12,8 +13,6 @@ import (
 	multiaddr "github.com/multiformats/go-multiaddr"
 	"sync"
 )
-
-//go:generate protoc ../../pkg/libp2pnode/pb/p2p.proto -I../../pkg/libp2pnode/. --gofast_out=../../pkg/libp2pnode/.
 
 var logger = common.Logger
 var config Config
@@ -76,13 +75,23 @@ func main() {
 	// We use a rendezvous point "meet me here" to announce our location.
 	// This is like telling your friends to meet you at the Eiffel Tower.
 	routingDiscovery := discovery.NewRoutingDiscovery(kademliaDHT)
-
-	if config.IsClientMode {
-		go runClientModeWith(ctx, routingDiscovery, host, node)
-	} else {
-		logger.Infof("Announcing this server node with rendezvous string: %+v", config.RendezvousString)
-		discovery.Advertise(ctx, routingDiscovery, config.RendezvousString)
+	logger.Info("Searching for server node with rend: ", config.RendezvousString)
+	peerChan, err := routingDiscovery.FindPeers(ctx, config.RendezvousString)
+	if err != nil {
+		panic(err)
 	}
+
+	var serverAddrInfo *peer.AddrInfo
+	for p := range peerChan {
+		if p.ID == host.ID() {
+			continue
+		}
+		serverAddrInfo = &p
+		logger.Infof("serverAddrInfo: %+v, p: %+v", serverAddrInfo, p)
+		break
+	}
+
+	go httpproxy.Run(node, serverAddrInfo)
 
 	select {}
 }
