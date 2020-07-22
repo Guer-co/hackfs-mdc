@@ -22,12 +22,12 @@ const GatewayContractObj = GatewayObjSetup(dapp.web3);
 useEffect(() => {
     const loadProfile = async () => {
         if (dapp.address && myprofile === '') {
-            console.log(dapp.address);
             const profilefetch = await GatewayContractObj.methods.getPublisherProfile(dapp.address).call({from: dapp.address});
-            //setMyprofile(profilefetch);
+            setMyprofile(profilefetch);
         }
     };
     loadProfile();
+    console.log(myprofile);
 }, [dapp.address,myprofile]);
 
 const createPublisherProfile = async () => {
@@ -64,8 +64,7 @@ const createPublisherProfile = async () => {
                     <br />
                     <hr/>
                     <br/>
-                    {myprofile === '' || myprofile === undefined ? (
-                        console.log(myprofile),
+                    {myprofile[1] === '' || myprofile === undefined ? (
                     <>
                         <h3>Create profile</h3>
                         <br/>

@@ -22,21 +22,17 @@ contract Gateway {
         publisherContract[msg.sender] = address(publisherId);
     }
 
-    function getPublisherProfile(address _publisher) public view returns (string memory _name,string memory _email,string memory _logo, uint256 _subscriptionCost)
+    function getPublisherProfile(address _publisher) public view returns (address id, string memory _name ,string memory _email,string memory _logo, uint256 _subscriptionCost)
     {
         if (publisherContract[_publisher] != 0x0000000000000000000000000000000000000000) {
-         return Publisher(publisherContract[_publisher]).getPublisherProfile();
+            return Publisher(publisherContract[_publisher]).getPublisherProfile();
         }
         else {
-            return ('','','',0);
+            return (0x0000000000000000000000000000000000000000, '','','',0);
         }
     }
 
 
-    function getPublisherContracts(address _publisher) public view returns (address[] memory)
-    {
-        return Publisher(publisherContract[_publisher]).getContentContracts();
-    }
     function getSubscribers(address _publisher) public view returns (address[] memory)
     {
         return Publisher(publisherContract[_publisher]).getSubscribers();
@@ -62,5 +58,14 @@ contract Gateway {
 
     function getContentInformation(address payable _publisher, address payable _content) public view returns (string memory, string memory, uint, bool, uint) {
         return Publisher(_publisher).getContentInformation(_content);
+    }
+
+    function createContent(address payable _publisher,string memory _contentHash, string memory _name, bool _paid, uint256 _price) public {
+        Publisher(_publisher).createContent(_contentHash,_name,_paid,_price);
+    }
+
+    function getPublisherContracts(address _publisher) public view returns (address[] memory)
+    {
+        return Publisher(publisherContract[_publisher]).getContentContracts();
     }
 }

@@ -42,7 +42,7 @@ const Publish = () => {
                 let temparray = [];
                 for (let i = 0; i < contentarray.length; i++) {
                 await GatewayContractObj.methods
-                    .getContentInformation(contentarray[i])
+                    .getContentInformation(myprofile[0],contentarray[i])
                     .call({ from: dapp.address })
                     .then(function (result) {
                         console.log(result);
@@ -81,7 +81,7 @@ const Publish = () => {
 
     const addContentToContract = async () => {
         await GatewayContractObj.methods
-        .createContent(filehash, filename, true, 1)
+        .createContent(myprofile[0], filehash, filename, true, 1)
         .send({ from: dapp.address })
         .then(function (result) {
             console.log(result);

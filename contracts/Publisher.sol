@@ -7,8 +7,8 @@ import "./lib/OpenZeppelin/SafeMath.sol";
 
 contract Publisher {
     using SafeMath for uint256;
-    address ownerId;
-    address id;
+    address ownerAddress;
+    address publisherAddress;
     string name;
     string email;
     string logo;
@@ -23,8 +23,8 @@ contract Publisher {
     mapping(address => address[]) userWhitelist;
 
     constructor(string memory _name, string memory _email, string memory _logo, uint256 _subscriptionCost) public {
-        id = address(this);
-        ownerId = msg.sender;
+        publisherAddress = address(this);
+        ownerAddress = msg.sender;
         name = _name;
         email = _email;
         logo = _logo;
@@ -49,8 +49,8 @@ contract Publisher {
     /**
     * @notice Get Publisher information
     */
-    function getPublisherProfile() public view returns(string memory _name,string memory _email,string memory _logo, uint256 _subscriptionCost) {
-        return (name, email, logo, subscriptionCost);
+    function getPublisherProfile() public view returns(address, string memory, string memory, string memory, uint256 ) {
+        return (publisherAddress, name, email, logo, subscriptionCost);
     }
 
     /**
@@ -83,7 +83,7 @@ contract Publisher {
 
     function withdrawEarnings(uint256 _amount) public {
         require(
-            msg.sender == ownerId,
+            msg.sender == ownerAddress,
             "You are unauthorized to withdraw funds from this publishers account"
         );
         require(
@@ -103,12 +103,7 @@ contract Publisher {
      * @param _paid Free or Paid
      */
     function createContent(string memory _contentHash, string memory _name, bool _paid, uint256 _price) public {
-        Content contractId = new Content(
-            _contentHash,
-            _name,
-            _paid,
-            _price
-        );
+        Content contractId = new Content(_contentHash, _name, _paid, _price);
         contentContracts.push(address(contractId));
     }
 
