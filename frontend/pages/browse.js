@@ -4,18 +4,17 @@ import Layout from '../components/Layout';
 import {  Message, Icon, Button, Grid,Modal,Form  } from 'semantic-ui-react';
 import Loader from 'react-loader-spinner';
 import buffer from 'buffer';
-import PublisherObjSetup from '../utils/PublisherConstructor';
+import GatewayObjSetup from '../utils/GatewayConstructor';
 
 const Browse = () => {
 const [{ dapp }, dispatch] = useStateValue();
 const [loading, setLoading] = useState(false);
 const [errorMessage, setError] = useState('');
 
-const PublisherContractObj = PublisherObjSetup(dapp.web3);
+const GatewayContractObj = GatewayObjSetup(dapp.web3);
 
 useEffect(() => {
-    //grab random contracts maybe????
-    const loadPublisherData = async () => {
+    const loadGatewayData = async () => {
     try {        
     } catch (err) {
     }

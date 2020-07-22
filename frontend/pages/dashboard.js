@@ -3,7 +3,7 @@ import { useStateValue } from '../state';
 import Layout from '../components/Layout';
 import { Message, Icon, Button, Grid } from 'semantic-ui-react';
 import Loader from 'react-loader-spinner';
-import PublisherContractObjSetup from '../utils/PublisherConstructor';
+import GatewayContractObjSetup from '../utils/GatewayConstructor';
 import Moment from 'react-moment';
 
 
@@ -20,19 +20,19 @@ const Publish = () => {
     const [myprofile, setMyprofile] = useState('');
 
 
-    const PublisherContractObj = PublisherContractObjSetup(dapp.web3);
+    const GatewayContractObj = GatewayContractObjSetup(dapp.web3);
 
     useEffect(() => {
         const loadProfile = async () => {
             if (dapp.address && myprofile === '') {
-            const profilefetch = await PublisherContractObj.methods
+            const profilefetch = await GatewayContractObj.methods
                 .getPublisherProfile(dapp.address)
                 .call({ from: dapp.address });
                 setMyprofile(profilefetch);
             }
             if (dapp.address && contentarray.length === 0) {
-            const contentaddresses = await PublisherContractObj.methods
-                .getContentContracts(dapp.address)
+            const contentaddresses = await GatewayContractObj.methods
+                .getPublisherContracts(dapp.address)
                 .call({ from: dapp.address });
                 setContentarray(contentaddresses);
             }
@@ -41,7 +41,7 @@ const Publish = () => {
                 console.log('contentdetails');
                 let temparray = [];
                 for (let i = 0; i < contentarray.length; i++) {
-                await PublisherContractObj.methods
+                await GatewayContractObj.methods
                     .getContentInformation(contentarray[i])
                     .call({ from: dapp.address })
                     .then(function (result) {
@@ -80,7 +80,7 @@ const Publish = () => {
     };
 
     const addContentToContract = async () => {
-        await PublisherContractObj.methods
+        await GatewayContractObj.methods
         .createContent(filehash, filename, true, 1)
         .send({ from: dapp.address })
         .then(function (result) {

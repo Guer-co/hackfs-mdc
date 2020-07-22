@@ -4,7 +4,7 @@ import Layout from '../components/Layout';
 import {  Message, Icon, Button, Grid,Modal,Form  } from 'semantic-ui-react';
 import Loader from 'react-loader-spinner';
 
-import PublisherObjSetup from '../utils/PublisherConstructor';
+import GatewayObjSetup from '../utils/GatewayConstructor';
 
 const Index = () => {
     const [{ dapp }, dispatch] = useStateValue();
@@ -17,24 +17,21 @@ const Index = () => {
     const [cost,setCost] = useState(1);
     const [openmodal,setOpenmodal] = useState(false);
 
-const PublisherContractObj = PublisherObjSetup(dapp.web3);
+const GatewayContractObj = GatewayObjSetup(dapp.web3);
 
 useEffect(() => {
     const loadProfile = async () => {
         if (dapp.address && myprofile === '') {
-        const profilefetch = await PublisherContractObj.methods
-            .getPublisherProfile(dapp.address)
-            .call({ from: dapp.address });
-            setMyprofile(profilefetch);
+            console.log(dapp.address);
+            const profilefetch = await GatewayContractObj.methods.getPublisherProfile(dapp.address).call({from: dapp.address});
+            //setMyprofile(profilefetch);
         }
     };
     loadProfile();
-    console.log(myprofile)
 }, [dapp.address,myprofile]);
 
 const createPublisherProfile = async () => {
-    await PublisherContractObj.methods
-        .updatePublisherProfile(name,email,logo,cost)
+    await GatewayContractObj.methods.createNewPublisher(name,email,logo,cost)
         .send({ from: dapp.address })
         .on('transactionHash', (hash) => {
         dispatch({
@@ -49,10 +46,9 @@ const createPublisherProfile = async () => {
         });
         });
     setOpenmodal(false);
-    // window.location.reload(false);
+    window.location.reload(false);
 };
   
-  console.log(myprofile)
   return (
     <Layout style={{backgroundColor:'#041727'}}>
         <Grid centered columns={2}>
@@ -68,7 +64,7 @@ const createPublisherProfile = async () => {
                     <br />
                     <hr/>
                     <br/>
-                    {myprofile[0] === '' || myprofile === undefined ? (
+                    {myprofile === '' || myprofile === undefined ? (
                         console.log(myprofile),
                     <>
                         <h3>Create profile</h3>
@@ -93,6 +89,7 @@ const createPublisherProfile = async () => {
                                 </Form.Field>
                                 </Form>
                                 <br/>
+                                <p style={{color:'black'}}>Future--- upload logo and subscription fee<br/>all of this can be edited later</p>
                                 <Button onClick={createPublisherProfile}>Submit Profile!</Button>
                             </Modal.Description>
                             </Modal.Content>

@@ -4,7 +4,7 @@ import Layout from '../components/Layout';
 import {  Message, Icon, Button, Grid,Modal,Form  } from 'semantic-ui-react';
 import Loader from 'react-loader-spinner';
 import buffer from 'buffer';
-import PublisherObjSetup from '../utils/PublisherConstructor';
+import GatewayObjSetup from '../utils/GatewayConstructor';
 
 const Publish = () => {
   const [{ dapp }, dispatch] = useStateValue();
@@ -20,21 +20,21 @@ const Publish = () => {
   const [email,setEmail] = useState('');
   const [logo,setLogo] = useState('');
 
-  const PublisherContractObj = PublisherObjSetup(dapp.web3);
+  const GatewayContractObj = GatewayObjSetup(dapp.web3);
 
   useEffect(() => {
     const loadPublisherData = async () => {
       try {        
         if (dapp.address && mycontract === '') {
-          const contractfetch = await PublisherContractObj.methods
-            .getContentContracts(dapp.address)
+          const contractfetch = await GatewayContractObj.methods
+            .getPublisherContracts(dapp.address)
             .call({ from: dapp.address });
           if (contractfetch.length > 0) {
             setMycontract(contractfetch[0]);
           }
         }
          if (dapp.address && mycontract && allcontent.length === 0) {
-           const contentcount = await PublisherContractObj.methods
+           const contentcount = await GatewayContractObj.methods
              .doGetContentCount(mycontract)
              .call({ from: dapp.address });
            setContentcount(contentcount);
@@ -45,7 +45,7 @@ const Publish = () => {
            const contentdetails = async () => {
              let temparray = [];
              for (let i = 1; i < contentcount; i++) {
-               await PublisherContractObj.methods
+               await GatewayContractObj.methods
                  .doGetContent(mycontract, i)
                  .call({ from: dapp.address })
                  .then(function (result) {
@@ -91,7 +91,7 @@ const Publish = () => {
 
   const createPublisherProfile = async () => {
     try {
-      await PublisherContractObj.methods
+      await GatewayContractObj.methods
         .updatePublisherProfile(name,email,logo)
         .send({ from: dapp.address })
         .on('transactionHash', (hash) => {
@@ -114,7 +114,7 @@ const Publish = () => {
   };
 
   const addContentToContract = async () => {
-    await PublisherContractObj.methods
+    await GatewayContractObj.methods
       .doAddContent(mycontract, filehash, filename)
       .send({ from: dapp.address })
       .then(function (result) {
