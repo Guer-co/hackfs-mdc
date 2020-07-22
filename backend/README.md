@@ -1,6 +1,9 @@
 For now, this is just a simple libp2p based server node,
 which accept a libp2p UploadRequest protocol for pushing file into Textile Bucket securely.
 
+Install protoc
+https://github.com/protocolbuffers/protobuf/releases/tag/v3.12.3
+
 ENV
 ```
 export TEXTILE_HUB_USER_KEY=XXX

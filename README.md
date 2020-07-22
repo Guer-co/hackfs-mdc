@@ -27,6 +27,9 @@ S.I.M.P.L.E. is :  **S**ervices for **I**nformation and **M**edia **P**ayments, 
 * **open the dir:** cd /whateverdirectoryyoucloneditin
 
 (Backend)
+Install protoc
+https://github.com/protocolbuffers/protobuf/releases/tag/v3.12.3
+
 ENV
 ```
 export TEXTILE_HUB_USER_KEY=XXX
