@@ -81,6 +81,17 @@ var _ = Describe("Textilehelper", func() {
 			logger.Infof("threadKey: %v, bucketKey: %v, ipnsLink: %v", threadKey, bucketKey, ipnsLink)
 		})
 	})
+	Describe("PullBytesFromBucket", func() {
+		It("Should return the bucket file in bytes correctly", func() {
+			fileBytes, err := ioutil.ReadFile("./test01.png")
+			Expect(err).To(BeNil())
+			_, bucketKey, _, err := textilehelper.CreateBucketAndPushData(common.GetUlid().String(), "test01.png", fileBytes, true)
+			Expect(err).To(BeNil())
+			bytes, err := textilehelper.PullBytesFromBucket(bucketKey, "test01.png")
+			Expect(err).To(BeNil())
+			Expect(len(bytes)).To(Equal(500269))
+		})
+	})
 	/*
 	Describe("CreateIdentity", func() {
 		It("Should create id correctly", func() {

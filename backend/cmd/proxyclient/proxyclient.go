@@ -86,11 +86,18 @@ func main() {
 		if p.ID == host.ID() {
 			continue
 		}
+		if len(p.Addrs) == 0 {
+			logger.Errorf("No addrs from peer: %+v", p)
+			continue
+		}
 		serverAddrInfo = &p
-		logger.Infof("serverAddrInfo: %+v, p: %+v", serverAddrInfo, p)
+		logger.Infof("serverAddrInfo: %+v", serverAddrInfo)
 		break
 	}
 
+	if serverAddrInfo == nil {
+		logger.Fatalf("no sever node found")
+	}
 	go httpproxy.Run(node, serverAddrInfo)
 
 	select {}

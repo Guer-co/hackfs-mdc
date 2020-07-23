@@ -1,6 +1,7 @@
 package models
 
 import (
+	pb "github.com/Guer-co/hackfs-mdc/backend/pkg/libp2pnode/pb"
 	core "github.com/textileio/go-threads/core/db"
 )
 
@@ -17,6 +18,23 @@ type ContentData struct {
 	PreviewUrl string `json:"previewUrl,omitempty"`
 	ReceivedAt int64 `json:"receivedAt,omitempty"`
 	UpdatedAt int64 `json:"updatedAt,omitempty"`
+}
+
+func GetPbContentDataFromModelsContentData(data *ContentData) *pb.ContentData {
+	return &pb.ContentData{
+		Id:                   string(data.Id),
+		OwnerId:              data.OwnerId,
+		FileName:             data.FileName,
+		FileType:             data.FileType,
+		FileSize:             data.FileSize,
+		Description:          data.Description,
+		ThreadKey:            data.ThreadKey,
+		BucketKey:            data.BucketKey,
+		EncryptedUrl:         data.EncryptedUrl,
+		PreviewUrl:           data.PreviewUrl,
+		ReceivedAt:           data.ReceivedAt,
+		UpdatedAt:            data.UpdatedAt,
+	}
 }
 
 //ContentData implement Instanceable

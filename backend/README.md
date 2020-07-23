@@ -39,7 +39,13 @@ start go server
 Upload test
 On another terminal
 ```
-	curl -X POST http://localhost:8888/api/ipfs \
+curl -X POST http://localhost:8888/api/ipfs \
 	  -F "file=@../../pkg/textilehelper/test01.png" \
 	  -H "Content-Type: multipart/form-data"
+```
+
+Download test
+On another terminal
+```
+curl -X POST http://localhost:8888/api/download/testrequester01/bafzbeibbpbqs6oizlyg7dh7tkjxmlldp3l2xdg5yghbtw4ehxl2xiwkyba
 ```
