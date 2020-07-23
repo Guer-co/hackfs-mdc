@@ -95,13 +95,53 @@ func Run(node *libp2pnode.Node, serverAddrInfo *peer.AddrInfo) {
 			//c.JSON(http.StatusOK, cid)
 
 			//TODO check if msgId match
-			resp := <-node.ChResponse
+			resp := <-node.UploadResponseCh
 			logger.Infof("received response: %+v", resp)
 
 			if resp.ResponseData.Code != http.StatusOK {
 				c.JSON(int(resp.ResponseData.Code), resp.ResponseData.Err)
 			} else {
 				c.JSON(int(resp.ResponseData.Code), resp.ContentData.PreviewUrl)
+			}
+		}
+	})
+
+	/*
+	curl -X POST http://localhost:8888/api/download/testrequester01/bafzbeibbpbqs6oizlyg7dh7tkjxmlldp3l2xdg5yghbtw4ehxl2xiwkyba
+
+	*/
+	router.POST("/api/download/:requesterid/:bucketkey", func(c *gin.Context) {
+		requesterId := c.Param("requesterid")
+		bucketKey := c.Param("bucketkey")
+		logger.Infof("processing POST requesterId: %+v, bucketKey: %+v", requesterId, bucketKey)
+
+		if len(requesterId) == 0 || len(bucketKey) == 0 {
+			err := commontools.Errorf(nil, "invalid input")
+			logger.Errorf("%+v", err)
+			c.JSON(http.StatusInternalServerError, err)
+		}
+
+		downloadData := pb.DownloadData{
+			RequesterId:          requesterId,
+			BucketKey:            bucketKey,
+			PreviewUrl:           "",
+			CreatedAt:            commontools.GetTimeStampMillisecond(),
+		}
+		msgId, err := node.DownloadFrom(serverAddrInfo.ID, &downloadData)
+		if err != nil {
+			logger.Error(commontools.Errorf(err, "node.DownloadFrom failed"))
+			c.JSON(http.StatusInternalServerError, err)
+		} else {
+			logger.Infof("msgId: %+v, waiting for response", msgId)
+
+			//TODO check if msgId match
+			resp := <-node.DownloadResponseCh
+			logger.Infof("received response: %+v", resp.ResponseData)
+
+			if resp.ResponseData.Code != http.StatusOK {
+				c.JSON(int(resp.ResponseData.Code), resp.ResponseData.Err)
+			} else {
+				c.JSON(int(resp.ResponseData.Code), resp)
 			}
 		}
 	})

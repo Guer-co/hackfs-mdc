@@ -26,6 +26,7 @@ const clientVersion = "pay3-server-node/0.0.1"
 type Node struct {
 	host.Host     // lib-p2p host
 	*UploadProtocol // upload protocol impl
+	*DownloadProtocol // download protocol impl
 	// add other protocols here...
 }
 
@@ -33,6 +34,7 @@ type Node struct {
 func NewNode(host host.Host) *Node {
 	node := &Node{Host: host}
 	node.UploadProtocol = NewUploadProtocol(node)
+	node.DownloadProtocol = NewDownloadProtocol(node)
 	return node
 }
 
