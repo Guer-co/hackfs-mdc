@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useStateValue } from '../state';
 import Layout from '../components/Layout';
-import { Message, Icon, Button, Grid } from 'semantic-ui-react';
+import { Message, Icon, Button, Grid, Modal, Form, Popup } from 'semantic-ui-react';
 import Loader from 'react-loader-spinner';
 import GatewayContractObjSetup from '../utils/GatewayConstructor';
 import Moment from 'react-moment';
@@ -18,6 +18,8 @@ const Publish = () => {
     const [contentarray, setContentarray] = useState([]);
     const [allcontent, setAllcontent] = useState([]);
     const [myprofile, setMyprofile] = useState('');
+    const [openmodal,setOpenmodal] = useState(false);
+
 
 
     const GatewayContractObj = GatewayContractObjSetup(dapp.web3);
@@ -45,7 +47,6 @@ const Publish = () => {
                     .getContentInformation(myprofile[0],contentarray[i])
                     .call({ from: dapp.address })
                     .then(function (result) {
-                        console.log(result);
                         temparray.push(result);
                     });
                 }
@@ -170,7 +171,7 @@ const Publish = () => {
                     ) : (
                         <>
                             <div id='img'>
-                                <img src={result[0]}/>
+                                <img src={filehash}/>
                             </div>
                             <div id='name'>
                                 <strong>Name:</strong> {filename}
@@ -183,7 +184,7 @@ const Publish = () => {
                                 <a
                                 target='_blank'
                                 rel='no-follow'
-                                href={result[0]}
+                                href={filehash}
                                 >
                                 LINK
                                 </a>
@@ -201,10 +202,18 @@ const Publish = () => {
                     <h2 style={{margin:'0px'}}>$111.11 ETH</h2>
                     <br/>
                     <h5 style={{margin:'0px'}}>Costs</h5>
-                    <h2 style={{margin:'0px'}}>$222.22 ETH </h2>
+                    <h2 style={{margin:'0px'}}>$222.22 ETH &nbsp;
+                    </h2>
+                    <br/>
+                    <h5 style={{margin:'0px'}}>Extra $</h5>
+                    <h2 style={{margin:'0px'}}>$1,000&nbsp;&nbsp;&nbsp;&nbsp;
+                        <Popup content='Withdraw Funds' trigger={<Button icon='add' onClick={() => console.log('a')}/>} />
+                    </h2>
                     <br/>
                     <h5 style={{margin:'0px'}}>Users</h5>
-                    <h2 style={{margin:'0px'}}>3333 users</h2>
+                    <h2 style={{margin:'0px'}}>3333 users&nbsp;&nbsp;&nbsp;&nbsp;
+                        <Popup content='View Subscriber Addresses' trigger={<Button icon='add' onClick={() => console.log('b')}/>} />
+                    </h2>
                 </div>
             </Grid.Column>
             <Grid.Column width={3}>
@@ -217,20 +226,44 @@ const Publish = () => {
                     <hr />
                     <div style={{display:'flex'}}>
                     {allcontent.map((result => {
+                        console.log(result);
                         return(
                         <div className='imagebox' key={result[0]}>
-                            <a
-                            rel='noopener noreferrer'
-                            target='_blank'
-                            href={result[0]}
-                            >
-                            <div><img style={{border:'1px dotted #999', maxWidth:'125px',maxHeight:'125px', margin:'5px'}} src={result[0]}/></div>
-                            </a>
+                            {/*<a rel='noopener noreferrer' target='_blank' href={result[0]}>*/}
+                            <div onClick={() => setOpenmodal(true)}><img style={{border:'1px dotted #999', width:'125px',height:'125px', margin:'5px'}} src={result[0]}/></div>
+                            {/*</a>*/}
                         <p>{result[1]}<br/>
                         <Moment format='MM/DD/YY HH:mm' unix>
                             {result[2]}
                         </Moment>
                         </p>
+                            <Modal
+                            open={openmodal}
+                            size="small"
+                            closeIcon
+                                onClose={() => setOpenmodal(false)}
+
+                            >
+                                <Modal.Header style={{backgroundColor:'#666',textAlign:'center',color:"whie"}}>Content Details</Modal.Header>
+                                <Modal.Content  style={{backgroundColor:'#666'}}>
+                                <Modal.Description  style={{textAlign:'center'}}>
+                                    <a rel='noopener noreferrer' target='_blank' href={result[0]}>
+                                    <img style={{border:'1px dotted #999', width:'125px',height:'125px', margin:'5px'}} src={result[0]}/>
+                                    </a>
+                                    <br/>
+                                    <p style={{fontSize:'18px'}}>Filename: {result[1]}</p>
+                                    <p style={{fontSize:'18px'}}>Uploaded:&nbsp;
+                                        <Moment format='MM/DD/YY HH:mm' unix>
+                                        {result[2]}
+                                    </Moment></p>
+                                    <p style={{fontSize:'18px'}}>{result[3] ? "Free content" : "Paid content"}</p>
+                                    <p style={{fontSize:'18px'}}>Price: {result[4]}</p>
+
+
+                                    <Button>shrug_emoji</Button>
+                                </Modal.Description>
+                                </Modal.Content>
+                            </Modal>
                         </div>
                         )
                     }))}
