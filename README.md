@@ -27,9 +27,51 @@ S.I.M.P.L.E. is :  **S**ervices for **I**nformation and **M**edia **P**ayments, 
 * **open the dir:** cd /whateverdirectoryyoucloneditin
 
 (Backend)
-* cd frontend
-* go run go-api.go 
-* (You may have to install go / and do all the go-gets found in the go file)
+Install protoc
+https://github.com/protocolbuffers/protobuf/releases/tag/v3.12.3
+
+ENV
+```
+export TEXTILE_HUB_USER_KEY=XXX
+export TEXTILE_HUB_USER_SECRET=XXX
+export TEXTILE_DB_THREAD_ID=XXX
+export TEXTILE_TEST_DB_THREAD_ID=XXX
+```
+
+Start the server node
+```
+cd backend/cmd/server
+go generate
+go build
+./server
+...
+2020-07-20T07:14:25.268-0700	INFO	common	server/server.go:80	Announcing this server node with rendezvous string: pay3-rendezvous-01EDC2XSADF7CRB5AJ6SCNWHCG
+```
+
+On another terminal, start the proxy client with the "rend" value shown from the server terminal i.e. pay3-rendezvous-01EDC2XSADF7CRB5AJ6SCNWHCG
+It would take a few sec to discovery the server node
+```
+cd ../proxyclient
+go build
+./proxyclient -rend [rend output from server]
+...
+2020-07-22T08:13:46.893-0700	INFO	common	httpproxy/httpproxy.go:115	httpproxy running at :8888
+```
+
+Upload test
+On another terminal
+```
+curl -X POST http://localhost:8888/api/ipfs \
+	  -F "file=@../../pkg/textilehelper/test01.png" \
+	  -H "Content-Type: multipart/form-data"
+```
+
+Download test
+On another terminal
+```
+curl -X POST http://localhost:8888/api/download/testrequester01/bafzbeibbpbqs6oizlyg7dh7tkjxmlldp3l2xdg5yghbtw4ehxl2xiwkyba
+```
+
 
 (Blockchain)
 * **install Truffle:** npm install -g truffle

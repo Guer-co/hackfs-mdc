@@ -245,3 +245,13 @@ func CreateBucketAndPushData(bucketName string, bucketFileName string, data []by
 	}
 	return clients.DBThreadId.String(), bucketKey, links.IPNS, nil
 }
+
+func PullBytesFromBucket(bucketKey string, bucketFileName string) ([]byte, error) {
+	var buf bytes.Buffer
+	ctx := clients.ContextWithDBThreadId
+	err := clients.Buckets.PullPath(ctx, bucketKey, bucketFileName, &buf)
+	if err != nil {
+		return nil, commontools.Errorf(err, "clients.Buckets.PullPath failed")
+	}
+	return buf.Bytes(), nil
+}

@@ -3,6 +3,8 @@ module github.com/Guer-co/hackfs-mdc/backend
 go 1.14
 
 require (
+	github.com/gin-contrib/cors v1.3.1
+	github.com/gin-gonic/gin v1.6.3
 	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.4.2
 	github.com/google/uuid v1.1.1

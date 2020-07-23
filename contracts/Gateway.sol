@@ -7,12 +7,11 @@ import "./lib/OpenZeppelin/SafeMath.sol";
 
 contract Gateway {
     using SafeMath for uint256;
-
     mapping(address => address) publisherContract;
 
     //THESE ARE PUBLISHER FUNCTIONS// //THESE ARE PUBLISHER FUNCTIONS// //THESE ARE PUBLISHER FUNCTIONS//
-
-    function createNewPublisher(string memory _name, string memory _email, string memory _logo, uint256 _subscriptionCost) public {
+    function createNewPublisher(string memory _name, string memory _email, string memory _logo, uint256 _subscriptionCost) public
+    {
         Publisher publisherId = new Publisher(
             _name,
             _email,
@@ -22,7 +21,7 @@ contract Gateway {
         publisherContract[msg.sender] = address(publisherId);
     }
 
-    function getPublisherProfile(address _publisher) public view returns (address id, string memory _name ,string memory _email,string memory _logo, uint256 _subscriptionCost)
+    function getPublisherProfile(address _publisher) public view returns (address, string memory ,string memory ,string memory, uint256)
     {
         if (publisherContract[_publisher] != 0x0000000000000000000000000000000000000000) {
             return Publisher(publisherContract[_publisher]).getPublisherProfile();
@@ -31,7 +30,6 @@ contract Gateway {
             return (0x0000000000000000000000000000000000000000, '','','',0);
         }
     }
-
 
     function getSubscribers(address _publisher) public view returns (address[] memory)
     {
@@ -48,7 +46,8 @@ contract Gateway {
         Publisher(publisherContract[msg.sender]).updateProfile(_name,_email,_logo,_subscriptionCost);
     }
 
-    function withdrawEarnings(uint256 _amount) public {
+    function withdrawEarnings(uint256 _amount) public
+    {
         Publisher(publisherContract[msg.sender]).withdrawEarnings(_amount);
     }
 
@@ -56,11 +55,13 @@ contract Gateway {
 
     //THESE ARE CONTENT FUNCTIONS// //THESE ARE CONTENT FUNCTIONS// //THESE ARE CONTENT FUNCTIONS//
 
-    function getContentInformation(address payable _publisher, address payable _content) public view returns (string memory, string memory, uint, bool, uint) {
+    function getContentInformation(address payable _publisher, address payable _content) public view returns (string memory, string memory, uint, bool, uint)
+    {
         return Publisher(_publisher).getContentInformation(_content);
     }
 
-    function createContent(address payable _publisher,string memory _contentHash, string memory _name, bool _paid, uint256 _price) public {
+    function createContent(address payable _publisher,string memory _contentHash, string memory _name, bool _paid, uint256 _price) public
+    {
         Publisher(_publisher).createContent(_contentHash,_name,_paid,_price);
     }
 

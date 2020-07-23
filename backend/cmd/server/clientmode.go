@@ -2,15 +2,16 @@ package main
 
 import (
 	"context"
-	pb "github.com/Guer-co/hackfs-mdc/backend/cmd/server/pb"
 	commontools "github.com/Guer-co/hackfs-mdc/backend/pkg/common"
+	"github.com/Guer-co/hackfs-mdc/backend/pkg/libp2pnode"
+	pb "github.com/Guer-co/hackfs-mdc/backend/pkg/libp2pnode/pb"
 	"github.com/libp2p/go-libp2p-core/host"
 	discovery "github.com/libp2p/go-libp2p-discovery"
 	"io/ioutil"
 	"path/filepath"
 )
 
-func runClientModeWith(ctx context.Context, routingDiscovery *discovery.RoutingDiscovery, host host.Host, node *Node) {
+func runClientModeWith(ctx context.Context, routingDiscovery *discovery.RoutingDiscovery, host host.Host, node *libp2pnode.Node) {
 	logger.Info("Running in client mode")
 	// Now, look for others who have announced
 	// This is like your friend telling you the location to meet you.

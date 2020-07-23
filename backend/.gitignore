@@ -25,4 +25,5 @@ vendor
 
 .idea
 cmd/server/server
-cmd/server/pb/p2p.pb.go
+cmd/proxyclient/proxyclient
+pkg/libp2pnode/pb/p2p.pb.go
