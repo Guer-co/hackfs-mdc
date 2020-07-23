@@ -101,7 +101,7 @@ const Publish = () => {
         <Grid centered>
             <Grid.Column width={16}>
                 <div style={{textAlign:'center'}}>
-                    <h3>Publisher Dashboard P3 [logo]</h3>
+                    <h3>Publisher Dashboard P3 <img src="https://bafzbeidknbjj5i2q76banhbj37etrruoeogtmbd7qeycyxuvtqpazvnmoa.ipns.hub.textile.io/p3.png" style={{width:'50px',backgroundColor:"white",borderRadius:'25px'}}/></h3>
                     <hr />
                     <div>Publisher Address: {myprofile[0]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name:  {myprofile[1]}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Email: {myprofile[2]} </div>
                 </div>
@@ -170,7 +170,7 @@ const Publish = () => {
                     ) : (
                         <>
                             <div id='img'>
-                                <img src={`https://cloudflare-ipfs.com/ipfs/${filehash}`}/>
+                                <img src={result[0]}/>
                             </div>
                             <div id='name'>
                                 <strong>Name:</strong> {filename}
@@ -183,7 +183,7 @@ const Publish = () => {
                                 <a
                                 target='_blank'
                                 rel='no-follow'
-                                href={`https://cloudflare-ipfs.com/ipfs/${filehash}`}
+                                href={result[0]}
                                 >
                                 LINK
                                 </a>
@@ -222,9 +222,9 @@ const Publish = () => {
                             <a
                             rel='noopener noreferrer'
                             target='_blank'
-                            href={'https://gateway.ipfs.io/ipfs/' + result[0]}
+                            href={result[0]}
                             >
-                            <div><img style={{border:'1px dotted #999', maxWidth:'125px',maxHeight:'125px', margin:'5px'}} src={`https://cloudflare-ipfs.com/ipfs/${result[0]}`}/></div>
+                            <div><img style={{border:'1px dotted #999', maxWidth:'125px',maxHeight:'125px', margin:'5px'}} src={result[0]}/></div>
                             </a>
                         <p>{result[1]}<br/>
                         <Moment format='MM/DD/YY HH:mm' unix>
