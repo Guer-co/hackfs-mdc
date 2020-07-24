@@ -22,7 +22,7 @@ contract Publisher {
     mapping(address => uint256) subscriberTimestamp;
     mapping(address => bool) subscribers;
 
-    constructor(string memory _name, string memory _email, string memory _logo, uint256 _subscriptionCost) public {
+    constructor(string memory _name, string memory _email, string memory _logo, uint256 _subscriptionCost) payable public {
         publisherAddress = address(this);
         ownerAddress = msg.sender;
         name = _name;

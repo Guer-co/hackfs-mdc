@@ -3,22 +3,26 @@ pragma solidity >=0.4.17 <0.7.0;
 pragma experimental ABIEncoderV2;
 import "./Publisher.sol";
 import "./Content.sol";
+import "./User.sol";
 import "./lib/OpenZeppelin/SafeMath.sol";
 
 contract Gateway {
     using SafeMath for uint256;
     mapping(address => address) publisherContract;
+    mapping(address => address) userContract;
+
 
     //THESE ARE PUBLISHER FUNCTIONS// //THESE ARE PUBLISHER FUNCTIONS// //THESE ARE PUBLISHER FUNCTIONS//
     function createNewPublisher(string memory _name, string memory _email, string memory _logo, uint256 _subscriptionCost) public
     {
-        Publisher publisherId = new Publisher(
-            _name,
-            _email,
-            _logo,
-            _subscriptionCost
-        );
+        Publisher publisherId = new Publisher(_name,_email,_logo,_subscriptionCost);
         publisherContract[msg.sender] = address(publisherId);
+    }
+
+    function createNewUser(string memory _name, string memory _email) public
+    {
+        User userId = new User(_name, _email);
+        userContract[msg.sender] = address(userId);
     }
 
     function getPublisherProfile(address _publisher) public view returns (address, string memory ,string memory ,string memory, uint256)
@@ -28,6 +32,16 @@ contract Gateway {
         }
         else {
             return (0x0000000000000000000000000000000000000000, '','','',0);
+        }
+    }
+
+    function getUserProfile(address _user) public view returns (address, string memory, string memory, uint256)
+    {
+        if (userContract[_user] != 0x0000000000000000000000000000000000000000) {
+            return User(userContract[_user]).getUserProfile();
+        }
+        else {
+            return (0x0000000000000000000000000000000000000000, '','',0);
         }
     }
 

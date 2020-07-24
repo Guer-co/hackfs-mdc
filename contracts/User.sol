@@ -10,6 +10,25 @@ contract User {
     mapping(address => address[]) subscribedTo;
 
     address[] purchased;
+    uint createdDate;
+    address ownerAddress;
+    address userContractAddress;
+    string name;
+    string email;
+
+
+
+    constructor(string memory _name, string memory _email) public {
+        ownerAddress = msg.sender;
+        createdDate = now;
+        userContractAddress = address(this);
+        name = _name;
+        email = _email;
+    }
+
+    function getUserProfile() public view returns(address, string memory, string memory, uint256) {
+        return (userContractAddress, name, email, createdDate);
+    }
 
     //needed functions
 
