@@ -8,8 +8,13 @@ import "./lib/OpenZeppelin/SafeMath.sol";
 
 contract Gateway {
     using SafeMath for uint256;
+    address[] public contentContracts;
     mapping(address => address payable) publisherContract;
     mapping(address => address) userContract;
+
+    function getContentContracts() public view returns (address[] memory) {
+        return contentContracts;
+    }
 
 
     //THESE ARE PUBLISHER FUNCTIONS// //THESE ARE PUBLISHER FUNCTIONS// //THESE ARE PUBLISHER FUNCTIONS//
@@ -76,7 +81,8 @@ contract Gateway {
 
     function createContent(address payable _publisher,string memory _contentHash, string memory _previewHash, string memory _name, string memory _fileType, bool _free, uint256 _price) public
     {
-        Publisher(_publisher).createContent(_contentHash, _previewHash, _fileType, _name,_free,_price);
+        address contractId = Publisher(_publisher).createContent(_contentHash, _previewHash, _fileType, _name,_free,_price);
+        contentContracts.push(address(contractId));
     }
 
     function getPublisherContracts(address _publisher) public view returns (address[] memory)
