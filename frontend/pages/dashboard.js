@@ -6,7 +6,6 @@ import Loader from 'react-loader-spinner';
 import GatewayContractObjSetup from '../utils/GatewayConstructor';
 import Moment from 'react-moment';
 
-
 const Publish = () => {
     const [{ dapp }, dispatch] = useStateValue();
     const [loading, setLoading] = useState(false);
@@ -33,27 +32,33 @@ const Publish = () => {
     const GatewayContractObj = GatewayContractObjSetup(dapp.web3);
 
     useEffect(() => {
-        console.log(filehash);
         const loadProfile = async () => {
             if (dapp.address && myprofile === '') {
 
             const profilefetch = await GatewayContractObj.methods
                 .getPublisherProfile(dapp.address)
-                .call({ from: dapp.address });
-                setMyprofile(profilefetch);
-                const checkbalance = await web3.eth.getBalance(profilefetch[0], function(error, balance) {
-                    setBalance(checkbalance);
-                });
+                .call({ from: dapp.address });setMyprofile(profilefetch);
+                web3.eth.getBalance(profilefetch[0],function(error,result){
+                    if(error){
+                    console.log(error);
+                    }
+                    else{
+                        setBalance(result);
+                        console.log(result);
+                    }
+                })
             }
 
             if (dapp.address && contentarray.length === 0) {
             const contentaddresses = await GatewayContractObj.methods
                 .getPublisherContracts(dapp.address)
                 .call({ from: dapp.address });
+                if (contentaddresses.length > 0) {
                 setContentarray(contentaddresses);
+                }
             }
+            console.log(contentarray);
             if (contentarray.length > 0 && allcontent.length === 0) {
-                console.log('len' + contentarray.length);
             const contentdetails = async () => {
                 let temparray = [];
                 for (let i = 0; i < contentarray.length; i++) {
@@ -70,7 +75,7 @@ const Publish = () => {
             }
         };
         loadProfile();
-    }, [dapp.address, myprofile, allcontent,contentarray]);
+    }, [dapp.address, myprofile, allcontent, contentarray]);
 
     const uploadToIPFS = async () => {
         setLoading(true);
@@ -111,17 +116,28 @@ const Publish = () => {
     };
 
     const withdrawEarnings = async () => {
-    //let wei = props.web3.utils.toWei(balance);
         await GatewayContractObj.methods
-        .withdrawEarnings(nftaddress, props.myaccount, wei).send({ from: dapp.address })
+        .withdrawEarnings(balance.c[0]).send({ from: dapp.address })
         .then(console.log('submitted'))
         .then(function(result){
             console.log(result);
             window.location.reload(false);
         }).catch(function(error){
             console.log(error);
-    });
+    })
     };
+
+    const doReceiveFunds = () => {
+            dapp.web3.eth.sendTransaction({
+            to: myprofile[0],
+            from: dapp.address,
+            value:dapp.web3.utils.toWei("0.03", "ether")
+        }, function(error, hash){
+            console.log(error);
+            console.log(hash);
+            window.location.reload(false);
+        });
+    }
 
     //const updateProfile = async () => {
     //};
@@ -203,7 +219,9 @@ const Publish = () => {
                             {filetype == "image/png" || filetype == "image/jpg" ? (    
                                 <img style={{border:'1px dotted #999', width:'125px',height:'125px', margin:'5px'}} src={filehash} onClick={() => setOpenmodal(true)}/>
                             ) : (
-                                <div style={{border:'1px dotted #999',height:'125px',width:'125px'}}><Icon style={{ margin: 'auto', color: 'white'}} name='file outline' size='massive' onClick={() => setOpenmodal(true)}/></div>
+                                <div style={{border:'1px dotted #999',height:'125px',width:'125px'}}>
+                                    <Icon style={{ margin: 'auto', color: 'white'}} name='file outline' size='massive' onClick={() => setOpenmodal(true)}/>
+                                </div>
                             )}
                             <div id='name'>
                                 <strong>Name:</strong> {filename}
@@ -238,8 +256,9 @@ const Publish = () => {
                     </h2>
                     <br/>
                     <h5 style={{margin:'0px'}}>Earnings $</h5>
-                    <h2 style={{margin:'0px'}}>${balance ? balance : '0.00'}&nbsp;&nbsp;&nbsp;&nbsp;
-                        <Popup content='Withdraw Funds' trigger={<Button icon='external square' onClick={() => console.log('a')}/>} />
+                    <h2 style={{margin:'0px'}}>
+                        <Icon name="ethereum"/ > {balance ? (balance/1000000000000000000) + ' eth' : '0.00'}&nbsp;&nbsp;&nbsp;&nbsp;
+                        <Popup content='Withdraw Funds' trigger={<Button icon='external square' onClick={() => withdrawEarnings()}/>} />
                     </h2>
                     <br/>
                     <h5 style={{margin:'0px'}}>Users</h5>
@@ -255,6 +274,7 @@ const Publish = () => {
             <Grid.Column width={13}>
                 <div>
                     <h3>Recent Uploaded Content</h3>
+                    <button className="btn btn-warning" id="nft-sendfunds" onClick={() => {doReceiveFunds()}}>Test send funds</button>
                     <hr />
                     <div style={{display:'flex'}}>
                     {allcontent.map((result => {
@@ -274,7 +294,9 @@ const Publish = () => {
                             {result[2] == "image/png" || result[2] == "image/jpg" ? (    
                             <img style={{border:'1px dotted #999', width:'125px',height:'125px', margin:'5px'}} src={result[0]}/>
                         ) : (
-                            <div style={{border:'1px dotted #999',height:'125px',width:'125px'}}><Icon style={{ margin: 'auto', color: 'white'}} name='file outline' size='massive' onClick={() => setOpenmodal(true)}/></div>
+                            <div style={{border:'1px dotted #999',height:'125px',width:'125px'}}>
+                                <Icon style={{ margin: 'auto', color: 'white'}} name='file outline' size='massive' onClick={() => setOpenmodal(true)}/>
+                            </div>
                         )}
                         </div>
                         <p>{result[3]}<br/>
@@ -299,7 +321,9 @@ const Publish = () => {
                                     ) : (
                                         <a rel='noopener noreferrer' target='_blank' href={modalfilehash}>
 
-                                        <div style={{border:'1px dotted #999',height:'125px',width:'125px', margin:'0 auto'}}><Icon style={{ margin: 'auto', color: 'white'}} name='file outline' size='massive' onClick={() => setOpenmodal(true)}/></div>
+                                        <div style={{border:'1px dotted #999',height:'125px',width:'125px', margin:'0 auto'}}>
+                                            <Icon style={{ margin: 'auto', color: 'white'}} name='file outline' size='massive' onClick={() => setOpenmodal(true)}/>
+                                        </div>
                                     </a>
                                     )}
 

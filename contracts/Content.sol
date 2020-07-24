@@ -24,7 +24,10 @@ contract Content {
 
     mapping(address => ContentInfo) public Info;
 
-    constructor(string memory _contentHash, string memory _previewHash, string memory _name, string memory _fileType, bool _free, uint _price) payable public {
+    fallback() external payable {}
+    receive() external payable {}
+
+    constructor(string memory _contentHash, string memory _previewHash, string memory _name, string memory _fileType, bool _free, uint _price) payable public{
         ownerId = msg.sender;
         contractId = address(this);
         Info[contractId].locationHash = _contentHash;
@@ -48,7 +51,7 @@ contract Content {
         );
     }
 
-   function purchaseContent(address _consumer, uint256 _amount) public payable returns (bool) {
+   function purchaseContent(address _consumer, uint256 _amount) payable public returns (bool) {
         require(_amount == Info[contractId].price, 'Amount sent is less than what this content is priced at. Please send the exact amount') ;
         earnings += msg.value;
         contentWhitelist[_consumer] = true;
@@ -71,7 +74,7 @@ contract Content {
     }
 
     function checkPublisherWhitelist(address _consumer) public view returns (bool) {
-        
+
         Publisher(ownerId).getSubscribers();
     }
 
