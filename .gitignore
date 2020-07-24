@@ -2,7 +2,7 @@
 
 # dependencies
 /node_modules
-workspace/node_modules
+frontend/node_modules
 /.pnp
 .pnp.js
 package-lock.json
