@@ -23,14 +23,16 @@ const Publish = () => {
     const [modalfilename, setModalfilename] = useState('');
     const [modalfilehash, setModalfilehash] = useState('');
     const [modalfiletype, setModalfiletype] = useState('');
+    const [modalfiletitle, setModalfiletitle] = useState('');
+    const [modalfiledescription, setModalfiledescription] = useState('');
     const [modalfilepreview, setModalfilepreview] = useState('');
     const [modalfilefee, setModalfilefee] = useState('');
     const [modalfilefree, setModalfilefree] = useState('');
-    const [modaldate, setModaldate] = useState('');
+    const [modalfiledate, setModalfiledate] = useState('');
     const [balance, setBalance] = useState('');
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
-    const [price, setPrice] = useState('');
+    const [price, setPrice] = useState('0');
     const [free, setFree] = useState(true);
 
 
@@ -313,11 +315,13 @@ const Publish = () => {
                             <div onClick={() => {
                             setModalfilehash(result[0]); 
                             setModalfilepreview(result[1]);
-                            setModaldate(result[4]);
-                            setModalfilename(result[3]); 
-                            setModalfiletype(result[2]);
-                            setModalfilefree(result[5]);
-                            setModalfilefee(result[6]);
+                            setModalfiledate(result[6]);
+                            setModalfilename(result[2]); 
+                            setModalfiletype(result[3]);
+                            setModalfilefree(result[7]);
+                            setModalfilefee(result[8]);
+                            setModalfiletitle(result[4]);
+                            setModalfiledescription(result[5]);
                             setOpenmodal(true)
                             }}>
                             {result[2] == "image/png" || result[2] == "image/jpg" ? (    
@@ -340,10 +344,9 @@ const Publish = () => {
                             onClose={() => setOpenmodal(false)}
 
                             >
-                                <Modal.Header style={{backgroundColor:'#666',textAlign:'center',color:"whie"}}>Content Details</Modal.Header>
-                                <Modal.Content  style={{backgroundColor:'#666'}}>
+                                <Modal.Content  style={{backgroundColor:'#999'}}>
                                 <Modal.Description  style={{textAlign:'center'}}>
-                                    {result[2] == "image/png" || result[2] == "image/jpg" ? (    
+                                    {result[3] == "image/png" || result[3] == "image/jpg" ? (    
                                         <a rel='noopener noreferrer' target='_blank' href={modalfilehash}>
                                         <img style={{border:'1px dotted #999', width:'125px',height:'125px', margin:'5px'}} src={result[0]}/>
                                         </a>
@@ -360,13 +363,14 @@ const Publish = () => {
                                     <p style={{fontSize:'18px'}}>Filename: {modalfilename}
                                     <br/>Hash: {modalfilehash}
                                     <br/>Type: {modalfiletype}
+                                    <br/>Title: {modalfiletitle}
+                                    <br/>Desc: {modalfiledescription}
                                     <br/>Uploaded:&nbsp;
                                         <Moment format='MM/DD/YY HH:mm' unix>
-                                        {result[4]}
+                                        {modalfiledate}
                                     </Moment>
-                                    <br/>{result[5] ? "Free content" : "Paid content"}
-                                    <br/>Price: {result[6]}
-                                    <br/>Other?
+                                    <br/>{modalfilefree ? "Free content" : "Paid content"}
+                                    {!modalfilefree ? ("<br/>Price: {modalfilefee}") : ""}
                                     </p>
                                     <Button onClick={() => setOpenmodal(false)}>close</Button>
                                 </Modal.Description>

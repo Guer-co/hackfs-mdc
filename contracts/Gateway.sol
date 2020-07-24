@@ -69,7 +69,7 @@ contract Gateway {
 
     //THESE ARE CONTENT FUNCTIONS// //THESE ARE CONTENT FUNCTIONS// //THESE ARE CONTENT FUNCTIONS//
 
-    function getContentInformation(address payable _publisher, address payable _content) public view returns (string memory, string memory, string memory,string memory, uint, bool, uint)
+    function getContentInformation(address payable _publisher, address payable _content) public view returns (string memory, string memory, string memory,string memory,string memory, string memory,uint, bool, uint)
     {
         return Publisher(_publisher).getContentInformation(_content);
     }

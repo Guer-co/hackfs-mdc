@@ -43,12 +43,14 @@ contract Content {
         Info[contractId].price = _price;
     }
 
-    function getContentDetails() public view returns (string memory, string memory, string memory,string memory, uint, bool, uint) {
+    function getContentDetails() public view returns (string memory, string memory, string memory,string memory, string memory, string memory, uint, bool, uint) {
         return (
             Info[contractId].locationHash,
             Info[contractId].previewHash,
             Info[contractId].name,
             Info[contractId].fileType,
+            Info[contractId].title,
+            Info[contractId].description,
             Info[contractId].date,
             Info[contractId].free,
             Info[contractId].price

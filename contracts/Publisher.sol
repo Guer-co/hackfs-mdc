@@ -116,7 +116,7 @@ contract Publisher {
      * @return All the content contracts associated with the Publisher
      * @return All the content contracts associated with the Publisher
      */
-    function getContentInformation(address payable _contract) public view returns (string memory, string memory, string memory,string memory, uint, bool, uint) {
+    function getContentInformation(address payable _contract) public view returns (string memory, string memory, string memory,string memory, string memory,string memory,uint, bool, uint) {
         return Content(_contract).getContentDetails();
     }
 
