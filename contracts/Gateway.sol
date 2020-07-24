@@ -60,7 +60,7 @@ contract Gateway {
         Publisher(publisherContract[msg.sender]).updateProfile(_name,_email,_logo,_subscriptionCost);
     }
 
-    function withdrawEarnings(uint256 _amount) public
+    function withdrawEarnings() public
     {
         Publisher(publisherContract[msg.sender]).withdrawEarnings();
     }
@@ -74,9 +74,9 @@ contract Gateway {
         return Publisher(_publisher).getContentInformation(_content);
     }
 
-    function createContent(address payable _publisher,string memory _contentHash, string memory _previewHash, string memory _name, string memory _fileType, bool _free, uint256 _price) public
+    function createContent(address payable _publisher,string memory _contentHash, string memory _previewHash, string memory _name, string memory _fileType, string memory _title, string memory _description, bool _free, uint _price) public
     {
-        Publisher(_publisher).createContent(_contentHash, _previewHash, _fileType, _name,_free,_price);
+        Publisher(_publisher).createContent(_contentHash, _previewHash, _name, _fileType, _title, _description, _free, _price);
     }
 
     function getPublisherContracts(address _publisher) public view returns (address[] memory)

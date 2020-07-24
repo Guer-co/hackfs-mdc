@@ -25,7 +25,8 @@ useEffect(() => {
                 const userfetch = await GatewayContractObj.methods.getUserProfile(dapp.address).call({from: dapp.address});
                 if (profilefetch[0] !== "0x0000000000000000000000000000000000000000")
                 {
-                    window.location.href = "/dashboard";
+                    setMyprofile(profilefetch);
+                    setProfilemodal(false);
                 }
                 if (userfetch[0] !== "0x0000000000000000000000000000000000000000") {
                     //console.log(userfetch);

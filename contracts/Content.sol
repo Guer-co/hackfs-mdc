@@ -17,6 +17,8 @@ contract Content {
         string previewHash;
         string name;
         string fileType;
+        string title;
+        string description;
         uint256 date;
         bool free;
         uint256 price;
@@ -27,12 +29,14 @@ contract Content {
     fallback() external payable {}
     receive() external payable {}
 
-    constructor(string memory _contentHash, string memory _previewHash, string memory _name, string memory _fileType, bool _free, uint _price) payable public{
+    constructor(string memory _contentHash, string memory _previewHash, string memory _name, string memory _fileType, string memory _title, string memory _description, bool _free, uint _price) payable public{
         ownerId = msg.sender;
         contractId = address(this);
         Info[contractId].locationHash = _contentHash;
         Info[contractId].previewHash = _previewHash;
         Info[contractId].name = _name;
+        Info[contractId].title = _title;
+        Info[contractId].description = _description;
         Info[contractId].fileType = _fileType;
         Info[contractId].date = now;
         Info[contractId].free = _free;
