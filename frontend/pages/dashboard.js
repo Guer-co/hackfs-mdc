@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useStateValue } from '../state';
 import Layout from '../components/Layout';
-import { Message, Icon, Button, Grid, Modal, Form, Popup } from 'semantic-ui-react';
+import { Message, Icon, Button, Grid, Modal, Form, Popup,Checkbox } from 'semantic-ui-react';
 import Loader from 'react-loader-spinner';
 import GatewayContractObjSetup from '../utils/GatewayConstructor';
 import Moment from 'react-moment';
-
 
 const Publish = () => {
     const [{ dapp }, dispatch] = useStateValue();
@@ -21,29 +20,53 @@ const Publish = () => {
     const [allcontent, setAllcontent] = useState([]);
     const [myprofile, setMyprofile] = useState('');
     const [openmodal,setOpenmodal] = useState(false);
-
+    const [modalfilename, setModalfilename] = useState('');
+    const [modalfilehash, setModalfilehash] = useState('');
+    const [modalfiletype, setModalfiletype] = useState('');
+    const [modalfiletitle, setModalfiletitle] = useState('');
+    const [modalfiledescription, setModalfiledescription] = useState('');
+    const [modalfilepreview, setModalfilepreview] = useState('');
+    const [modalfilefee, setModalfilefee] = useState('');
+    const [modalfilefree, setModalfilefree] = useState('');
+    const [modalfiledate, setModalfiledate] = useState('');
+    const [balance, setBalance] = useState('');
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [price, setPrice] = useState('0');
+    const [free, setFree] = useState(true);
 
 
     const GatewayContractObj = GatewayContractObjSetup(dapp.web3);
 
     useEffect(() => {
-        console.log(filehash);
         const loadProfile = async () => {
             if (dapp.address && myprofile === '') {
+
             const profilefetch = await GatewayContractObj.methods
                 .getPublisherProfile(dapp.address)
-                .call({ from: dapp.address });
-                setMyprofile(profilefetch);
+                .call({ from: dapp.address });setMyprofile(profilefetch);
+                web3.eth.getBalance(profilefetch[0],function(error,result){
+                    if(error){
+                    console.log(error);
+                    }
+                    else{
+                        setBalance(result);
+                        console.log(result);
+                    }
+                })
             }
+
             if (dapp.address && contentarray.length === 0) {
             const contentaddresses = await GatewayContractObj.methods
                 .getPublisherContracts(dapp.address)
                 .call({ from: dapp.address });
+                if (contentaddresses.length > 0) {
                 setContentarray(contentaddresses);
+                }
             }
+            console.log(contentarray);
             if (contentarray.length > 0 && allcontent.length === 0) {
             const contentdetails = async () => {
-                console.log('contentdetails');
                 let temparray = [];
                 for (let i = 0; i < contentarray.length; i++) {
                 await GatewayContractObj.methods
@@ -88,7 +111,7 @@ const Publish = () => {
 
     const addContentToContract = async () => {
         await GatewayContractObj.methods
-        .createContent(myprofile[0], filehash, filepreview, filename, filetype, true, 1)
+        .createContent(myprofile[0], filehash, filepreview, filename, filetype, title, description, true, price)
         .send({ from: dapp.address })
         .then(function (result) {
             console.log(result);
@@ -98,6 +121,29 @@ const Publish = () => {
             console.log(error);
         });
     };
+
+    const withdrawEarnings = async () => {
+        await GatewayContractObj.methods
+        .withdrawEarnings().send({ from: dapp.address })
+        .then(function(result){
+            console.log(result);
+            window.location.reload(false);
+        }).catch(function(error){
+            console.log(error);
+    })
+    };
+
+    const doReceiveFunds = () => {
+            dapp.web3.eth.sendTransaction({
+            to: myprofile[0],
+            from: dapp.address,
+            value:dapp.web3.utils.toWei("0.03", "ether")
+        }, function(error, hash){
+            console.log(error);
+            console.log(hash);
+            window.location.reload(false);
+        });
+    }
 
     //const updateProfile = async () => {
     //};
@@ -176,13 +222,17 @@ const Publish = () => {
                     )
                     ) : (
                         <>
-                            <div id='img'>
-                                <img src={filehash}/>
-                            </div>
+                            {filetype == "image/png" || filetype == "image/jpg" ? (    
+                                <img style={{border:'1px dotted #999', width:'125px',height:'125px', margin:'5px'}} src={filehash} onClick={() => setOpenmodal(true)}/>
+                            ) : (
+                                <div style={{border:'1px dotted #999',height:'125px',width:'125px'}}>
+                                    <Icon style={{ margin: 'auto', color: 'white'}} name='file outline' size='massive' onClick={() => setOpenmodal(true)}/>
+                                </div>
+                            )}
                             <div id='name'>
                                 <strong>Name:</strong> {filename}
                             </div>
-                            <div id='name'>
+                            <div id='hash'>
                                 <strong>IPFS HASH:</strong> {filehash}
                             </div>
                             <div id='link'>
@@ -195,14 +245,12 @@ const Publish = () => {
                                 LINK
                                 </a>
                             </div>
-                            <Button onClick={addContentToContract}>
-                                Publish this content
-                            </Button>
                         </>
                         )}                    
                 </div>
             </Grid.Column>
             <Grid.Column width={6}>
+                {filehash === '' ? (
                 <div style={{borderLeft:'1px solid #999',padding:'25px'}}>
                     <h5 style={{margin:'0px'}}>Payments</h5>
                     <h2 style={{margin:'0px'}}>$111.11 ETH</h2>
@@ -211,16 +259,45 @@ const Publish = () => {
                     <h2 style={{margin:'0px'}}>$222.22 ETH &nbsp;
                     </h2>
                     <br/>
-                    <h5 style={{margin:'0px'}}>Extra $</h5>
-                    <h2 style={{margin:'0px'}}>$1,000&nbsp;&nbsp;&nbsp;&nbsp;
-                        <Popup content='Withdraw Funds' trigger={<Button icon='add' onClick={() => console.log('a')}/>} />
+                    <h5 style={{margin:'0px'}}>Earnings $</h5>
+                    <h2 style={{margin:'0px'}}>
+                        <Icon name="ethereum"/ > {balance ? (balance/1000000000000000000) + ' eth' : '0.00'}&nbsp;&nbsp;&nbsp;&nbsp;
+                        <Popup content='Withdraw Funds' trigger={<Button icon='external square' onClick={() => withdrawEarnings()}/>} />
+                        <button className="btn btn-warning" onClick={() => {doReceiveFunds()}}>Test send $</button>
                     </h2>
                     <br/>
                     <h5 style={{margin:'0px'}}>Users</h5>
                     <h2 style={{margin:'0px'}}>3333 users&nbsp;&nbsp;&nbsp;&nbsp;
-                        <Popup content='View Subscriber Addresses' trigger={<Button icon='add' onClick={() => console.log('b')}/>} />
+                        <Popup content='View Subscriber Addresses' trigger={<Button icon='users' onClick={() => console.log('b')}/>} />
                     </h2>
                 </div>
+                ) : (
+                <div style={{borderLeft:'1px solid #999',padding:'25px',color:'white'}}>
+                    <Form>
+                    <Form.Field>
+                    <label style={{color:'white'}}>Title</label>
+                    <input value={title} onChange={(e) => setTitle(e.target.value)}/>
+                    </Form.Field>
+                    <Form.Field>
+                    <label style={{color:'white'}}>Description</label>
+                    <input value={description} onChange={(e) => setDescription(e.target.value)}/>
+                    </Form.Field>
+                        <Form.Field>
+                        <Form style={{color:'white'}} label='Free' checked={free} onChange={(e) => {setFree(!e.target.checked);}}/>
+                        </Form.Field>
+                        {!free ? (
+                        <Form.Field>
+                        <label style={{color:'white'}}>Price for this content (in Eth)</label>
+                        <input value={price} onChange={(e) => setPrice(e.target.value)}/>                        
+                        </Form.Field>
+                        ) : ('')}
+                    </Form>
+                    <br/><br/>
+                    <Button onClick={addContentToContract}>
+                        Publish this content
+                    </Button>
+                </div>
+                )}
             </Grid.Column>
             <Grid.Column width={3}>
                 <div>
@@ -235,45 +312,73 @@ const Publish = () => {
                         console.log(result);
                         return(
                         <div className='imagebox' key={result[0]}>
-                            {/*<a rel='noopener noreferrer' target='_blank' href={result[0]}>*/}
-                            <div onClick={() => setOpenmodal(true)}><img style={{border:'1px dotted #999', width:'125px',height:'125px', margin:'5px'}} src={result[0]}/></div>
-                            {/*</a>*/}
-                        <p>{result[1]}<br/>
+                            <div onClick={() => {
+                            setModalfilehash(result[0]); 
+                            setModalfilepreview(result[1]);
+                            setModalfiledate(result[6]);
+                            setModalfilename(result[2]); 
+                            setModalfiletype(result[3]);
+                            setModalfilefree(result[7]);
+                            setModalfilefee(result[8]);
+                            setModalfiletitle(result[4]);
+                            setModalfiledescription(result[5]);
+                            setOpenmodal(true)
+                            }}>
+                            {result[3] == "image/png" || result[3] == "image/jpg" ? (    
+                            <img style={{border:'1px dotted #999', width:'125px',height:'125px', margin:'5px'}} src={result[0]}/>
+                        ) : (
+                            <div style={{border:'1px dotted #999',height:'125px',width:'125px'}}>
+                                <Icon style={{ margin: 'auto', color: 'white'}} name='file outline' size='massive' onClick={() => setOpenmodal(true)}/>
+                            </div>
+                        )}
+                        </div>
+                        <p>{result[3]}<br/>
                         <Moment format='MM/DD/YY HH:mm' unix>
-                            {result[2]}
+                            {result[6]}
                         </Moment>
                         </p>
                             <Modal
                             open={openmodal}
                             size="small"
                             closeIcon
-                                onClose={() => setOpenmodal(false)}
+                            onClose={() => setOpenmodal(false)}
 
                             >
-                                <Modal.Header style={{backgroundColor:'#666',textAlign:'center',color:"whie"}}>Content Details</Modal.Header>
-                                <Modal.Content  style={{backgroundColor:'#666'}}>
+                                <Modal.Content  style={{backgroundColor:'#999'}}>
                                 <Modal.Description  style={{textAlign:'center'}}>
-                                    <a rel='noopener noreferrer' target='_blank' href={result[0]}>
-                                    <img style={{border:'1px dotted #999', width:'125px',height:'125px', margin:'5px'}} src={result[0]}/>
+                                    {result[3] == "image/png" || result[3] == "image/jpg" ? (    
+                                        <a rel='noopener noreferrer' target='_blank' href={modalfilehash}>
+                                        <img style={{border:'1px dotted #999', width:'125px',height:'125px', margin:'5px'}} src={result[0]}/>
+                                        </a>
+                                    ) : (
+                                        <a rel='noopener noreferrer' target='_blank' href={modalfilehash}>
+
+                                        <div style={{border:'1px dotted #999',height:'125px',width:'125px', margin:'0 auto'}}>
+                                            <Icon style={{ margin: 'auto', color: 'white'}} name='file outline' size='massive' onClick={() => setOpenmodal(true)}/>
+                                        </div>
                                     </a>
+                                    )}
+
                                     <br/>
-                                    <p style={{fontSize:'18px'}}>Filename: {result[1]}</p>
-                                    <p style={{fontSize:'18px'}}>Uploaded:&nbsp;
+                                    <p style={{fontSize:'18px'}}>Filename: {modalfilename}
+                                    <br/>Hash: {modalfilehash}
+                                    <br/>Type: {modalfiletype}
+                                    <br/>Title: {modalfiletitle}
+                                    <br/>Desc: {modalfiledescription}
+                                    <br/>Uploaded:&nbsp;
                                         <Moment format='MM/DD/YY HH:mm' unix>
-                                        {result[2]}
-                                    </Moment></p>
-                                    <p style={{fontSize:'18px'}}>{result[3] ? "Free content" : "Paid content"}</p>
-                                    <p style={{fontSize:'18px'}}>Price: {result[4]}</p>
-
-
-                                    <Button>shrug_emoji</Button>
+                                        {modalfiledate}
+                                    </Moment>
+                                    <br/>{modalfilefree ? "Free content" : "Paid content"}
+                                    {!modalfilefree ? ("<br/>Price: {modalfilefee}") : ""}
+                                    </p>
+                                    <Button onClick={() => setOpenmodal(false)}>close</Button>
                                 </Modal.Description>
                                 </Modal.Content>
                             </Modal>
                         </div>
                         )
                     }))}
-                    <div style={{border:'1px dotted #999', width:'140px',height:'100px', margin:'5px'}}>image here that links to the content on IPFS</div>
                     </div>
                 </div>
             </Grid.Column>

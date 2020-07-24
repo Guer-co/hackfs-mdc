@@ -10,10 +10,10 @@ contract Publisher {
     address ownerAddress;
     address publisherAddress;
     string name;
+    uint256 balance;
     string email;
     string logo;
     uint256 subscriptionCost;
-    uint256 balance;
     uint numberSubscribers;
     address[] subscriberList;
     uint createdDate;
@@ -22,7 +22,10 @@ contract Publisher {
     mapping(address => uint256) subscriberTimestamp;
     mapping(address => bool) subscribers;
 
-    constructor(string memory _name, string memory _email, string memory _logo, uint256 _subscriptionCost) public {
+    fallback() external payable {}
+    receive() external payable {}
+
+    constructor(string memory _name, string memory _email, string memory _logo, uint256 _subscriptionCost) public payable{
         publisherAddress = address(this);
         ownerAddress = msg.sender;
         name = _name;
@@ -57,8 +60,7 @@ contract Publisher {
      * @notice Get the content contracts of a Publisher
      * @return All the content contracts associated with the Publisher
      */
-    function getContentContracts() public view returns (address[] memory)
-    {
+    function getContentContracts() public view returns (address[] memory) {
         return contentContracts;
     }
 
@@ -74,7 +76,7 @@ contract Publisher {
      * @notice Add a subscriber to the publisher
      * @param _subscriber Subscribers's address
     */
-    function addSubscriber(address _subscriber, uint256 _amount) public payable {
+    function addSubscriber(address _subscriber, uint256 _amount) public payable{
         require(
             _amount == subscriptionCost,
             "Amount sent is less than the publishers subscription cost."
@@ -85,17 +87,12 @@ contract Publisher {
         subscriberTimestamp[_subscriber] = now;
     }
 
-    function withdrawEarnings(uint256 _amount) public {
+    function withdrawEarnings() public payable {
         require(
             msg.sender == ownerAddress,
             "You are unauthorized to withdraw funds from this publishers account"
         );
-        require(
-            _amount <= balance,
-            "The amount you are trying to withdraw exceeds your subscription earnings"
-        );
-        balance = balance.sub(_amount);
-        (msg.sender).transfer(_amount);
+        (msg.sender).transfer(msg.value);
     }
 
     ////// ******* Here we start to write functions that interact with the Content.sol ******* //////
@@ -108,9 +105,10 @@ contract Publisher {
      * @param _fileType Type of file
      * @param _free Free or Paid
      */
-    function createContent(string memory _contentHash, string memory _previewHash, string memory _name, string memory _fileType, bool _free, uint _price) public {
+    function createContent(string memory _contentHash, string memory _previewHash, string memory _name, string memory _fileType, bool _free, uint _price) public payable returns (address) {
         Content contractId = new Content(_contentHash, _previewHash, _name, _fileType, _free, _price);
         contentContracts.push(address(contractId));
+        return address(contractId);
     }
 
     /**
@@ -119,7 +117,7 @@ contract Publisher {
      * @return All the content contracts associated with the Publisher
      * @return All the content contracts associated with the Publisher
      */
-    function getContentInformation(address payable _contract) public view returns (string memory, string memory, string memory,string memory, uint, bool, uint) {
+    function getContentInformation(address payable _contract) public view returns (string memory, string memory, string memory,string memory, string memory,string memory,uint, bool, uint) {
         return Content(_contract).getContentDetails();
     }
 
