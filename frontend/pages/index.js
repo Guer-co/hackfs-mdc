@@ -46,7 +46,7 @@ const createPublisherProfile = async () => {
         });
         });
     setOpenmodal(false);
-    window.location.reload(false);
+    window.location("/dashboard");
 };
   
   return (

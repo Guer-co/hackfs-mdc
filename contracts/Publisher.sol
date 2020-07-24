@@ -15,12 +15,12 @@ contract Publisher {
     uint256 subscriptionCost;
     uint256 balance;
     uint numberSubscribers;
-    address[] subscribers;
+    address[] subscriberList;
     uint createdDate;
     address[] contentContracts;
 
     mapping(address => uint256) subscriberTimestamp;
-    mapping(address => address[]) userWhitelist;
+    mapping(address => bool) subscribers;
 
     constructor(string memory _name, string memory _email, string memory _logo, uint256 _subscriptionCost) public {
         publisherAddress = address(this);
@@ -67,7 +67,7 @@ contract Publisher {
     * @return All the subscribers to your content
     */
     function getSubscribers() public view returns (address[] memory) {
-        return subscribers;
+        return subscriberList;
     }
 
     /**
@@ -80,7 +80,8 @@ contract Publisher {
             "Amount sent is less than the publishers subscription cost."
         );
         balance += msg.value;
-        subscribers.push(_subscriber);
+        subscriberList.push(_subscriber);
+        subscribers[_subscriber] = true;
         subscriberTimestamp[_subscriber] = now;
     }
 
@@ -101,12 +102,14 @@ contract Publisher {
 
     /**
      * @notice Create a new Content Contract
-     * @param _contentHash The hash of the content (IPFS / FIlecoin)
+     * @param _contentHash The public hash of the content (IPFS / FIlecoin)
+     * @param _previewHash Encrypted hash of content
      * @param _name Content title
-     * @param _paid Free or Paid
+     * @param _fileType Type of file
+     * @param _free Free or Paid
      */
-    function createContent(string memory _contentHash, string memory _name, bool _paid, uint256 _price) public {
-        Content contractId = new Content(_contentHash, _name, _paid, _price);
+    function createContent(string memory _contentHash, string memory _previewHash, string memory _name, string memory _fileType, bool _free, uint _price) public {
+        Content contractId = new Content(_contentHash, _previewHash, _name, _fileType, _free, _price);
         contentContracts.push(address(contractId));
     }
 
@@ -116,7 +119,7 @@ contract Publisher {
      * @return All the content contracts associated with the Publisher
      * @return All the content contracts associated with the Publisher
      */
-    function getContentInformation(address payable _contract) public view returns (string memory, string memory, uint, bool, uint) {
+    function getContentInformation(address payable _contract) public view returns (string memory, string memory, string memory,string memory, uint, bool, uint) {
         return Content(_contract).getContentDetails();
     }
 

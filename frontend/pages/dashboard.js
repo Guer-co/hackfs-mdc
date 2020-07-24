@@ -13,6 +13,8 @@ const Publish = () => {
     //const [file, setFile] = useState('');
     const [filename, setFilename] = useState('');
     const [filehash, setFilehash] = useState('');
+    const [filetype, setFiletype] = useState('');
+    const [filepreview, setFilepreview] = useState('');
     const [errorMessage, setError] = useState('');
     const [mycontracts, setMycontracts] = useState('');
     const [contentarray, setContentarray] = useState([]);
@@ -25,6 +27,7 @@ const Publish = () => {
     const GatewayContractObj = GatewayContractObjSetup(dapp.web3);
 
     useEffect(() => {
+        console.log(filehash);
         const loadProfile = async () => {
             if (dapp.address && myprofile === '') {
             const profilefetch = await GatewayContractObj.methods
@@ -62,8 +65,11 @@ const Publish = () => {
         setLoading(true);
         const data = new FormData();
         const file = document.getElementById('data_file').files[0];
+        console.log(file);
         data.append('file', file);
         setFilename(file.name);
+        setFiletype(file.type);
+
         fetch('http://localhost:8888/api/ipfs', {
         body: data,
         method: 'POST'
@@ -72,17 +78,17 @@ const Publish = () => {
         .then((res) => {
             console.log(res);
             setFilehash(res);
+            setFilepreview(res);
             setLoading(false);
         })
         .catch((err) => {
             setError(err.message);
-            setTimeout(() => setError(''), 3000);
         });
     };
 
     const addContentToContract = async () => {
         await GatewayContractObj.methods
-        .createContent(myprofile[0], filehash, filename, true, 1)
+        .createContent(myprofile[0], filehash, filepreview, filename, filetype, true, 1)
         .send({ from: dapp.address })
         .then(function (result) {
             console.log(result);
@@ -93,8 +99,8 @@ const Publish = () => {
         });
     };
 
-    const updateProfile = async () => {
-    };
+    //const updateProfile = async () => {
+    //};
 
     return (
         <Layout style={{ backgroundColor: '#041727' }}>

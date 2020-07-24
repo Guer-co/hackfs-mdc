@@ -55,14 +55,14 @@ contract Gateway {
 
     //THESE ARE CONTENT FUNCTIONS// //THESE ARE CONTENT FUNCTIONS// //THESE ARE CONTENT FUNCTIONS//
 
-    function getContentInformation(address payable _publisher, address payable _content) public view returns (string memory, string memory, uint, bool, uint)
+    function getContentInformation(address payable _publisher, address payable _content) public view returns (string memory, string memory, string memory,string memory, uint, bool, uint)
     {
         return Publisher(_publisher).getContentInformation(_content);
     }
 
-    function createContent(address payable _publisher,string memory _contentHash, string memory _name, bool _paid, uint256 _price) public
+    function createContent(address payable _publisher,string memory _contentHash, string memory _previewHash, string memory _name, string memory _fileType, bool _free, uint256 _price) public
     {
-        Publisher(_publisher).createContent(_contentHash,_name,_paid,_price);
+        Publisher(_publisher).createContent(_contentHash, _previewHash, _fileType, _name,_free,_price);
     }
 
     function getPublisherContracts(address _publisher) public view returns (address[] memory)
