@@ -62,7 +62,7 @@ contract Gateway {
 
     function withdrawEarnings(uint256 _amount) public
     {
-        Publisher(publisherContract[msg.sender]).withdrawEarnings(_amount);
+        Publisher(publisherContract[msg.sender]).withdrawEarnings();
     }
 
     /**********************************************************************************************/
