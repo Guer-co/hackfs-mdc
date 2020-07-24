@@ -65,7 +65,7 @@ contract Gateway {
         Publisher(publisherContract[msg.sender]).updateProfile(_name,_email,_logo,_subscriptionCost);
     }
 
-    function withdrawEarnings(uint256 _amount) public
+    function withdrawEarnings() public
     {
         Publisher(publisherContract[msg.sender]).withdrawEarnings();
     }
@@ -74,12 +74,12 @@ contract Gateway {
 
     //THESE ARE CONTENT FUNCTIONS// //THESE ARE CONTENT FUNCTIONS// //THESE ARE CONTENT FUNCTIONS//
 
-    function getContentInformation(address payable _publisher, address payable _content) public view returns (string memory, string memory, string memory,string memory, uint, bool, uint)
+    function getContentInformation(address payable _publisher, address payable _content) public view returns (string memory, string memory, string memory,string memory,string memory, string memory,uint, bool, uint)
     {
         return Publisher(_publisher).getContentInformation(_content);
     }
 
-    function createContent(address payable _publisher,string memory _contentHash, string memory _previewHash, string memory _name, string memory _fileType, bool _free, uint256 _price) public
+    function createContent(address payable _publisher,string memory _contentHash, string memory _previewHash, string memory _name, string memory _fileType, string memory _title, string memory _description, bool _free, uint _price) public
     {
         address contractId = Publisher(_publisher).createContent(_contentHash, _previewHash, _fileType, _name,_free,_price);
         contentContracts.push(address(contractId));

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useStateValue } from '../state';
 import Layout from '../components/Layout';
-import { Message, Icon, Button, Grid, Modal, Form, Popup } from 'semantic-ui-react';
+import { Message, Icon, Button, Grid, Modal, Form, Popup,Checkbox } from 'semantic-ui-react';
 import Loader from 'react-loader-spinner';
 import GatewayContractObjSetup from '../utils/GatewayConstructor';
 import Moment from 'react-moment';
@@ -23,11 +23,18 @@ const Publish = () => {
     const [modalfilename, setModalfilename] = useState('');
     const [modalfilehash, setModalfilehash] = useState('');
     const [modalfiletype, setModalfiletype] = useState('');
+    const [modalfiletitle, setModalfiletitle] = useState('');
+    const [modalfiledescription, setModalfiledescription] = useState('');
     const [modalfilepreview, setModalfilepreview] = useState('');
     const [modalfilefee, setModalfilefee] = useState('');
     const [modalfilefree, setModalfilefree] = useState('');
-    const [modaldate, setModaldate] = useState('');
+    const [modalfiledate, setModalfiledate] = useState('');
     const [balance, setBalance] = useState('');
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [price, setPrice] = useState('0');
+    const [free, setFree] = useState(true);
+
 
     const GatewayContractObj = GatewayContractObjSetup(dapp.web3);
 
@@ -104,7 +111,7 @@ const Publish = () => {
 
     const addContentToContract = async () => {
         await GatewayContractObj.methods
-        .createContent(myprofile[0], filehash, filepreview, filename, filetype, true, 1)
+        .createContent(myprofile[0], filehash, filepreview, filename, filetype, title, description, true, price)
         .send({ from: dapp.address })
         .then(function (result) {
             console.log(result);
@@ -117,8 +124,7 @@ const Publish = () => {
 
     const withdrawEarnings = async () => {
         await GatewayContractObj.methods
-        .withdrawEarnings(balance.c[0]).send({ from: dapp.address })
-        .then(console.log('submitted'))
+        .withdrawEarnings().send({ from: dapp.address })
         .then(function(result){
             console.log(result);
             window.location.reload(false);
@@ -239,14 +245,12 @@ const Publish = () => {
                                 LINK
                                 </a>
                             </div>
-                            <Button onClick={addContentToContract}>
-                                Publish this content
-                            </Button>
                         </>
                         )}                    
                 </div>
             </Grid.Column>
             <Grid.Column width={6}>
+                {filehash === '' ? (
                 <div style={{borderLeft:'1px solid #999',padding:'25px'}}>
                     <h5 style={{margin:'0px'}}>Payments</h5>
                     <h2 style={{margin:'0px'}}>$111.11 ETH</h2>
@@ -259,6 +263,7 @@ const Publish = () => {
                     <h2 style={{margin:'0px'}}>
                         <Icon name="ethereum"/ > {balance ? (balance/1000000000000000000) + ' eth' : '0.00'}&nbsp;&nbsp;&nbsp;&nbsp;
                         <Popup content='Withdraw Funds' trigger={<Button icon='external square' onClick={() => withdrawEarnings()}/>} />
+                        <button className="btn btn-warning" onClick={() => {doReceiveFunds()}}>Test send $</button>
                     </h2>
                     <br/>
                     <h5 style={{margin:'0px'}}>Users</h5>
@@ -266,6 +271,33 @@ const Publish = () => {
                         <Popup content='View Subscriber Addresses' trigger={<Button icon='users' onClick={() => console.log('b')}/>} />
                     </h2>
                 </div>
+                ) : (
+                <div style={{borderLeft:'1px solid #999',padding:'25px',color:'white'}}>
+                    <Form>
+                    <Form.Field>
+                    <label style={{color:'white'}}>Title</label>
+                    <input value={title} onChange={(e) => setTitle(e.target.value)}/>
+                    </Form.Field>
+                    <Form.Field>
+                    <label style={{color:'white'}}>Description</label>
+                    <input value={description} onChange={(e) => setDescription(e.target.value)}/>
+                    </Form.Field>
+                        <Form.Field>
+                        <Checkbox style={{color:'white'}} label='Free' checked={free} onChange={(e) => {setFree(!e.target.value);console.log(free);}}/>
+                        </Form.Field>
+                        {!free ? (
+                        <Form.Field>
+                        <label style={{color:'white'}}>Price for this content (in Eth)</label>
+                        <input value={price} onChange={(e) => setPrice(e.target.value)}/>                        
+                        </Form.Field>
+                        ) : ('')}
+                    </Form>
+                    <br/><br/>
+                    <Button onClick={addContentToContract}>
+                        Publish this content
+                    </Button>
+                </div>
+                )}
             </Grid.Column>
             <Grid.Column width={3}>
                 <div>
@@ -274,7 +306,6 @@ const Publish = () => {
             <Grid.Column width={13}>
                 <div>
                     <h3>Recent Uploaded Content</h3>
-                    <button className="btn btn-warning" id="nft-sendfunds" onClick={() => {doReceiveFunds()}}>Test send funds</button>
                     <hr />
                     <div style={{display:'flex'}}>
                     {allcontent.map((result => {
@@ -284,11 +315,13 @@ const Publish = () => {
                             <div onClick={() => {
                             setModalfilehash(result[0]); 
                             setModalfilepreview(result[1]);
-                            setModaldate(result[4]);
-                            setModalfilename(result[3]); 
-                            setModalfiletype(result[2]);
-                            setModalfilefree(result[5]);
-                            setModalfilefee(result[6]);
+                            setModalfiledate(result[6]);
+                            setModalfilename(result[2]); 
+                            setModalfiletype(result[3]);
+                            setModalfilefree(result[7]);
+                            setModalfilefee(result[8]);
+                            setModalfiletitle(result[4]);
+                            setModalfiledescription(result[5]);
                             setOpenmodal(true)
                             }}>
                             {result[2] == "image/png" || result[2] == "image/jpg" ? (    
@@ -311,10 +344,9 @@ const Publish = () => {
                             onClose={() => setOpenmodal(false)}
 
                             >
-                                <Modal.Header style={{backgroundColor:'#666',textAlign:'center',color:"whie"}}>Content Details</Modal.Header>
-                                <Modal.Content  style={{backgroundColor:'#666'}}>
+                                <Modal.Content  style={{backgroundColor:'#999'}}>
                                 <Modal.Description  style={{textAlign:'center'}}>
-                                    {result[2] == "image/png" || result[2] == "image/jpg" ? (    
+                                    {result[3] == "image/png" || result[3] == "image/jpg" ? (    
                                         <a rel='noopener noreferrer' target='_blank' href={modalfilehash}>
                                         <img style={{border:'1px dotted #999', width:'125px',height:'125px', margin:'5px'}} src={result[0]}/>
                                         </a>
@@ -331,13 +363,14 @@ const Publish = () => {
                                     <p style={{fontSize:'18px'}}>Filename: {modalfilename}
                                     <br/>Hash: {modalfilehash}
                                     <br/>Type: {modalfiletype}
+                                    <br/>Title: {modalfiletitle}
+                                    <br/>Desc: {modalfiledescription}
                                     <br/>Uploaded:&nbsp;
                                         <Moment format='MM/DD/YY HH:mm' unix>
-                                        {result[4]}
+                                        {modalfiledate}
                                     </Moment>
-                                    <br/>{result[5] ? "Free content" : "Paid content"}
-                                    <br/>Price: {result[6]}
-                                    <br/>Other?
+                                    <br/>{modalfilefree ? "Free content" : "Paid content"}
+                                    {!modalfilefree ? ("<br/>Price: {modalfilefee}") : ""}
                                     </p>
                                     <Button onClick={() => setOpenmodal(false)}>close</Button>
                                 </Modal.Description>
