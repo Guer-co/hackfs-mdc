@@ -73,13 +73,14 @@ func Run(node *libp2pnode.Node, serverAddrInfo *peer.AddrInfo) {
 		if err != nil {
 			logger.Errorf("ioutil.ReadAll failed: %+v", err)
 			c.JSON(http.StatusInternalServerError, err)
+			return
 		}
 		logger.Infof("len(fileBytes): %+v", len(fileBytes))
 
 		uploadData := pb.UploadData{
 			OwnerId:              "testowner01",
 			FileName:             header.Filename,
-			FileType:             "image",
+			FileType:             "",
 			FileSize:             int64(len(fileBytes)),
 			Description:          "test01",
 			FileBytes:            fileBytes,
@@ -90,20 +91,21 @@ func Run(node *libp2pnode.Node, serverAddrInfo *peer.AddrInfo) {
 		if err != nil {
 			logger.Error(commontools.Errorf(err, "node.UploadTo failed"))
 			c.JSON(http.StatusInternalServerError, err)
-		} else {
-			logger.Infof("msgId: %+v, waiting for response", msgId)
-			//c.JSON(http.StatusOK, cid)
-
-			//TODO check if msgId match
-			resp := <-node.UploadResponseCh
-			logger.Infof("received response: %+v", resp)
-
-			if resp.ResponseData.Code != http.StatusOK {
-				c.JSON(int(resp.ResponseData.Code), resp.ResponseData.Err)
-			} else {
-				c.JSON(int(resp.ResponseData.Code), resp.ContentData.PreviewUrl)
-			}
+			return
 		}
+
+		logger.Infof("msgId: %+v, waiting for response", msgId)
+
+		//TODO check if msgId match
+		resp := <-node.UploadResponseCh
+		logger.Infof("received response: %+v", resp)
+
+		if resp.ResponseData.Code != http.StatusOK {
+			c.JSON(int(resp.ResponseData.Code), resp.ResponseData.Err)
+			return
+		}
+		c.JSON(int(resp.ResponseData.Code), resp.ContentData.PreviewUrl)
+		return
 	})
 
 	/*
@@ -119,6 +121,7 @@ func Run(node *libp2pnode.Node, serverAddrInfo *peer.AddrInfo) {
 			err := commontools.Errorf(nil, "invalid input")
 			logger.Errorf("%+v", err)
 			c.JSON(http.StatusInternalServerError, err)
+			return
 		}
 
 		downloadData := pb.DownloadData{
@@ -131,25 +134,21 @@ func Run(node *libp2pnode.Node, serverAddrInfo *peer.AddrInfo) {
 		if err != nil {
 			logger.Error(commontools.Errorf(err, "node.DownloadFrom failed"))
 			c.JSON(http.StatusInternalServerError, err)
-		} else {
-			logger.Infof("msgId: %+v, waiting for response", msgId)
-
-			//TODO check if msgId match
-			resp := <-node.DownloadResponseCh
-			logger.Infof("received response: %+v", resp.ResponseData)
-
-			if resp.ResponseData.Code != http.StatusOK {
-				c.JSON(int(resp.ResponseData.Code), resp.ResponseData.Err)
-			} else {
-				c.JSON(int(resp.ResponseData.Code), resp)
-			}
+			return
 		}
-	})
 
-	router.POST("/api/encrypt", func(c *gin.Context) {
-	})
+		logger.Infof("msgId: %+v, waiting for response", msgId)
 
-	router.POST("/api/decrypt", func(c *gin.Context) {
+		//TODO check if msgId match
+		resp := <-node.DownloadResponseCh
+		logger.Infof("received response: %+v", resp.ResponseData)
+
+		if resp.ResponseData.Code != http.StatusOK {
+			c.JSON(int(resp.ResponseData.Code), resp.ResponseData.Err)
+			return
+		}
+		c.JSON(int(resp.ResponseData.Code), resp)
+		return
 	})
 
 	logger.Infof("httpproxy running at :8888")
