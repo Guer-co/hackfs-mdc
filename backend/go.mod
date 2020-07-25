@@ -19,6 +19,7 @@ require (
 	github.com/oklog/ulid v1.3.1
 	github.com/onsi/ginkgo v1.12.1
 	github.com/onsi/gomega v1.9.0
+	github.com/singyiu/goffmpeg v0.0.4
 	github.com/textileio/go-threads v0.1.23
 	github.com/textileio/textile v1.0.13
 	github.com/whyrusleeping/go-logging v0.0.1

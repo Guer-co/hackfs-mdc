@@ -6,6 +6,7 @@ import (
 	pb "github.com/Guer-co/hackfs-mdc/backend/pkg/libp2pnode/pb"
 	"github.com/Guer-co/hackfs-mdc/backend/pkg/textilehelper"
 	"github.com/Guer-co/hackfs-mdc/backend/pkg/tools/imagepreview"
+	"github.com/Guer-co/hackfs-mdc/backend/pkg/tools/videopreview"
 	"github.com/zRedShift/mimemagic"
 )
 
@@ -31,6 +32,15 @@ func GenerateImagePreviewFrom(data *pb.UploadData) (string, string, error) {
 	return url, "image", err
 }
 
+func GenerateVideoPreviewFrom(data *pb.UploadData) (string, string, error) {
+	previewBytes, err := videopreview.GetGifFromBytes(data.FileBytes, data.FileName)
+	if err != nil {
+		return "", data.FileType, commontools.Errorf(err, "videopreview.GetGifFromBytes failed")
+	}
+	url, err := GeneratePreviewFrom(data.OwnerId+"."+commontools.GetUlid().String(), "preview.gif", previewBytes)
+	return url, "video", err
+}
+
 //return previewUrl, fileType, err
 func GetPreviewFrom(data *pb.UploadData) (string, string, error) {
 	//skip generating preview if the GeneratePreview field is false
@@ -49,6 +59,8 @@ func GetPreviewFrom(data *pb.UploadData) (string, string, error) {
 		switch data.FileType {
 		case "image":
 			return GenerateImagePreviewFrom(data)
+		case "video":
+			return GenerateVideoPreviewFrom(data)
 		}
 	}
 
@@ -59,7 +71,7 @@ func GetPreviewFrom(data *pb.UploadData) (string, string, error) {
 	case "image":
 		return GenerateImagePreviewFrom(data)
 	case "video":
-		fmt.Println("This is a video file.")
+		return GenerateVideoPreviewFrom(data)
 	case "audio":
 		fmt.Println("This is an audio file.")
 	case "application":

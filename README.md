@@ -30,6 +30,9 @@ S.I.M.P.L.E. is :  **S**ervices for **I**nformation and **M**edia **P**ayments, 
 Install protoc
 https://github.com/protocolbuffers/protobuf/releases/tag/v3.12.3
 
+Install ffmpeg
+https://ffmpeg.org/download.html
+
 ENV
 ```
 export TEXTILE_HUB_USER_KEY=XXX
@@ -63,6 +66,11 @@ On another terminal
 ```
 curl -X POST http://localhost:8888/api/ipfs \
 	  -F "file=@../../pkg/textilehelper/test01.png" \
+	  -H "Content-Type: multipart/form-data"
+```
+```
+curl -X POST http://localhost:8888/api/ipfs \
+	  -F "file=@../../pkg/tools/samplemedia/testVideo01.mov" \
 	  -H "Content-Type: multipart/form-data"
 ```
 
