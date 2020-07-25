@@ -14,6 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "buffer": "^5.6.0",
+    "ethereum-ens": "^0.8.0",
     "ipfs-http-client": "^44.3.0",
     "moment": "^2.27.0",
     "next": "^9.4.4",

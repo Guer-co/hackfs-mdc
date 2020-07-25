@@ -5,9 +5,12 @@ import { Menu, Message, Icon } from 'semantic-ui-react';
 import MiningIndicator from './MiningIndicator';
 import addrShortener from '../utils/addrShortener';
 import web3 from '../utils/getWeb3';
+import ENS from 'ethereum-ens';
+// import ensLookup from '../utils/ensLookup';
 
 const Header = () => {
   const [{ dapp }, dispatch] = useStateValue();
+  const [ensName, setName] = useState(null);
   const [errorMessage, setError] = useState('');
 
   useEffect(() => {
@@ -33,6 +36,13 @@ const Header = () => {
             type: 'SET_BALANCE',
             payload: balance
           });
+          const ens = new ENS(ethereum);
+          let name = await ens.reverse(address).name();
+          // Check to be sure the reverse record is correct.
+          if (address != (await ens.resolver(name).addr())) {
+            name = null;
+          }
+          setName(name);
         }
         // refreshes the dapp when a different address is selected in metamask
         ethereum.on('accountsChanged', (accounts) => {
@@ -57,7 +67,7 @@ const Header = () => {
   }, [dapp.address]);
 
   const handleSignInClick = async () => {
-    console.log()
+    console.log();
     try {
       let [address] = await ethereum.enable();
       dispatch({
@@ -74,21 +84,27 @@ const Header = () => {
     <>
       <Menu style={{ marginTop: '10px' }}>
         <Link href='/'>
-          <a href="/">
-            <Menu.Item><Icon name="home"/></Menu.Item>
+          <a href='/'>
+            <Menu.Item>
+              <Icon name='home' />
+            </Menu.Item>
           </a>
         </Link>
         <Menu.Menu position='right'>
           <Menu.Item onClick={handleSignInClick} onKeyUp={handleSignInClick}>
-            {dapp.address === undefined
-              ? <div><Icon name="ethereum"/ > Connect Wallet</div>
-              : addrShortener(dapp.address)}
+            {dapp.address === undefined ? (
+              <div>
+                <Icon name='ethereum' /> Connect Wallet
+              </div>
+            ) : ensName !== null ? (
+              ensName
+            ) : (
+              addrShortener(dapp.address)
+            )}
           </Menu.Item>
         </Menu.Menu>
       </Menu>
-      {errorMessage && (
-        <Message error header="Oops!" content={errorMessage} />
-      )}
+      {errorMessage && <Message error header='Oops!' content={errorMessage} />}
       {dapp.currentlyMining && (
         <div className='mining-state'>
           <span>Mining... &nbsp;</span>
