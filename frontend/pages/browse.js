@@ -13,7 +13,7 @@ import {
 import GatewayObjSetup from '../utils/GatewayConstructor';
 
 const Browse = () => {
-  const [{ dapp }, dispatch] = u  seStateValue();
+  const [{ dapp }, dispatch] = useStateValue();
   const [loading, setLoading] = useState(false);
   const [errorMessage, setError] = useState('');
   const [myprofile, setMyprofile] = useState('');
