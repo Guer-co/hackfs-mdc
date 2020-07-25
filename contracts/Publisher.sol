@@ -105,8 +105,8 @@ contract Publisher {
      * @param _fileType Type of file
      * @param _free Free or Paid
      */
-    function createContent(string memory _contentHash, string memory _previewHash, string memory _name, string memory _fileType, bool _free, uint _price) public payable returns (address) {
-        Content contractId = new Content(_contentHash, _previewHash, _name, _fileType, _free, _price);
+    function createContent(string memory _contentHash, string memory _previewHash, string memory _name, string memory _fileType, string memory _title, string memory _description, bool _free, uint _price) public payable returns (address) {
+        Content contractId = new Content(_contentHash, _previewHash, _name, _fileType, _title, _description, _free, _price);
         contentContracts.push(address(contractId));
         return address(contractId);
     }
