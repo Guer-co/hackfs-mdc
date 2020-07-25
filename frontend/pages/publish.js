@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useStateValue } from '../state';
 import Layout from '../components/Layout';
-import {  Message, Icon, Button, Grid,Modal,Form  } from 'semantic-ui-react';
+import { Message, Icon, Button, Grid, Modal, Form } from 'semantic-ui-react';
 import Loader from 'react-loader-spinner';
 import buffer from 'buffer';
 import GatewayObjSetup from '../utils/GatewayConstructor';
@@ -16,15 +16,15 @@ const Publish = () => {
   const [mycontract, setMycontract] = useState('');
   const [contentcount, setContentcount] = useState(0);
   const [allcontent, setAllcontent] = useState([]);
-  const [name,setName] = useState('');
-  const [email,setEmail] = useState('');
-  const [logo,setLogo] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [logo, setLogo] = useState('');
 
   const GatewayContractObj = GatewayObjSetup(dapp.web3);
 
   useEffect(() => {
     const loadPublisherData = async () => {
-      try {        
+      try {
         if (dapp.address && mycontract === '') {
           const contractfetch = await GatewayContractObj.methods
             .getPublisherContracts(dapp.address)
@@ -33,32 +33,32 @@ const Publish = () => {
             setMycontract(contractfetch[0]);
           }
         }
-         if (dapp.address && mycontract && allcontent.length === 0) {
-           const contentcount = await GatewayContractObj.methods
-             .doGetContentCount(mycontract)
-             .call({ from: dapp.address });
-           setContentcount(contentcount);
-         }
-         if (contentcount > 0) {
-           //finally, lets read and dump any uploaded content into the console. This should be used on the 'dashboard' page that doesn't exist yet.
-           //(this works, but I think you have to upload 2 pieces of data before it starts returning results --- need to review =( --- probably an issue in the smart contract
-           const contentdetails = async () => {
-             let temparray = [];
-             for (let i = 1; i < contentcount; i++) {
-               await GatewayContractObj.methods
-                 .doGetContent(mycontract, i)
-                 .call({ from: dapp.address })
-                 .then(function (result) {
-                   if (result[0].length > 0) {
-                     console.log(result);
-                     temparray.push(result);
-                   }
-                 });
-             }
-             setAllcontent(temparray);
-           };
-           contentdetails();
-         }
+        if (dapp.address && mycontract && allcontent.length === 0) {
+          const contentcount = await GatewayContractObj.methods
+            .doGetContentCount(mycontract)
+            .call({ from: dapp.address });
+          setContentcount(contentcount);
+        }
+        if (contentcount > 0) {
+          //finally, lets read and dump any uploaded content into the console. This should be used on the 'dashboard' page that doesn't exist yet.
+          //(this works, but I think you have to upload 2 pieces of data before it starts returning results --- need to review =( --- probably an issue in the smart contract
+          const contentdetails = async () => {
+            let temparray = [];
+            for (let i = 1; i < contentcount; i++) {
+              await GatewayContractObj.methods
+                .doGetContent(mycontract, i)
+                .call({ from: dapp.address })
+                .then(function (result) {
+                  if (result[0].length > 0) {
+                    console.log(result);
+                    temparray.push(result);
+                  }
+                });
+            }
+            setAllcontent(temparray);
+          };
+          contentdetails();
+        }
         loadPublisherData();
       } catch (err) {
         setError(err.message);
@@ -92,7 +92,7 @@ const Publish = () => {
   const createPublisherProfile = async () => {
     try {
       await GatewayContractObj.methods
-        .updatePublisherProfile(name,email,logo)
+        .updatePublisherProfile(name, email, logo)
         .send({ from: dapp.address })
         .on('transactionHash', (hash) => {
           dispatch({
@@ -137,29 +137,42 @@ const Publish = () => {
             mycontract === undefined ||
             mycontract.length === 0 ? (
               <>
-                <h3>1. Create your publisher profile so you can start to upload content</h3>
+                <h3>
+                  1. Create your publisher profile so you can start to upload
+                  content
+                </h3>
                 <br />
                 <div>
                   First, a prompt if you don't already have publisher profile.
                 </div>
                 <br />
                 <Modal trigger={<Button>Create Profile</Button>}>
-                    <Modal.Header>Input your name and email to create a new profile</Modal.Header>
-                    <Modal.Content image>
+                  <Modal.Header>
+                    Input your name and email to create a new profile
+                  </Modal.Header>
+                  <Modal.Content image>
                     <Modal.Description>
-                        <Form>
+                      <Form>
                         <Form.Field>
-                        <label>Name</label>
-                        <input value={name} onChange={(e) => setName(e.target.value)}/>
+                          <label>Name</label>
+                          <input
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                          />
                         </Form.Field>
                         <Form.Field>
-                        <label>Email</label>
-                        <input value={email} onChange={(e) => setEmail(e.target.value)}/>                        
+                          <label>Email</label>
+                          <input
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                          />
                         </Form.Field>
-                        </Form>
-                        <Button onClick={createPublisherProfile}>Submit Profile!</Button>
+                      </Form>
+                      <Button onClick={createPublisherProfile}>
+                        Submit Profile!
+                      </Button>
                     </Modal.Description>
-                    </Modal.Content>
+                  </Modal.Content>
                 </Modal>
               </>
             ) : (
