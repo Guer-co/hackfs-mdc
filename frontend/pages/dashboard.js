@@ -283,7 +283,7 @@ const Publish = () => {
                     <input value={description} onChange={(e) => setDescription(e.target.value)}/>
                     </Form.Field>
                         <Form.Field>
-                        <Checkbox style={{color:'white'}} label='Free' checked={free} onChange={(e) => {setFree(!e.target.value);console.log(free);}}/>
+                        <Form style={{color:'white'}} label='Free' checked={free} onChange={(e) => {setFree(!e.target.checked);}}/>
                         </Form.Field>
                         {!free ? (
                         <Form.Field>
@@ -324,7 +324,7 @@ const Publish = () => {
                             setModalfiledescription(result[5]);
                             setOpenmodal(true)
                             }}>
-                            {result[2] == "image/png" || result[2] == "image/jpg" ? (    
+                            {result[3] == "image/png" || result[3] == "image/jpg" ? (    
                             <img style={{border:'1px dotted #999', width:'125px',height:'125px', margin:'5px'}} src={result[0]}/>
                         ) : (
                             <div style={{border:'1px dotted #999',height:'125px',width:'125px'}}>
@@ -334,7 +334,7 @@ const Publish = () => {
                         </div>
                         <p>{result[3]}<br/>
                         <Moment format='MM/DD/YY HH:mm' unix>
-                            {result[4]}
+                            {result[6]}
                         </Moment>
                         </p>
                             <Modal
@@ -379,7 +379,6 @@ const Publish = () => {
                         </div>
                         )
                     }))}
-                    <div style={{border:'1px dotted #999', width:'140px',height:'100px', margin:'5px'}}>image here that links to the content on IPFS</div>
                     </div>
                 </div>
             </Grid.Column>

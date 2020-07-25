@@ -108,9 +108,9 @@ useEffect(() => {
                 <Modal.Content  style={{backgroundColor:'#999'}}>
                 <Modal.Description  style={{textAlign:'center'}}>
                     <div style={{color:"white"}}>
-                        <h2>Welcome to Pay3
-                            <br/>Please create a profile to proceed!
-                            </h2>
+                        <h2>Welcome</h2>
+                        <h4>Address: {dapp.address}</h4>
+
                         <Form>
                         <Form.Field>
                         <label>Name</label>
