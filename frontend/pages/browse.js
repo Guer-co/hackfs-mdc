@@ -88,36 +88,6 @@ const Browse = () => {
         <Grid.Column width={16}>
           <div style={{ padding: '25px', display: 'flex' }}>
             {contentinfo.map((result) => {
-<<<<<<< HEAD
-                console.log(result);
-                return (
-                    <div key={result[6]} style={{position:'relative'}}
-                        onClick={() => {
-                            setModalfilehash(result[0]);
-                            setModalfilepreview(result[1]);
-                            setModalfiledate(result[6]);
-                            setModalfilename(result[3]);
-                            setModalfiletype(result[2]);
-                            setModalfilefree(result[7]);
-                            setModalfilefee(result[8]);
-                            setModalfiletitle(result[4]);
-                            setModalfiledescription(result[5]);
-                            setContentmodal(true);
-                        }}
-                    
-                    >
-                        <div
-                        className="hex"
-                        style={{ backgroundImage: 'url(' + result[0] + ')',backgroundPosition: 'center'  }}
-                        >
-                            <div className="titleblock">{result[3]}</div>
-                            {result[7] ? <div className="freeflag">Free!</div> : ''}
-                        </div>
-                    </div>
-                )
-            }
-            )}
-=======
               console.log(result);
               return (
                 <div
@@ -149,7 +119,6 @@ const Browse = () => {
                 </div>
               );
             })}
->>>>>>> 242bf20cfbc0f226750abae70c548710c5d6cddf
           </div>
         </Grid.Column>
       </Grid>

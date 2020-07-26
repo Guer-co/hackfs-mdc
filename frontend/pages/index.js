@@ -256,16 +256,14 @@ const Browse = ({ contentContracts }) => {
 };
 
 export async function getStaticProps() {
-  try {
-    const GatewayContractObj = await GatewayObjSetup();
-    const contentContracts = await GatewayContractObj.methods.getContentContracts().call();
-    
-    return {
-      props: { contentContracts }
-    }    
-  } catch (err) {
-    console.error(err);
-  }
+  const GatewayContractObj = await GatewayObjSetup();
+  const contentContracts = await GatewayContractObj.methods.getContentContracts().call();
+
+  console.log(contentContracts);
+  
+  return {
+    props: { contentContracts }
+  }    
 }
 
 export default Browse;
