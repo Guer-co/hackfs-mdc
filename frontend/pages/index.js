@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useStateValue } from '../state';
 import Layout from '../components/Layout';
 import {
@@ -8,11 +9,12 @@ import {
   Grid,
   Modal,
   Form,
-  Checkbox
+  Checkbox,
+  Card
 } from 'semantic-ui-react';
 import GatewayObjSetup from '../utils/GatewayConstructor';
 
-const Browse = () => {
+const Browse = ({ contentContracts }) => {
   const [{ dapp }, dispatch] = useStateValue();
   const [loading, setLoading] = useState(false);
   const [errorMessage, setError] = useState('');
@@ -24,8 +26,8 @@ const Browse = () => {
   const [profilemodal, setProfilemodal] = useState(true);
   const [contentmodal, setContentmodal] = useState(false);
 
-  const GatewayContractObj = GatewayObjSetup(dapp.web3);
-
+  const GatewayContractObj = GatewayObjSetup();
+  
   useEffect(() => {
     const loadProfile = async () => {
       if (dapp.address && myprofile === '') {
@@ -47,6 +49,24 @@ const Browse = () => {
     };
     loadProfile();
   }, [dapp.address, myprofile]);
+
+  const renderContent = () => {
+    const items = contentContracts.map(async address => {
+      const content = await GatewayContractObj.methods.getContentInfo(address).call();
+
+      return {
+        header: content.title,
+        description: (
+          <Link href={`/content/${address}`}>
+            <a>View Content</a>
+          </Link>
+        ),
+        fluid: true
+      }
+    });
+
+    return <Card.Group items={items} />;
+  }
 
   const createPublisherProfile = async () => {
     await GatewayContractObj.methods
@@ -234,5 +254,18 @@ const Browse = () => {
     </Layout>
   );
 };
+
+export async function getStaticProps() {
+  try {
+    const GatewayContractObj = await GatewayObjSetup();
+    const contentContracts = await GatewayContractObj.methods.getContentContracts().call();
+    
+    return {
+      props: { contentContracts }
+    }    
+  } catch (err) {
+    console.error(err);
+  }
+}
 
 export default Browse;

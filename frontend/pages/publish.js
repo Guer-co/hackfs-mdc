@@ -19,8 +19,9 @@ const Publish = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [logo, setLogo] = useState('');
+  const [subscriptionCost, setSubscriptionCost] = useState('');
 
-  const GatewayContractObj = GatewayObjSetup(dapp.web3);
+  const GatewayContractObj = GatewayObjSetup();
 
   useEffect(() => {
     const loadPublisherData = async () => {
@@ -92,7 +93,7 @@ const Publish = () => {
   const createPublisherProfile = async () => {
     try {
       await GatewayContractObj.methods
-        .updatePublisherProfile(name, email, logo)
+        .createNewPublisher(name, email, logo, subscription)
         .send({ from: dapp.address })
         .on('transactionHash', (hash) => {
           dispatch({
@@ -167,6 +168,21 @@ const Publish = () => {
                             onChange={(e) => setEmail(e.target.value)}
                           />
                         </Form.Field>
+                        <Form.Field>
+                          <label>Logo</label>
+                          <input
+                            value={logo}
+                            onChange={(e) => setLogo(e.target.value)}
+                          />
+                        </Form.Field>
+                        <Form.Field>
+                          <label>Subscription Cost</label>
+                          <input
+                            value={subscriptionCost}
+                            onChange={(e) => setSubscriptionCost(e.target.value)}
+                          />
+                        </Form.Field>
+                        <br />
                       </Form>
                       <Button onClick={createPublisherProfile}>
                         Submit Profile!
