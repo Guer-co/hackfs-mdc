@@ -15,17 +15,19 @@ body {
     border-radius:50px;
     text-align:center;
     vertical-align:middle;
+    box-shadow:black 2px 2px 2px;
 }
 
 .freeflag {
     background-color:green;
     position:absolute;
-    bottom:0;
-    right:20px;
+    bottom:20px;
+    right:0px;
     border-radius:5px;
     padding:5px;
     opacity:.8;
     cursor:default;
+    box-shadow:black 2px 2px 2px;
 
 }
 

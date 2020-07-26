@@ -435,7 +435,7 @@ const Publish = () => {
                         setOpenmodal(true);
                       }}
                     >
-                      {result[2] == 'image/png' || result[24] == 'image/jpg' ? (
+                      {result[2] == 'image/png' || result[2] == 'image/jpg' || result[2] == 'image/jpeg' ? (
                         <img
                           style={{
                             border: '1px dotted #999',

@@ -39,9 +39,9 @@ const Browse = () => {
           window.location.href = '/dashboard';
         }
         if (userfetch[0] !== '0x0000000000000000000000000000000000000000') {
-          //console.log(userfetch);
-          setMyprofile(userfetch);
-          setProfilemodal(false);
+          window.location.href = '/browse';
+          //setMyprofile(userfetch);
+          //setProfilemodal(false);
         }
       }
     };

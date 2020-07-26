@@ -51,7 +51,6 @@ const Browse = () => {
           setMyprofile(profilefetch);
         }
         if (userfetch[0] !== '0x0000000000000000000000000000000000000000') {
-          //console.log(userfetch);
           setMyprofile(userfetch);
         }
         if (content.length === 0 && contentinfo.length === 0) {
@@ -64,13 +63,11 @@ const Browse = () => {
                 temparray.push(c);
             })
             setContentinfo(temparray);
-
         }
       }
     };
 
     loadProfile();
-    console.log(contentinfo);
   }, [dapp.address, myprofile, content,contentinfo]);
 
   return (
@@ -89,7 +86,7 @@ const Browse = () => {
         <Grid.Column width={16}>
           <div style={{ padding: '25px', display: 'flex' }}>
             {contentinfo.map((result) => {
-                    console.log(result);
+                console.log(result);
                 return (
                     <div key={result[6]} style={{position:'relative'}}
                         onClick={() => {

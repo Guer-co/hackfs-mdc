@@ -92,7 +92,7 @@ contract Publisher {
             msg.sender == ownerAddress,
             "You are unauthorized to withdraw funds from this publishers account"
         );
-        (msg.sender).transfer(msg.value);
+        (msg.sender).transfer(address(this).balance);
     }
 
     ////// ******* Here we start to write functions that interact with the Content.sol ******* //////
