@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup Condition=" '$(RunConfiguration)' == 'Default' ">
     <StartAction>Project</StartAction>
-    <StartArguments>-en ./sample.gif</StartArguments>
+    <StartArguments>-de ./sample.gif J5olOD6zabsq1J8V2mMc2Si1DyhVxgpuwWeBOTKXee4= bfXOyFb5o1TS8XmHT8DY5A==</StartArguments>
     <ExternalConsole>true</ExternalConsole>
   </PropertyGroup>
 </Project>

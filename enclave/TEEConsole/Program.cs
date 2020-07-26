@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using TEELib.Primitives;
@@ -13,12 +12,36 @@ namespace TEEConsole
         enum ActionType
         {
             Undefined,
+
+            /// <summary>
+            /// Upload file to IPFS
+            /// </summary>
             UploadFile,
+
+            /// <summary>
+            /// Download from IPFS
+            /// </summary>
             DownloadFile,
+
+            /// <summary>
+            /// 
+            /// </summary>
             EncryptFile,
+
+            /// <summary>
+            /// 
+            /// </summary>
             DecryptFile,
-            SecuredUpload,
-            SecuredDownload
+
+            /// <summary>
+            /// 
+            /// </summary>
+            UploadToServerless,
+
+            /// <summary>
+            /// 
+            /// </summary>
+            DownloadFromServerless,
         };
 
         class Action
@@ -46,6 +69,8 @@ namespace TEEConsole
                     return ActionType.DownloadFile;
                 case "-en":
                     return ActionType.EncryptFile;
+                case "-de":
+                    return ActionType.DecryptFile;
                 default:
                     throw new NotSupportedException($"Invalid action flag '{arg}'.");
             }
@@ -79,7 +104,38 @@ namespace TEEConsole
             {
                 case ActionType.UploadFile:
                 case ActionType.EncryptFile:
-                    action.SourceFilePath = CheckFile(args[1]);                    
+                case ActionType.DecryptFile:
+                    action.SourceFilePath = CheckFile(args[1]);
+
+                    if (action.ActionType == ActionType.EncryptFile)
+                    {
+                        if (args.Length < 4)
+                        {
+                            // Produce Key and IV randomly
+                            var keyInfo = new KeyInfo();
+
+                            action.Key = Convert.ToBase64String(keyInfo.Key);
+                            action.Vector = Convert.ToBase64String(keyInfo.Vector);
+                        }
+                        else
+                        {
+                            action.Key = args[2];
+                            action.Vector = args[3];
+                        }
+                    }
+                    if (action.ActionType == ActionType.DecryptFile)
+                    {
+                        if (args.Length < 4)
+                        {
+                            throw new ArgumentException("Invalid number of Decryption args.");
+                        }
+                        else
+                        {
+                            action.Key = args[2];
+                            action.Vector = args[3];
+                        }
+                    }
+
                     break;
                 case ActionType.DownloadFile:
                     action.IpfsHash = args[1];
@@ -89,22 +145,7 @@ namespace TEEConsole
                     throw new NotSupportedException();
             }
 
-            if (action.ActionType == ActionType.EncryptFile)
-            {
-                if (args.Length < 4)
-                {
-                    // Produce Key and IV randomly
-                    var keyInfo = new KeyInfo();
-
-                    action.Key = Convert.ToBase64String(keyInfo.Key);
-                    action.Vector = Convert.ToBase64String(keyInfo.Vector);
-                }
-                else
-                {
-                    action.Key = args[2];
-                    action.Vector = args[3];
-                }
-            }
+            
 
             return action;
         }
@@ -135,11 +176,23 @@ namespace TEEConsole
             await primitive.EncryptFileAsync(action.SourceFilePath,
                 keyInfo);
             
-            Console.WriteLine($"Successfully encrypted file '{action.SourceFilePath}' with {keyInfo}.");
+            Console.WriteLine($"Successfully encrypted file '{action.SourceFilePath}' with {keyInfo}");
         }
 
-        static void Main(string[] args)
+        private async Task DecryptFileAsync(Action action)
         {
+            var primitive = new AES128Primitive();
+            var keyInfo = new KeyInfo(action.Key, action.Vector);
+
+            await primitive.DecryptFileAsync(action.SourceFilePath,
+                keyInfo);
+
+            Console.WriteLine($"Successfully decrypted file '{action.SourceFilePath}'.");
+        }
+
+        static async Task Main(string[] args)
+        {
+            {
             try
             {
                 var program = new Program();
@@ -149,33 +202,22 @@ namespace TEEConsole
                 switch (action.ActionType)
                 {
                     case ActionType.UploadFile:
-                        program.ProcessFileUploadAsync(action).GetAwaiter();
+                        await program.ProcessFileUploadAsync(action);
                         break;
                     case ActionType.DownloadFile:
-                        program.ProcessFileDownloadAsync(action).GetAwaiter();
+                        await program.ProcessFileDownloadAsync(action);
                         break;
                     case ActionType.EncryptFile:
-                        program.EncryptFileAsync(action).GetAwaiter();
+                        await program.EncryptFileAsync(action);
+                        break;
+                    case ActionType.DecryptFile:
+                        await program.DecryptFileAsync(action);
                         break;
                     default:
                         throw new NotSupportedException("Undefined action.");
                 }
 
-
-                // Encrypt file
-                // -ec [source file] [key]
-
-                // Decrypt file
-                // -de [source file] [key]
-
-                // Secure Upload
-                // -su
-
-                // -sd
-
-
-                // Wait for 1 min.
-                Thread.Sleep(60000);
+                
                 Console.WriteLine("Trusted Execution Environment CLI completed.");
             }
             catch (Exception exc)

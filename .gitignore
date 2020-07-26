@@ -31,6 +31,7 @@ enclave/.vs/
 enclave/TEEConsole/.vs/
 enclave/TEEConsole/bin/
 enclave/TEEConsole/obj/
-enclave/TEELib/
+enclave/TEELib/bin/
+enclave/TEELib/obj/
 enclave/TEELib.UnitTests/bin/
 enclave/TEELib.UnitTests/obj/
