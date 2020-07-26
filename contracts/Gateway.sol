@@ -79,6 +79,10 @@ contract Gateway {
         return Publisher(_publisher).getContentInformation(_content);
     }
 
+    function getContentInfo(address payable _content) public view returns (string memory, string memory, string memory,string memory, string memory,string memory,uint, bool, uint) {
+        return Content(_content).getContentDetails();
+    }
+
     function createContent(address payable _publisher,string memory _contentHash, string memory _previewHash, string memory _name, string memory _fileType, string memory _title, string memory _description, bool _free, uint _price) public
     {
         address contractId = Publisher(_publisher).createContent(_contentHash, _previewHash, _fileType, _name, _title, _description, _free,_price);

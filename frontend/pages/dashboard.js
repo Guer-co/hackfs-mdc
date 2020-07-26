@@ -379,10 +379,10 @@ const Publish = () => {
                   />
                 </Form.Field>
                 <Form.Field>
-                  <Form
+                  <Checkbox
                     style={{ color: 'white' }}
                     label='Free'
-                    checked={free}
+                    defaultChecked={free}
                     onChange={(e) => {
                       setFree(!e.target.checked);
                     }}
@@ -419,7 +419,6 @@ const Publish = () => {
             <hr />
             <div style={{ display: 'flex' }}>
               {allcontent.map((result) => {
-                console.log(result);
                 return (
                   <div className='imagebox' key={result[0]}>
                     <div
@@ -436,7 +435,7 @@ const Publish = () => {
                         setOpenmodal(true);
                       }}
                     >
-                      {result[3] == 'image/png' || result[3] == 'image/jpg' ? (
+                      {result[2] == 'image/png' || result[24] == 'image/jpg' ? (
                         <img
                           style={{
                             border: '1px dotted #999',
@@ -478,8 +477,8 @@ const Publish = () => {
                     >
                       <Modal.Content style={{ backgroundColor: '#999' }}>
                         <Modal.Description style={{ textAlign: 'center' }}>
-                          {result[3] == 'image/png' ||
-                          result[3] == 'image/jpg' ? (
+                          {result[2] == 'image/png' ||
+                          result[2] == 'image/jpg' ? (
                             <a
                               rel='noopener noreferrer'
                               target='_blank'

@@ -58,8 +58,8 @@ const Header = () => {
           }
         });
       } catch (err) {
-        setError(err.message);
-        setTimeout(() => setError(''), 3000);
+        //setError(err.message);
+        //setTimeout(() => setError(''), 3000);
       }
     }
 
