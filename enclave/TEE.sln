@@ -1,0 +1,29 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TEEConsole", "TEEConsole\TEEConsole.csproj", "{E37A4D7F-D745-46CF-A642-CC8DC0D1CF82}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TEELib", "TEELib\TEELib.csproj", "{6D5F4C23-C8FF-4293-81FD-C419709571BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TEELib.UnitTests", "TEELib.UnitTests\TEELib.UnitTests.csproj", "{6F842136-1204-4C7A-9B35-263E694FA080}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E37A4D7F-D745-46CF-A642-CC8DC0D1CF82}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E37A4D7F-D745-46CF-A642-CC8DC0D1CF82}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E37A4D7F-D745-46CF-A642-CC8DC0D1CF82}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E37A4D7F-D745-46CF-A642-CC8DC0D1CF82}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D5F4C23-C8FF-4293-81FD-C419709571BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D5F4C23-C8FF-4293-81FD-C419709571BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D5F4C23-C8FF-4293-81FD-C419709571BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D5F4C23-C8FF-4293-81FD-C419709571BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6F842136-1204-4C7A-9B35-263E694FA080}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6F842136-1204-4C7A-9B35-263E694FA080}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6F842136-1204-4C7A-9B35-263E694FA080}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6F842136-1204-4C7A-9B35-263E694FA080}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
