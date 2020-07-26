@@ -1,35 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Security.Cryptography;
+using System.Threading.Tasks;
 
 namespace TEELib.Primitives
 {
-    public class KeyInfo
-    {
-        public byte[] Key { get; }
-
-        /// <summary>
-        /// Initialization Vector
-        /// </summary>
-        public byte[] Vector { get; }
-
-        /// <summary>
-        /// Creates the Key and Initializing Vector by default
-        /// </summary>
-        public KeyInfo()
-        {
-            using var myAes = Aes.Create();
-            Key = myAes.Key;
-            Vector = myAes.IV;
-        }
-
-        public KeyInfo(string key, string vector)
-        {
-            Key = Convert.FromBase64String(key);
-            Vector = Convert.FromBase64String(vector);
-        }
-    }
-
     public class AES128Primitive
     {
         public string EncryptText(string plainText, KeyInfo keyInfo)
@@ -38,7 +13,7 @@ namespace TEELib.Primitives
             using (AesManaged aes = new AesManaged())
             {
                 // Create encryptor    
-                ICryptoTransform encryptor = aes.CreateEncryptor(keyInfo.Key, keyInfo.Vector);
+                var encryptor = aes.CreateEncryptor(keyInfo.Key, keyInfo.Vector);
 
                 // Create MemoryStream    
                 using (MemoryStream ms = new MemoryStream())
@@ -68,7 +43,7 @@ namespace TEELib.Primitives
             using (AesManaged aes = new AesManaged())
             {
                 // Create a decryptor    
-                ICryptoTransform decryptor = aes.CreateDecryptor(keyInfo.Key, keyInfo.Vector);
+                var decryptor = aes.CreateDecryptor(keyInfo.Key, keyInfo.Vector);
 
                 // Create the streams used for decryption.    
                 using (MemoryStream ms = new MemoryStream(cipherText))
@@ -86,24 +61,25 @@ namespace TEELib.Primitives
             }
         }
 
-        public void EncryptFile(string filePath, byte[] key)
+        public async Task EncryptFileAsync(string filePath, KeyInfo keyInfo)
         {
             string tempFileName = Path.GetTempFileName();
 
-            using (SymmetricAlgorithm cipher = Aes.Create())
-            using (FileStream fileStream = File.OpenRead(filePath))
-            using (FileStream tempFile = File.Create(tempFileName))
+            // Create a new AesManaged   
+            using (AesManaged aes = new AesManaged())
             {
-                cipher.Key = key;
-                // aes.IV will be automatically populated with a secure random value
-                byte[] iv = cipher.IV;
+                // Create encryptor    
+                var encryptor = aes.CreateEncryptor(keyInfo.Key, keyInfo.Vector);
 
-                
-
-                using (var cryptoStream =
-                    new CryptoStream(tempFile, cipher.CreateEncryptor(), CryptoStreamMode.Write))
+                using (FileStream fileStream = File.OpenRead(filePath))
                 {
-                    fileStream.CopyTo(cryptoStream);
+                    using (FileStream tempFile = File.Create(tempFileName))
+                    {
+                        using (var cryptoStream = new CryptoStream(tempFile, encryptor, CryptoStreamMode.Write))
+                        {
+                            await fileStream.CopyToAsync(cryptoStream);
+                        }
+                    }
                 }
             }
 
@@ -111,53 +87,23 @@ namespace TEELib.Primitives
             File.Move(tempFileName, filePath);
         }
 
-        public void DecryptFile(string filePath, byte[] key)
+        public async Task DecryptFileAsync(string filePath, KeyInfo keyInfo)
         {
             string tempFileName = Path.GetTempFileName();
 
-            using (SymmetricAlgorithm cipher = Aes.Create())
-            using (FileStream fileStream = File.OpenRead(filePath))
-            using (FileStream tempFile = File.Create(tempFileName))
+            using (AesManaged aes = new AesManaged())
             {
-                cipher.Key = key;
-                byte[] iv = new byte[cipher.BlockSize / 8];
-                byte[] headerBytes = new byte[6];
-                int remain = headerBytes.Length;
+                var decryptor = aes.CreateDecryptor(keyInfo.Key, keyInfo.Vector);
 
-                while (remain != 0)
+                using (FileStream fileStream = File.OpenRead(filePath))
                 {
-                    int read = fileStream.Read(headerBytes, headerBytes.Length - remain, remain);
-
-                    if (read == 0)
+                    using (FileStream tempFile = File.Create(tempFileName))
                     {
-                        throw new EndOfStreamException();
+                        using (var cryptoStream = new CryptoStream(tempFile, decryptor, CryptoStreamMode.Write))
+                        {
+                            await fileStream.CopyToAsync(cryptoStream);
+                        }
                     }
-
-                    remain -= read;
-                }
-
-                
-
-                remain = iv.Length;
-
-                while (remain != 0)
-                {
-                    int read = fileStream.Read(iv, iv.Length - remain, remain);
-
-                    if (read == 0)
-                    {
-                        throw new EndOfStreamException();
-                    }
-
-                    remain -= read;
-                }
-
-                cipher.IV = iv;
-
-                using (var cryptoStream =
-                    new CryptoStream(tempFile, cipher.CreateDecryptor(), CryptoStreamMode.Write))
-                {
-                    fileStream.CopyTo(cryptoStream);
                 }
             }
 
