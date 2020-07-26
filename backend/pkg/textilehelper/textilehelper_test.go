@@ -3,7 +3,7 @@ package textilehelper_test
 import (
 	"context"
 	"github.com/Guer-co/hackfs-mdc/backend/pkg/common"
-	"github.com/Guer-co/hackfs-mdc/backend/pkg/models"
+	pb "github.com/Guer-co/hackfs-mdc/backend/pkg/libp2pnode/pb"
 	"github.com/Guer-co/hackfs-mdc/backend/pkg/textilehelper"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -18,12 +18,13 @@ var _ = Describe("Textilehelper", func() {
 	textilehelper.Setup(context.Background())
 	textilehelper.SetupTesting() //changing clients.DBThreadId to testDBThreadId
 
-	testContentData := models.ContentData{
-		OwnerId:      "testowner01",
-		FileName:     "test01.png",
-		FileType:     "image",
-		FileSize:     500,
-		Description:  "test image",
+	testContentData := pb.ContentData{
+		//Id:                   "",
+		OwnerId:              "testowner02",
+		FileName:             "test01.png",
+		FileType:             "image",
+		FileSize:             500,
+		Description:          "test image",
 		ThreadKey:    "bafktw6svx7iwwtrzcnyzdmuc3yfzbvmdgg6td7cezp7cp7bye4hmzkq",
 		BucketKey:    "bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4",
 		EncryptedUrl: "https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4",
@@ -51,17 +52,17 @@ var _ = Describe("Textilehelper", func() {
 	Describe("QueryContentDB", func() {
 		It("Should return instances from query correctly", func() {
 			q := db.Where("ownerId").Eq(testContentData.OwnerId)
-			dummy := &models.ContentData{}
+			dummy := &pb.ContentData{}
 			res, err := textilehelper.QueryContentDB(q, dummy)
 			Expect(err).To(BeNil())
 			Expect(res).NotTo(BeNil())
-			datas, ok := res.([]*models.ContentData)
+			datas, ok := res.([]*pb.ContentData)
 			Expect(ok).To(BeTrue())
 			Expect(len(datas)).Should(BeNumerically(">", 0))
 			logger.Infof("len %d, data0: %+v", len(datas), datas[0])
 		})
 	})
-	Describe("CreateBucketAndPushData", func() {
+	XDescribe("CreateBucketAndPushData", func() {
 		It("Should return the bucket ipns link correctly", func() {
 			threadKey, bucketKey, ipnsLink, err := textilehelper.CreateBucketAndPushData(common.GetUlid().String(), "test01.txt", []byte("testData01"), true)
 			Expect(err).To(BeNil())
@@ -81,7 +82,7 @@ var _ = Describe("Textilehelper", func() {
 			logger.Infof("threadKey: %v, bucketKey: %v, ipnsLink: %v", threadKey, bucketKey, ipnsLink)
 		})
 	})
-	Describe("PullBytesFromBucket", func() {
+	XDescribe("PullBytesFromBucket", func() {
 		It("Should return the bucket file in bytes correctly", func() {
 			fileBytes, err := ioutil.ReadFile("./test01.png")
 			Expect(err).To(BeNil())

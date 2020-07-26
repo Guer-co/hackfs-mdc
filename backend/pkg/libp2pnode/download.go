@@ -3,7 +3,6 @@ package libp2pnode
 import (
 	commontools "github.com/Guer-co/hackfs-mdc/backend/pkg/common"
 	pb "github.com/Guer-co/hackfs-mdc/backend/pkg/libp2pnode/pb"
-	"github.com/Guer-co/hackfs-mdc/backend/pkg/models"
 	"github.com/Guer-co/hackfs-mdc/backend/pkg/textilehelper"
 	"github.com/gogo/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -45,8 +44,8 @@ func (e *DownloadProtocol) getDownloadResponseWithError(req *pb.DownloadRequest,
 	}
 }
 
-func (e *DownloadProtocol) GetContentDataRecordWithDownloadRequest(req *pb.DownloadRequest) (*models.ContentData, error) {
-	dummy := &models.ContentData{}
+func (e *DownloadProtocol) GetContentDataRecordWithDownloadRequest(req *pb.DownloadRequest) (*pb.ContentData, error) {
+	dummy := &pb.ContentData{}
 	var res interface{}
 	var err error
 
@@ -64,9 +63,9 @@ func (e *DownloadProtocol) GetContentDataRecordWithDownloadRequest(req *pb.Downl
 	if res == nil {
 		return nil, commontools.Errorf(nil, "res is nil")
 	}
-	datas, ok := res.([]*models.ContentData)
+	datas, ok := res.([]*pb.ContentData)
 	if !ok {
-		return nil, commontools.Errorf(nil, "res is not []*models.ContentData")
+		return nil, commontools.Errorf(nil, "res is not []*pb.ContentData")
 	}
 	if len(datas) == 0 {
 		return nil, commontools.Errorf(nil, "no ContentData found")
@@ -105,7 +104,7 @@ func (e *DownloadProtocol) processDownloadRequest(req *pb.DownloadRequest) *pb.D
 			Code:                 http.StatusOK,
 			Err:                  "",
 		},
-		ContentData:          models.GetPbContentDataFromModelsContentData(contentData),
+		ContentData:          contentData,
 		ContentDeliveryData:  &pb.ContentDeliveryData{
 			Id:                   commontools.GetUlid().String(),
 			RequesterId:          req.DownloadData.RequesterId,
