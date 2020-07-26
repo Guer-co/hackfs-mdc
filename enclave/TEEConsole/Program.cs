@@ -191,8 +191,7 @@ namespace TEEConsole
         }
 
         static async Task Main(string[] args)
-        {
-            {
+        {            
             try
             {
                 var program = new Program();
