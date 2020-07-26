@@ -44,7 +44,7 @@ const Publish = () => {
   const [price, setPrice] = useState('0');
   const [free, setFree] = useState(true);
 
-  const GatewayContractObj = GatewayContractObjSetup(dapp.web3);
+  const GatewayContractObj = GatewayContractObjSetup();
 
   useEffect(() => {
     const loadProfile = async () => {

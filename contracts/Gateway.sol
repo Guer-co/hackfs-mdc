@@ -74,6 +74,8 @@ contract Gateway {
 
     //THESE ARE CONTENT FUNCTIONS// //THESE ARE CONTENT FUNCTIONS// //THESE ARE CONTENT FUNCTIONS//
 
+    // getContentInformation might not be required as the function below it (getContentInfo) is the same function minus the publishers address.
+    // Should be replaced with getContentInfo() on the frontend and removed.
     function getContentInformation(address payable _publisher, address payable _content) public view returns (string memory, string memory, string memory,string memory,string memory, string memory,uint, bool, uint)
     {
         return Publisher(_publisher).getContentInformation(_content);
