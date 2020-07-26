@@ -14,7 +14,7 @@ import {
 } from 'semantic-ui-react';
 import GatewayObjSetup from '../utils/GatewayConstructor';
 
-const Browse = ({ contentContracts }) => {
+const Index = ({ contentContracts }) => {
   const [{ dapp }, dispatch] = useStateValue();
   const [loading, setLoading] = useState(false);
   const [errorMessage, setError] = useState('');
@@ -47,15 +47,14 @@ const Browse = ({ contentContracts }) => {
         }
       }
     };
-    loadProfile();
+
+    // loadProfile();
   }, [dapp.address, myprofile]);
 
   const renderContent = () => {
-    const items = contentContracts.map(async address => {
-      const content = await GatewayContractObj.methods.getContentInfo(address).call();
-
+    const items = contentContracts.map(address => {      
       return {
-        header: content.title,
+        header: address, // tried to set this to the contractTitle but ran into some issues, gonna leave it like this for now. 
         description: (
           <Link href={`/content/${address}`}>
             <a>View Content</a>
@@ -64,7 +63,7 @@ const Browse = ({ contentContracts }) => {
         fluid: true
       }
     });
-
+    
     return <Card.Group items={items} />;
   }
 
@@ -111,146 +110,17 @@ const Browse = ({ contentContracts }) => {
   return (
     <Layout style={{ backgroundColor: '#041727' }}>
       {errorMessage && <Message error header='Oops!' content={errorMessage} />}
-      <Grid centered>
-        <Grid.Column width={16}>
-          <div style={{ textAlign: 'center' }}>
-            <p>
-              Welcome: {myprofile[1]} {myprofile[2]}
-            </p>
-            <h2>Browse decentralized content on P3!</h2>
-            <hr />
-          </div>
-        </Grid.Column>
-        <Grid.Column width={16}>
-          <div style={{ padding: '25px', display: 'flex' }}>
-            <span
-              className='hex'
-              style={{ color: '#666' }}
-              onClick={() => setContentmodal(true)}
-            >
-              &#x2B22;
-            </span>
-            <span className='hex' style={{ color: 'green' }}>
-              &#x2B22;
-            </span>
-            <span className='hex' style={{ color: 'blue' }}>
-              &#x2B22;
-            </span>
-            <span className='hex' style={{ color: 'orangered' }}>
-              &#x2B22;
-            </span>
-            <span className='hex' style={{ color: 'pink' }}>
-              &#x2B22;
-            </span>
-            <span className='hex' style={{ color: 'yellow' }}>
-              &#x2B22;
-            </span>
-            <span className='hex' style={{ color: 'coral' }}>
-              &#x2B22;
-            </span>
-          </div>
-        </Grid.Column>
-      </Grid>
-      <Modal
-        open={profilemodal}
-        size='small'
-        closeOnEscape={false}
-        closeOnDimmerClick={false}
-        onClose={() => setProfilemodal(false)}
-      >
-        <Modal.Content style={{ backgroundColor: '#999' }}>
-          <Modal.Description style={{ textAlign: 'center' }}>
-            <div style={{ color: 'white' }}>
-              <h2>Welcome</h2>
-              <h4>Address: {dapp.address}</h4>
-              <Form>
-                <Form.Field>
-                  <label>Name</label>
-                  <input
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
-                  />
-                </Form.Field>
-                <Form.Field>
-                  <label>Email</label>
-                  <input
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                </Form.Field>
-              </Form>
-              <br />
-              <p style={{ color: 'white' }}>Logo? Profile Image?</p>
-              <Button
-                style={{ backgroundColor: 'green', color: 'white' }}
-                onClick={createPublisherProfile}
-              >
-                Create Publisher Profile
-              </Button>
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              <Button
-                style={{ backgroundColor: 'blue', color: 'white' }}
-                onClick={createUserProfile}
-              >
-                Create User Profile
-              </Button>
-            </div>
-          </Modal.Description>
-        </Modal.Content>
-      </Modal>
-      <Modal
-        closeIcon
-        open={contentmodal}
-        size='small'
-        onClose={() => setContentmodal(false)}
-      >
-        <Modal.Content style={{ backgroundColor: '#999' }}>
-          <Modal.Description style={{ textAlign: 'center' }}>
-            <div style={{ color: 'white' }}>
-              <h2>|Pay modal|</h2>
-              <p
-                style={{
-                  border: '3px solid yellow',
-                  padding: '50px',
-                  fontSize: '18px'
-                }}
-              >
-                Possible content area???
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-                <br />
-                ...
-              </p>
-              <Form>
-                <Form.Field>
-                  <Checkbox label='Buy now!!!!!' />
-                </Form.Field>
-                <Form.Field>
-                  <Checkbox label='Subscribe' />
-                </Form.Field>
-                <Button
-                  style={{ backgroundColor: 'green', color: 'white' }}
-                  onClick={() => console.log('submit')}
-                >
-                  Purchase
-                </Button>
-              </Form>
-            </div>
-          </Modal.Description>
-        </Modal.Content>
-      </Modal>
+      <Link href='/dashboard'>
+        <a>
+          <Button
+            content='Start Publishing!'
+            icon='add circle'
+            primary
+            floated='right'
+          />
+        </a>
+      </Link>
+      {renderContent()}
     </Layout>
   );
 };
@@ -259,11 +129,9 @@ export async function getStaticProps() {
   const GatewayContractObj = await GatewayObjSetup();
   const contentContracts = await GatewayContractObj.methods.getContentContracts().call();
 
-  console.log(contentContracts);
-  
   return {
     props: { contentContracts }
   }    
 }
 
-export default Browse;
+export default Index;
