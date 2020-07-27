@@ -7,7 +7,8 @@ import "./lib/OpenZeppelin/SafeMath.sol";
 contract User {
     using SafeMath for uint256;
 
-    mapping(address => address[]) subscribedTo;
+    mapping(address => bool) subscribedTo;
+    uint numberOfSubscribed;
 
     address[] purchased;
     uint createdDate;
@@ -15,8 +16,6 @@ contract User {
     address userContractAddress;
     string name;
     string email;
-
-
 
     constructor(string memory _name, string memory _email) public {
         ownerAddress = msg.sender;
@@ -30,13 +29,19 @@ contract User {
         return (userContractAddress, name, email, createdDate);
     }
 
-    //needed functions
+    function getPurchased() public view returns (address[] memory) {
+        return purchased;
+    }
 
-    //when subscribe, add to the map (so we can false it easily later)
+    function purchase(address _content) public {
+        purchased.push(_content);
+    }
 
+    function subscribe(address _publisher) public {
+        subscribedTo[_publisher] = true;
+    }
 
-    //when purchasing, just push to array because you will always own it then
-    //function purchaseContent(address payable _contract, uint256 _amount) public returns (bool) {
-    //    return Content(_contract).purchaseContent(msg.sender, _amount);
-    //}
+    function unsubscribe(address _publisher) public {
+        subscribedTo[_publisher] = false;
+    }
 }

@@ -43,7 +43,7 @@ contract Content {
         Info[contractId].price = _price;
     }
 
-    function getContentDetails() public view returns (string memory, string memory, string memory,string memory, string memory, string memory, uint, bool, uint) {
+    function getContentDetails() public view returns (string memory, string memory, string memory,string memory, string memory, string memory, uint, bool, uint, address) {
         return (
             Info[contractId].locationHash,
             Info[contractId].previewHash,
@@ -53,15 +53,15 @@ contract Content {
             Info[contractId].description,
             Info[contractId].date,
             Info[contractId].free,
-            Info[contractId].price
+            Info[contractId].price,
+            address(this)
         );
     }
 
-   function purchaseContent(address _consumer, uint256 _amount) payable public returns (bool) {
+   function purchaseContent(address _consumer, uint256 _amount) payable public {
         require(_amount == Info[contractId].price, 'Amount sent is less than what this content is priced at. Please send the exact amount') ;
         earnings += msg.value;
         contentWhitelist[_consumer] = true;
-        return true;
    }
 
 
@@ -78,10 +78,4 @@ contract Content {
         earnings = earnings.sub(_amount);
         ownerId.transfer(_amount);
     }
-
-    function checkPublisherWhitelist(address _consumer) public view returns (bool) {
-
-        Publisher(ownerId).getSubscribers();
-    }
-
 }

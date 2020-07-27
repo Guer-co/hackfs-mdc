@@ -15,7 +15,6 @@ contract Publisher {
     string logo;
     uint256 subscriptionCost;
     uint numberSubscribers;
-    address[] subscriberList;
     uint createdDate;
     address[] contentContracts;
 
@@ -65,11 +64,19 @@ contract Publisher {
     }
 
     /**
-    * @notice Get the subscribers to a publisher
+    * @notice Get the number of subscribers of a publisher
     * @return All the subscribers to your content
     */
-    function getSubscribers() public view returns (address[] memory) {
-        return subscriberList;
+    function subscriberCount() public view returns (uint) {
+        return numberSubscribers;
+    }
+
+    /**
+    * @notice Checks if someone is subscribed to the publisher
+    * @return True or false
+    */
+    function isSubscribed(address _consumer) public view returns (bool) {
+        return subscribers[_consumer];
     }
 
     /**
@@ -82,8 +89,18 @@ contract Publisher {
             "Amount sent is less than the publishers subscription cost."
         );
         balance += msg.value;
-        subscriberList.push(_subscriber);
         subscribers[_subscriber] = true;
+        numberSubscribers++;
+        subscriberTimestamp[_subscriber] = now;
+    }
+    
+    /**
+     * @notice Removes a subscriber to the publisher
+     * @param _subscriber Subscribers's address
+    */
+    function removeSubscriber(address _subscriber) public {
+        subscribers[_subscriber] = false;
+        numberSubscribers--;
         subscriberTimestamp[_subscriber] = now;
     }
 
@@ -122,7 +139,7 @@ contract Publisher {
      * @return All the content contracts associated with the Publisher
      * @return All the content contracts associated with the Publisher
      */
-    function getContentInformation(address payable _contract) public view returns (string memory, string memory, string memory,string memory, string memory,string memory,uint, bool, uint) {
+    function getContentInformation(address payable _contract) public view returns (string memory, string memory, string memory,string memory, string memory,string memory,uint, bool, uint, address) {
         return Content(_contract).getContentDetails();
     }
 

@@ -26,6 +26,7 @@ const Publish = () => {
   const [errorMessage, setError] = useState('');
   const [mycontracts, setMycontracts] = useState('');
   const [contentarray, setContentarray] = useState([]);
+  const [contentAddress, setContentAddress] = useState('');
   const [allcontent, setAllcontent] = useState([]);
   const [myprofile, setMyprofile] = useState('');
   const [openmodal, setOpenmodal] = useState(false);
@@ -43,7 +44,7 @@ const Publish = () => {
   const [description, setDescription] = useState('');
   const [price, setPrice] = useState(0);
   const [free, setFree] = useState(true);
-  let cbalance;  
+  let cbalance;
 
   const GatewayContractObj = GatewayContractObjSetup(dapp.web3);
 
@@ -77,7 +78,7 @@ const Publish = () => {
           let temparray = [];
           for (let i = 0; i < contentarray.length; i++) {
             await GatewayContractObj.methods
-              .getContentInformation(myprofile[0], contentarray[i])
+              .getContentInfo(contentarray[i])
               .call({ from: dapp.address })
               .then(function (result) {
                 temparray.push(result);
@@ -139,25 +140,25 @@ const Publish = () => {
       });
   };
 
-const withdrawEarnings = async () => {
-    dapp.web3.eth.getBalance(myprofile[0], function(err, result) {
-    if (err) {
-        console.log(err)
-    } else {
+  const withdrawEarnings = async () => {
+    dapp.web3.eth.getBalance(myprofile[0], function (err, result) {
+      if (err) {
+        console.log(err);
+      } else {
         cbalance = result;
-        console.log(result)
-    }
-    })
-    await GatewayContractObj.methods
-    .doTransferFunds(dapp.address)
-    .send({ from: dapp.address })
-    .then(function (result) {
         console.log(result);
-    })
-    .catch(function (error) {
-        console.log(error);
+      }
     });
-};
+    await GatewayContractObj.methods
+      .doTransferFunds(dapp.address)
+      .send({ from: dapp.address })
+      .then(function (result) {
+        console.log(result);
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
 
   const doReceiveFunds = () => {
     dapp.web3.eth.sendTransaction(
@@ -203,7 +204,7 @@ const withdrawEarnings = async () => {
           </div>
         </Grid.Column>
         <Grid.Column width={3}>
-          <div style={{ padding: '25px', fontSize: '16px'}}>
+          <div style={{ padding: '25px', fontSize: '16px' }}>
             <a href='/dashboard'>home</a>
             <br />
             <br />
@@ -256,17 +257,11 @@ const withdrawEarnings = async () => {
                         paddingTop: '20px'
                       }}
                     >
-                      <Icon
-                        style={{ margin: 'auto'}}
-                        name='add'
-                        size='huge'
-                      />
+                      <Icon style={{ margin: 'auto' }} name='add' size='huge' />
                       <br />
                       <br />
                       <br />
-                      <p style={{ fontSize: '18px' }}>
-                        Upload New Content
-                      </p>
+                      <p style={{ fontSize: '18px' }}>Upload New Content</p>
                     </div>
                   </label>
                   <br />
@@ -275,7 +270,9 @@ const withdrawEarnings = async () => {
               )
             ) : (
               <>
-                {filetype == 'image/png' || filetype == 'image/jpg' || filetype == 'image/jpeg' ? (
+                {filetype == 'image/png' ||
+                filetype == 'image/jpg' ||
+                filetype == 'image/jpeg' ? (
                   <img
                     style={{
                       border: '1px dotted #999',
@@ -371,30 +368,30 @@ const withdrawEarnings = async () => {
             >
               <Form>
                 <Form.Field>
-                  <label className="blacktext">Title</label>
+                  <label className='blacktext'>Title</label>
                   <input
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   />
                 </Form.Field>
                 <Form.Field>
-                  <label className="blacktext">Description</label>
+                  <label className='blacktext'>Description</label>
                   <input
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                   />
                 </Form.Field>
                 <Form.Field>
-                    <span className="blacktext">Free? </span>
+                  <span className='blacktext'>Free? </span>
                   <Checkbox
-                    className="blacktext"
-                    checked={free} 
+                    className='blacktext'
+                    checked={free}
                     onClick={() => setFree(!free)}
-                  />             
+                  />
                 </Form.Field>
                 {!free ? (
                   <Form.Field>
-                    <label className="blacktext">
+                    <label className='blacktext'>
                       Price for this content (in Eth)
                     </label>
                     <input
@@ -436,10 +433,13 @@ const withdrawEarnings = async () => {
                         setModalfilefee(result[8]);
                         setModalfiletitle(result[4]);
                         setModalfiledescription(result[5]);
+                        setContentAddress(result[9]);
                         setOpenmodal(true);
                       }}
                     >
-                      {result[2] == 'image/png' || result[2] == 'image/jpg' || result[2] == 'image/jpeg' ? (
+                      {result[2] == 'image/png' ||
+                      result[2] == 'image/jpg' ||
+                      result[2] == 'image/jpeg' ? (
                         <img
                           style={{
                             border: '1px dotted #999',
@@ -539,7 +539,9 @@ const withdrawEarnings = async () => {
                               {modalfiledate}
                             </Moment>
                             <br />
-                            {modalfilefree ? 'Free content' : 'Price: ' + modalfilefee + ' ETH'}
+                            {modalfilefree
+                              ? 'Free content'
+                              : 'Price: ' + modalfilefee + ' ETH'}
                           </p>
                           <Button onClick={() => setOpenmodal(false)}>
                             close
