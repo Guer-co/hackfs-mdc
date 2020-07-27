@@ -100,7 +100,6 @@ useEffect(() => {
       .createNewPublisher(name, email, logo, cost)
       .send({ from: dapp.address })
       .on('transactionHash', (hash) => {
-          console.log('1');
         dispatch({
           type: 'SET_CURRENTLY_MINING',
           payload: true
@@ -226,7 +225,7 @@ useEffect(() => {
         >
             <Modal.Content style={{ backgroundColor: '#999' }}>
             <Modal.Description style={{ textAlign: 'center' }}>
-                <div style={{ color: 'white' }}>
+                <div className="blacktext">
                 <h2 style={{ margin: '0px' }}>{modalfiletitle}</h2>
                 <h4 style={{ margin: '0px 0px 0px 0px' }}>
                     {modalfiledescription}
@@ -283,7 +282,7 @@ useEffect(() => {
         >
             <Modal.Content style={{ backgroundColor: '#999' }}>
             <Modal.Description style={{ textAlign: 'center' }}>
-                <div style={{ color: 'white' }}>
+                <div className="blacktext">
                 <h2>Create publisher account</h2>
                 <h4>Ethereum Address: {dapp.address}</h4>
                 <Form>
@@ -303,7 +302,7 @@ useEffect(() => {
                     </Form.Field>
                 </Form>
                 <br />
-                <p style={{ color: 'white' }}>Logo? Profile Image?</p>
+                <p className="blacktext">Logo? Profile Image?</p>
                 <Button
                     style={{ backgroundColor: 'green', color: 'white' }}
                     onClick={createPublisherProfile}
@@ -330,7 +329,7 @@ useEffect(() => {
         >
             <Modal.Content style={{ backgroundColor: '#999' }}>
             <Modal.Description style={{ textAlign: 'center' }}>
-                <div style={{ color: 'white' }}>
+                <div className="blacktext">
                 <h2>Welcome</h2>
                 <h4>Address: {dapp.address}</h4>
                 <Form>
@@ -350,7 +349,7 @@ useEffect(() => {
                     </Form.Field>
                 </Form>
                 <br />
-                <p style={{ color: 'white' }}>Logo? Profile Image?</p>
+                <p className="blacktext">Logo? Profile Image?</p>
                 <Button
                     style={{ backgroundColor: 'green', color: 'white' }}
                     onClick={createPublisherProfile}

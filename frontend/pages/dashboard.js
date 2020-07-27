@@ -216,7 +216,7 @@ const withdrawEarnings2 = async () => {
           </div>
         </Grid.Column>
         <Grid.Column width={3}>
-          <div style={{ padding: '25px', fontSize: '16px', color: 'white' }}>
+          <div style={{ padding: '25px', fontSize: '16px'}}>
             <a href='/dashboard'>home</a>
             <br />
             <br />
@@ -270,14 +270,14 @@ const withdrawEarnings2 = async () => {
                       }}
                     >
                       <Icon
-                        style={{ margin: 'auto', color: 'white' }}
+                        style={{ margin: 'auto'}}
                         name='add'
                         size='huge'
                       />
                       <br />
                       <br />
                       <br />
-                      <p style={{ color: 'white', fontSize: '18px' }}>
+                      <p style={{ fontSize: '18px' }}>
                         Upload New Content
                       </p>
                     </div>
@@ -308,7 +308,7 @@ const withdrawEarnings2 = async () => {
                     }}
                   >
                     <Icon
-                      style={{ margin: 'auto', color: 'white' }}
+                      style={{ margin: 'auto' }}
                       name='file outline'
                       size='massive'
                       onClick={() => setOpenmodal(true)}
@@ -379,36 +379,35 @@ const withdrawEarnings2 = async () => {
             <div
               style={{
                 borderLeft: '1px solid #999',
-                padding: '25px',
-                color: 'white'
+                padding: '25px'
               }}
             >
               <Form>
                 <Form.Field>
-                  <label style={{ color: 'white' }}>Title</label>
+                  <label className="blacktext">Title</label>
                   <input
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   />
                 </Form.Field>
                 <Form.Field>
-                  <label style={{ color: 'white' }}>Description</label>
+                  <label className="blacktext">Description</label>
                   <input
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                   />
                 </Form.Field>
                 <Form.Field>
-                    <span style={{color:'white'}}>Free? </span>
+                    <span className="blacktext">Free? </span>
                   <Checkbox
-                    style={{ color: 'white' }}
+                    className="blacktext"
                     checked={free} 
                     onClick={() => setFree(!free)}
                   />             
                 </Form.Field>
                 {!free ? (
                   <Form.Field>
-                    <label style={{ color: 'white' }}>
+                    <label className="blacktext">
                       Price for this content (in Eth)
                     </label>
                     <input
@@ -473,7 +472,7 @@ const withdrawEarnings2 = async () => {
                           }}
                         >
                           <Icon
-                            style={{ margin: 'auto', color: 'white' }}
+                            style={{ margin: 'auto' }}
                             name='file outline'
                             size='massive'
                             onClick={() => setOpenmodal(true)}
@@ -528,7 +527,7 @@ const withdrawEarnings2 = async () => {
                                 }}
                               >
                                 <Icon
-                                  style={{ margin: 'auto', color: 'white' }}
+                                  style={{ margin: 'auto' }}
                                   name='file outline'
                                   size='massive'
                                   onClick={() => setOpenmodal(true)}
