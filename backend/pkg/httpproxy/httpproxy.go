@@ -151,6 +151,44 @@ func Run(node *libp2pnode.Node, serverAddrInfo *peer.AddrInfo) {
 		return
 	})
 
+	/*
+	Query
+	curl -i -k -H "Content-Type: application/json" -d '{"requesterId":"testRequester01", "type":"query", "jsonInput":"{\"collection\":\"ContentData\", \"fieldPath\":\"ownerId\", \"operation\":\"Eq\", \"value\":\"testowner01\"}"}' http://localhost:8888/api/json
+	Download
+	curl -i -k -H "Content-Type: application/json" -d '{"requesterId":"testRequester01", "type":"download", "jsonInput":"{\"requesterId\":\"testRequester01\", \"bucketKey\":\"bafzbeibbpbqs6oizlyg7dh7tkjxmlldp3l2xdg5yghbtw4ehxl2xiwkyba\"}"}' http://localhost:8888/api/json
+	 */
+	router.POST("/api/json", func(c *gin.Context) {
+		var jsonData pb.JsonData
+		if err := c.ShouldBindJSON(&jsonData); err != nil {
+			err = commontools.Errorf(err, "c.ShouldBindJSON failed")
+			logger.Error(err)
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		logger.Infof("jsonData: %+v", jsonData)
+		msgId, err := node.SendJsonAPITo(serverAddrInfo.ID, &jsonData)
+		if err != nil {
+			err = commontools.Errorf(err, "node.SendJsonAPITo failed")
+			logger.Error(err)
+			c.JSON(http.StatusInternalServerError, err)
+			return
+		}
+
+		logger.Infof("msgId: %+v, waiting for response", msgId)
+		resp := <-node.JsonResponseCh
+		for ; resp.MessageData.Id != msgId; resp = <-node.JsonResponseCh {
+		}
+		logger.Infof("received response: %+v", resp.ResponseData)
+
+		if resp.ResponseData.Code != http.StatusOK {
+			c.JSON(int(resp.ResponseData.Code), resp.ResponseData.Err)
+			return
+		}
+		c.JSON(int(resp.ResponseData.Code), resp)
+		return
+	})
+
 	logger.Infof("httpproxy running at :8888")
 	router.Run(":8888")
 }

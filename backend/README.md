@@ -57,3 +57,10 @@ On another terminal
 ```
 curl -X POST http://localhost:8888/api/download/testrequester01/bafzbeibbpbqs6oizlyg7dh7tkjxmlldp3l2xdg5yghbtw4ehxl2xiwkyba
 ```
+
+Database API
+JSON query
+```
+q := db.Where("ownerId").Eq("testowner02")
+{"Ands":[{"FieldPath":"ownerId","Operation":0,"Value":{"String":"testowner02","Bool":null,"Float":null}}],"Ors":null,"Sort":{"FieldPath":"","Desc":false},"Index":""}
+```

@@ -44,16 +44,16 @@ func (e *DownloadProtocol) getDownloadResponseWithError(req *pb.DownloadRequest,
 	}
 }
 
-func (e *DownloadProtocol) GetContentDataRecordWithDownloadRequest(req *pb.DownloadRequest) (*pb.ContentData, error) {
+func GetContentDataRecordWithDownloadData(data *pb.DownloadData) (*pb.ContentData, error) {
 	dummy := &pb.ContentData{}
 	var res interface{}
 	var err error
 
-	if len(req.DownloadData.BucketKey) > 0 {
-		q := db.Where("bucketKey").Eq(req.DownloadData.BucketKey)
+	if len(data.BucketKey) > 0 {
+		q := db.Where("bucketKey").Eq(data.BucketKey)
 		res, err = textilehelper.QueryContentDB(q, dummy)
-	} else if len(req.DownloadData.PreviewUrl) > 0 {
-		q := db.Where("previewUrl").Eq(req.DownloadData.PreviewUrl)
+	} else if len(data.PreviewUrl) > 0 {
+		q := db.Where("previewUrl").Eq(data.PreviewUrl)
 		res, err = textilehelper.QueryContentDB(q, dummy)
 	}
 
@@ -79,9 +79,9 @@ func (e *DownloadProtocol) processDownloadRequest(req *pb.DownloadRequest) *pb.D
 	receivedAt := commontools.GetTimeStampMillisecond()
 
 	//Look up ContentData from Thread
-	contentData, err := e.GetContentDataRecordWithDownloadRequest(req)
+	contentData, err := GetContentDataRecordWithDownloadData(req.DownloadData)
 	if err != nil {
-		return e.getDownloadResponseWithError(req, http.StatusInternalServerError, commontools.Errorf(err, "e.GetContentDataRecordWithDownloadRequest failed"))
+		return e.getDownloadResponseWithError(req, http.StatusInternalServerError, commontools.Errorf(err, "e.GetContentDataRecordWithDownloadData failed"))
 	}
 
 	//TODO: check smart contract for access control

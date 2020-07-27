@@ -2,8 +2,10 @@ package textilehelper_test
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/Guer-co/hackfs-mdc/backend/pkg/common"
 	pb "github.com/Guer-co/hackfs-mdc/backend/pkg/libp2pnode/pb"
+	"github.com/Guer-co/hackfs-mdc/backend/pkg/models/jsonapi"
 	"github.com/Guer-co/hackfs-mdc/backend/pkg/textilehelper"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -52,6 +54,10 @@ var _ = Describe("Textilehelper", func() {
 	Describe("QueryContentDB", func() {
 		It("Should return instances from query correctly", func() {
 			q := db.Where("ownerId").Eq(testContentData.OwnerId)
+			logger.Infof("q: %+v", q)
+			queryBytes, err := json.Marshal(q)
+			Expect(err).To(BeNil())
+			logger.Infof("queryBytes: %s", queryBytes)
 			dummy := &pb.ContentData{}
 			res, err := textilehelper.QueryContentDB(q, dummy)
 			Expect(err).To(BeNil())
@@ -60,6 +66,27 @@ var _ = Describe("Textilehelper", func() {
 			Expect(ok).To(BeTrue())
 			Expect(len(datas)).Should(BeNumerically(">", 0))
 			logger.Infof("len %d, data0: %+v", len(datas), datas[0])
+		})
+	})
+	Describe("QueryWithJsonApiQuery", func() {
+		It("Should return instances from query correctly", func() {
+			jq := jsonapi.Query{
+				Collection: "ContentData",
+				FieldPath:  "ownerId",
+				Operation:  "Eq",
+				Value:      testContentData.OwnerId,
+			}
+			res, err := textilehelper.QueryWithJsonApiQuery(jq)
+			Expect(err).To(BeNil())
+			Expect(res).NotTo(BeNil())
+			datas, ok := res.([]*pb.ContentData)
+			Expect(ok).To(BeTrue())
+			Expect(len(datas)).Should(BeNumerically(">", 0))
+			logger.Infof("len %d, data0: %+v", len(datas), datas[0])
+			//outputJsonData, err := json.Marshal(datas)
+			//Expect(err).To(BeNil())
+			//logger.Infof("outputJsonData: %s", outputJsonData)
+			//example outputJsonData [{"ownerId":"testowner02","fileName":"test01.png","fileType":"image","fileSize":500,"description":"test image","threadKey":"bafktw6svx7iwwtrzcnyzdmuc3yfzbvmdgg6td7cezp7cp7bye4hmzkq","bucketKey":"bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","encryptedUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","previewUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","receivedAt":1595137568000,"updatedAt":1595137568200},{"ownerId":"testowner02","fileName":"test01.png","fileType":"image","fileSize":500,"description":"test image","threadKey":"bafktw6svx7iwwtrzcnyzdmuc3yfzbvmdgg6td7cezp7cp7bye4hmzkq","bucketKey":"bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","encryptedUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","previewUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","receivedAt":1595137568000,"updatedAt":1595137568200},{"ownerId":"testowner02","fileName":"test01.png","fileType":"image","fileSize":500,"description":"test image","threadKey":"bafktw6svx7iwwtrzcnyzdmuc3yfzbvmdgg6td7cezp7cp7bye4hmzkq","bucketKey":"bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","encryptedUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","previewUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","receivedAt":1595137568000,"updatedAt":1595137568200},{"ownerId":"testowner02","fileName":"test01.png","fileType":"image","fileSize":500,"description":"test image","threadKey":"bafktw6svx7iwwtrzcnyzdmuc3yfzbvmdgg6td7cezp7cp7bye4hmzkq","bucketKey":"bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","encryptedUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","previewUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","receivedAt":1595137568000,"updatedAt":1595137568200},{"ownerId":"testowner02","fileName":"test01.png","fileType":"image","fileSize":500,"description":"test image","threadKey":"bafktw6svx7iwwtrzcnyzdmuc3yfzbvmdgg6td7cezp7cp7bye4hmzkq","bucketKey":"bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","encryptedUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","previewUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","receivedAt":1595137568000,"updatedAt":1595137568200},{"ownerId":"testowner02","fileName":"test01.png","fileType":"image","fileSize":500,"description":"test image","threadKey":"bafktw6svx7iwwtrzcnyzdmuc3yfzbvmdgg6td7cezp7cp7bye4hmzkq","bucketKey":"bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","encryptedUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","previewUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","receivedAt":1595137568000,"updatedAt":1595137568200},{"ownerId":"testowner02","fileName":"test01.png","fileType":"image","fileSize":500,"description":"test image","threadKey":"bafktw6svx7iwwtrzcnyzdmuc3yfzbvmdgg6td7cezp7cp7bye4hmzkq","bucketKey":"bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","encryptedUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","previewUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","receivedAt":1595137568000,"updatedAt":1595137568200},{"ownerId":"testowner02","fileName":"test01.png","fileType":"image","fileSize":500,"description":"test image","threadKey":"bafktw6svx7iwwtrzcnyzdmuc3yfzbvmdgg6td7cezp7cp7bye4hmzkq","bucketKey":"bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","encryptedUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","previewUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","receivedAt":1595137568000,"updatedAt":1595137568200}]
 		})
 	})
 	XDescribe("CreateBucketAndPushData", func() {
