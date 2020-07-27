@@ -41,10 +41,11 @@ const Publish = () => {
   const [balance, setBalance] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [price, setPrice] = useState('0');
+  const [price, setPrice] = useState(0);
   const [free, setFree] = useState(true);
+  let cbalance;  
 
-  const GatewayContractObj = GatewayContractObjSetup();
+  const GatewayContractObj = GatewayContractObjSetup(dapp.web3);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -71,7 +72,6 @@ const Publish = () => {
           setContentarray(contentaddresses);
         }
       }
-      console.log(contentarray);
       if (contentarray.length > 0 && allcontent.length === 0) {
         const contentdetails = async () => {
           let temparray = [];
@@ -126,7 +126,7 @@ const Publish = () => {
         filetype,
         title,
         description,
-        true,
+        free,
         price
       )
       .send({ from: dapp.address })
@@ -151,6 +151,26 @@ const Publish = () => {
         console.log(error);
       });
   };
+
+const withdrawEarnings2 = async () => {
+    dapp.web3.eth.getBalance(myprofile[0], function(err, result) {
+    if (err) {
+        console.log(err)
+    } else {
+        cbalance = result;
+        console.log(result)
+    }
+    })
+    await GatewayContractObj.methods
+    .doTransferFunds(cbalance)
+    .send({ from: dapp.address })
+    .then(function (result) {
+        console.log(result);
+    })
+    .catch(function (error) {
+        console.log(error);
+    });
+};
 
   const doReceiveFunds = () => {
     dapp.web3.eth.sendTransaction(
@@ -179,7 +199,7 @@ const Publish = () => {
             <h3>
               Publisher Dashboard P3{' '}
               <img
-                src='https://bafzbeidknbjj5i2q76banhbj37etrruoeogtmbd7qeycyxuvtqpazvnmoa.ipns.hub.textile.io/p3.png'
+                src='https://hub.textile.io/ipns/bafzbeid2hz44kd5zpnjbjeinjyyqxpbfgw5crazvmhf7tkmj4nfxy2hb4q/thumbnail.jpg'
                 style={{
                   width: '50px',
                   backgroundColor: 'white',
@@ -268,7 +288,7 @@ const Publish = () => {
               )
             ) : (
               <>
-                {filetype == 'image/png' || filetype == 'image/jpg' ? (
+                {filetype == 'image/png' || filetype == 'image/jpg' || filetype == 'image/jpeg' ? (
                   <img
                     style={{
                       border: '1px dotted #999',
@@ -330,7 +350,7 @@ const Publish = () => {
                   trigger={
                     <Button
                       icon='external square'
-                      onClick={() => withdrawEarnings()}
+                      onClick={() => withdrawEarnings2()}
                     />
                   }
                 />
@@ -379,14 +399,12 @@ const Publish = () => {
                   />
                 </Form.Field>
                 <Form.Field>
+                    <span style={{color:'white'}}>Free? </span>
                   <Checkbox
                     style={{ color: 'white' }}
-                    label='Free'
-                    defaultChecked={free}
-                    onChange={(e) => {
-                      setFree(!e.target.checked);
-                    }}
-                  />
+                    checked={free} 
+                    onClick={() => setFree(!free)}
+                  />             
                 </Form.Field>
                 {!free ? (
                   <Form.Field>
@@ -419,6 +437,7 @@ const Publish = () => {
             <hr />
             <div style={{ display: 'flex' }}>
               {allcontent.map((result) => {
+                  console.log(result);
                 return (
                   <div className='imagebox' key={result[0]}>
                     <div
@@ -535,8 +554,7 @@ const Publish = () => {
                               {modalfiledate}
                             </Moment>
                             <br />
-                            {modalfilefree ? 'Free content' : 'Paid content'}
-                            {!modalfilefree ? '<br/>Price: {modalfilefee}' : ''}
+                            {modalfilefree ? 'Free content' : 'Price: ' + modalfilefee + ' ETH'}
                           </p>
                           <Button onClick={() => setOpenmodal(false)}>
                             close

@@ -88,13 +88,17 @@ contract Publisher {
     }
 
     function withdrawEarnings() public payable {
-        require(
-            msg.sender == ownerAddress,
-            "You are unauthorized to withdraw funds from this publishers account"
-        );
-        (msg.sender).transfer(address(this).balance);
+        //require(
+        //    msg.sender == ownerAddress,
+        //    "You are unauthorized to withdraw funds from this publishers account"
+        //);
+        payable(msg.sender).call.value(address(this).balance)("");
     }
 
+    function transferFunds(uint256 _amount) payable external {
+        payable(msg.sender).call.value(_amount);
+    }
+    
     ////// ******* Here we start to write functions that interact with the Content.sol ******* //////
 
     /**

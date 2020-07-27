@@ -8,25 +8,26 @@ body {
     color:white;
 }
 
-.hex {
-    margin: 0 auto;
+.contentholder {
+    margin: 0 20px;
     height:200px;
     width:200px;
     border-radius:50px;
     text-align:center;
     vertical-align:middle;
     box-shadow:black 2px 2px 2px;
+    cursor:pointer;
 }
 
 .freeflag {
     background-color:green;
     position:absolute;
     bottom:20px;
-    right:0px;
+    right:20px;
     border-radius:5px;
     padding:5px;
     opacity:.8;
-    cursor:default;
+    cursor:pointer;
     box-shadow:black 2px 2px 2px;
 
 }
@@ -37,7 +38,7 @@ body {
     width:90%;
     vertical-align:middle;
     display:inline-block;
-    cursor:default;
+    cursor:pointer;
     border-radius:5px;
     margin-top:10px;
 }

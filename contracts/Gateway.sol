@@ -70,6 +70,10 @@ contract Gateway {
         Publisher(publisherContract[msg.sender]).withdrawEarnings();
     }
 
+    function doTransferFunds(uint256 _amount) public payable {
+        Publisher(publisherContract[msg.sender]).transferFunds(_amount);
+    }
+
     /**********************************************************************************************/
 
     //THESE ARE CONTENT FUNCTIONS// //THESE ARE CONTENT FUNCTIONS// //THESE ARE CONTENT FUNCTIONS//
