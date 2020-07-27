@@ -139,20 +139,7 @@ const Publish = () => {
       });
   };
 
-  const withdrawEarnings = async () => {
-    await GatewayContractObj.methods
-      .withdrawEarnings()
-      .send({ from: dapp.address })
-      .then(function (result) {
-        console.log(result);
-        window.location.reload(false);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  };
-
-const withdrawEarnings2 = async () => {
+const withdrawEarnings = async () => {
     dapp.web3.eth.getBalance(myprofile[0], function(err, result) {
     if (err) {
         console.log(err)
@@ -350,7 +337,7 @@ const withdrawEarnings2 = async () => {
                   trigger={
                     <Button
                       icon='external square'
-                      onClick={() => withdrawEarnings2()}
+                      onClick={() => withdrawEarnings()}
                     />
                   }
                 />
@@ -436,7 +423,6 @@ const withdrawEarnings2 = async () => {
             <hr />
             <div style={{ display: 'flex' }}>
               {allcontent.map((result) => {
-                  console.log(result);
                 return (
                   <div className='imagebox' key={result[0]}>
                     <div

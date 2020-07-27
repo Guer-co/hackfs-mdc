@@ -371,13 +371,13 @@ useEffect(() => {
   );
 };
 
-//export async function getStaticProps() {
-//  const GatewayContractObj = await GatewayObjSetup();
-//  const contentContracts = await GatewayContractObj.methods.getContentContracts().call();
-//
-//  return {
-//    props: { contentContracts }
-//  }    
-//}
+export async function getStaticProps() {
+  const GatewayContractObj = await GatewayObjSetup();
+  const contentContracts = await GatewayContractObj.methods.getContentContracts().call();
+
+  return {
+    props: { contentContracts }
+  }    
+}
 
 export default Index;
