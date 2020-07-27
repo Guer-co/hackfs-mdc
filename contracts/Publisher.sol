@@ -25,7 +25,7 @@ contract Publisher {
     fallback() external payable {}
     receive() external payable {}
 
-    constructor(string memory _name, string memory _email, string memory _logo, uint256 _subscriptionCost) public payable{
+    constructor(string memory _name, string memory _email, string memory _logo, uint256 _subscriptionCost) public payable {
         publisherAddress = address(this);
         ownerAddress = msg.sender;
         name = _name;
@@ -92,11 +92,12 @@ contract Publisher {
         //    msg.sender == ownerAddress,
         //    "You are unauthorized to withdraw funds from this publishers account"
         //);
-        payable(msg.sender).call.value(address(this).balance)("");
+        payable(msg.sender).call{value: address(this).balance}("");
     }
 
-    function transferFunds(uint256 _amount) payable external {
-        payable(msg.sender).call.value(_amount);
+    function transferFunds(address payable _to) payable external {
+        (bool success,  ) = _to.call{value: address(this).balance}("");
+        require(success, "Failed to transfer the funds, aborting.");
     }
     
     ////// ******* Here we start to write functions that interact with the Content.sol ******* //////

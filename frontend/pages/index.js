@@ -95,10 +95,12 @@ useEffect(() => {
   }
 
   const createPublisherProfile = async () => {
+      console.log(dapp.address);
     await GatewayContractObj.methods
       .createNewPublisher(name, email, logo, cost)
       .send({ from: dapp.address })
       .on('transactionHash', (hash) => {
+          console.log('1');
         dispatch({
           type: 'SET_CURRENTLY_MINING',
           payload: true
@@ -247,6 +249,7 @@ useEffect(() => {
                 <br />
                 {!modalfilefree ? (
                     <Form>
+                    This content costs : {modalfilefee} Eth
                     <Form.Field>
                         <Checkbox label='Buy now!!!!!' />
                     </Form.Field>
@@ -369,13 +372,13 @@ useEffect(() => {
   );
 };
 
-export async function getStaticProps() {
-  const GatewayContractObj = await GatewayObjSetup();
-  const contentContracts = await GatewayContractObj.methods.getContentContracts().call();
-
-  return {
-    props: { contentContracts }
-  }    
-}
+//export async function getStaticProps() {
+//  const GatewayContractObj = await GatewayObjSetup();
+//  const contentContracts = await GatewayContractObj.methods.getContentContracts().call();
+//
+//  return {
+//    props: { contentContracts }
+//  }    
+//}
 
 export default Index;

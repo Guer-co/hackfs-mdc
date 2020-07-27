@@ -162,7 +162,7 @@ const withdrawEarnings2 = async () => {
     }
     })
     await GatewayContractObj.methods
-    .doTransferFunds(cbalance)
+    .doTransferFunds(dapp.address)
     .send({ from: dapp.address })
     .then(function (result) {
         console.log(result);
@@ -360,7 +360,7 @@ const withdrawEarnings2 = async () => {
                     doReceiveFunds();
                   }}
                 >
-                  Test send $
+                  Test send $ to contract
                 </button>
               </h2>
               <br />

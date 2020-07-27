@@ -70,8 +70,8 @@ contract Gateway {
         Publisher(publisherContract[msg.sender]).withdrawEarnings();
     }
 
-    function doTransferFunds(uint256 _amount) public payable {
-        Publisher(publisherContract[msg.sender]).transferFunds(_amount);
+    function doTransferFunds(address payable _to) public payable {
+        Publisher(publisherContract[msg.sender]).transferFunds(_to);
     }
 
     /**********************************************************************************************/
