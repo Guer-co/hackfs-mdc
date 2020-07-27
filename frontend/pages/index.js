@@ -79,27 +79,29 @@ const Index = () => {
     loadProfile();
   }, [dapp.address, myprofile, content, contentinfo]);
 
-    return <Card.Group items={items} />;
-  };
-
   const createPublisherProfile = async () => {
-    await GatewayContractObj.methods
-      .createNewPublisher(name, email, logo, cost)
-      .send({ from: dapp.address })
-      .on('transactionHash', (hash) => {
-        dispatch({
-          type: 'SET_CURRENTLY_MINING',
-          payload: true
+    try {
+      await GatewayContractObj.methods
+        .createNewPublisher(name, email, logo, cost)
+        .send({ from: dapp.address })
+        .on('transactionHash', (hash) => {
+          dispatch({
+            type: 'SET_CURRENTLY_MINING',
+            payload: true
+          });
+        })
+        .on('receipt', (hash) => {
+          dispatch({
+            type: 'SET_CURRENTLY_MINING',
+            payload: false
+          });
         });
-      })
-      .on('receipt', (hash) => {
-        dispatch({
-          type: 'SET_CURRENTLY_MINING',
-          payload: false
-        });
-      });
-    setProfilemodal(false);
-    window.location.href = '/dashboard';
+      setProfilemodal(false);
+      window.location.href = '/dashboard';      
+    } catch (err) {
+      setError(err.message);
+      setTimeout(() => setError(''), 5000);
+    }
   };
 
   const createUserProfile = async () => {
