@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using TEELib.Primitives;
 using TEELib.Storage;
@@ -34,7 +34,7 @@ namespace TEEConsole
             DecryptFile,
 
             /// <summary>
-            /// 
+            /// Encrypts and uploads file to a serverless environment
             /// </summary>
             UploadToServerless,
 
@@ -71,6 +71,8 @@ namespace TEEConsole
                     return ActionType.EncryptFile;
                 case "-de":
                     return ActionType.DecryptFile;
+                case "-us":
+                    return ActionType.UploadToServerless;
                 default:
                     throw new NotSupportedException($"Invalid action flag '{arg}'.");
             }
@@ -105,9 +107,11 @@ namespace TEEConsole
                 case ActionType.UploadFile:
                 case ActionType.EncryptFile:
                 case ActionType.DecryptFile:
+                case ActionType.UploadToServerless:
                     action.SourceFilePath = CheckFile(args[1]);
 
-                    if (action.ActionType == ActionType.EncryptFile)
+                    if (action.ActionType == ActionType.EncryptFile ||
+                        action.ActionType == ActionType.UploadToServerless)
                     {
                         if (args.Length < 4)
                         {
@@ -190,6 +194,20 @@ namespace TEEConsole
             Console.WriteLine($"Successfully decrypted file '{action.SourceFilePath}'.");
         }
 
+        private async Task UploadFileToServerlessAsync(Action action)
+        {
+            await EncryptFileAsync(action);
+
+            var metadata = new Dictionary<string, string>();
+            metadata.Add("key", action.Key);
+            metadata.Add("vector", action.Vector);
+
+            var service = new AzureBlobService();
+            var etag = await service.UploadFileAsync(action.SourceFilePath, metadata);
+
+            Console.WriteLine($"Successfully uploaded file '{action.SourceFilePath}' to Azure.");
+        }
+
         static async Task Main(string[] args)
         {            
             try
@@ -212,10 +230,12 @@ namespace TEEConsole
                     case ActionType.DecryptFile:
                         await program.DecryptFileAsync(action);
                         break;
+                    case ActionType.UploadToServerless:
+                        await program.UploadFileToServerlessAsync(action);
+                        break;
                     default:
                         throw new NotSupportedException("Undefined action.");
                 }
-
                 
                 Console.WriteLine("Trusted Execution Environment CLI completed.");
             }
