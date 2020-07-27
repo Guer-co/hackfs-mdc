@@ -67,7 +67,11 @@ return
 curl -X POST http://localhost:8888/api/download/testrequester01/bafzbeibbpbqs6oizlyg7dh7tkjxmlldp3l2xdg5yghbtw4ehxl2xiwkyba
 ```
 ```
+Using bucketKey 
 curl -i -k -H "Content-Type: application/json" -d '{"requesterId":"testRequester01", "type":"download", "jsonInput":"{\"requesterId\":\"testRequester01\", \"bucketKey\":\"bafzbeibbpbqs6oizlyg7dh7tkjxmlldp3l2xdg5yghbtw4ehxl2xiwkyba\"}"}' http://localhost:8888/api/json
+
+Using previewUrl
+curl -i -k -H "Content-Type: application/json" -d '{"requesterId":"testRequester01", "type":"download", "jsonInput":"{\"requesterId\":\"testRequester01\", \"previewUrl\":\"https:\/\/hub.textile.io\/ipns\/bafzbeics7vq3bg4tufogmczwtzsdb5cfvbxc3lz7ismpom3bqpagnslpry\/thumbnail.jpg\"}"}' http://localhost:8888/api/json
 
 return
 {"messageData":{"clientVersion":"pay3-server-node/0.0.1","timestamp":1595816668,"id":"01EE71BTQ9VPZF36XBHT7E6F9S","nodeId":"QmR4adopEs97RKS737SCaT6jfCaPExbAN2ohE7nzhyLyLu","nodePubKey":"CAASpgIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC51cbCBoEhvZt61FmlGgWcbS7A3jPJuWRY0RZN8UKDkn79vkSubywbZQ4QUh9ivsKiIV82UE5p8qsJ7dtEFN1Jde+u3PtEeLhwLb5iwqumUO80Kjg6bkWsGG2v1vyAGu3VqqVNTmQ/JQ7xQ6yhcIXleFM61+wXHJMa9p5EA0dh9SAjILBHnlZIQqzsRDjLqWdaDwYiP96DltiGNtj3RhxTuHgUCHSJF5FI4x9dQMpAewqsdwhZC461g8RGMqUpopLDhflyZWLfzmLQ5XP6Xcl9EiwsB2kG8Dn/XBLeq1qDZlM6A8XVKL8MRGT8oybUOcNHkhnfkFwLExe3cC6AQeZzAgMBAAE=","sign":"KNq/vGDvNgChD5aGJZ7X0PYNaczrNhb79PdK7IdzO3AbFNo8feol7m8O/qxIknK0ChDeILqLZjNo3yvglYpy3d5H3wqa3/CT2NLFKJLlhArj8BCgxRYOQnlkBdDGMlvFfIyQI46wUBpJGtfBEp4u4ij/JJB86Xlw+scDmMzZXpRpRJWmAMGAF+mdqETLmVvqezaN8+jx40TbjsWfW0612BBow/GJ5xcrwdifs7H2yAz9wbDb2cZ0zSiLFDYVj3JYKoPbnnN07IUEQJdsffAER+2VXCRNwelC3/ibgAocc+mgxJimpbLeuoPYTC/DdP/lsvv5R2Cb16+/LOhZNln1gg=="},"responseData":{"code":200},"jsonData":{"requesterId":"testRequester01","type":"download","jsonOutput":"\"...\"","receivedAt":1595816667883,"updatedAt":1595816668276}}
