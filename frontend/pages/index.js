@@ -15,6 +15,20 @@ import {
 import GatewayObjSetup from '../utils/GatewayConstructor';
 import Moment from 'react-moment';
 
+<<<<<<< HEAD
+=======
+const Index = ({ contentContracts }) => {
+  const [{ dapp }, dispatch] = useStateValue();
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setError] = useState('');
+  const [myprofile, setMyprofile] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [logo, setLogo] = useState('');
+  const [cost, setCost] = useState(1);
+  const [profilemodal, setProfilemodal] = useState(true);
+  const [contentmodal, setContentmodal] = useState(false);
+>>>>>>> 7ea911061d9762c8eea717ae3a4b5ef85a590ab3
 
 const Index = ({ contentContracts }) => {
 const [{ dapp }, dispatch] = useStateValue();
@@ -80,11 +94,9 @@ useEffect(() => {
 }, [dapp.address, myprofile, content,contentinfo]);
 
   const renderContent = () => {
-    const items = contentContracts.map(async address => {
-      const content = await GatewayContractObj.methods.getContentInfo(address).call();
-
+    const items = contentContracts.map(address => {      
       return {
-        header: content.title,
+        header: address, // tried to set this to the contractTitle but ran into some issues, gonna leave it like this for now. 
         description: (
           <Link href={`/content/${address}`}>
             <a>View Content</a>
@@ -93,7 +105,7 @@ useEffect(() => {
         fluid: true
       }
     });
-
+    
     return <Card.Group items={items} />;
   }
 
@@ -140,6 +152,7 @@ useEffect(() => {
   return (
     <Layout style={{ backgroundColor: '#041727' }}>
       {errorMessage && <Message error header='Oops!' content={errorMessage} />}
+<<<<<<< HEAD
       <Grid centered>
         <Grid.Column width={16}>
           <div style={{ textAlign: 'center' }}>
@@ -368,6 +381,19 @@ useEffect(() => {
             </Modal.Description>
             </Modal.Content>
         </Modal>
+=======
+      <Link href='/dashboard'>
+        <a>
+          <Button
+            content='Start Publishing!'
+            icon='add circle'
+            primary
+            floated='right'
+          />
+        </a>
+      </Link>
+      {renderContent()}
+>>>>>>> 7ea911061d9762c8eea717ae3a4b5ef85a590ab3
     </Layout>
   );
 };
@@ -376,8 +402,6 @@ export async function getStaticProps() {
   const GatewayContractObj = await GatewayObjSetup();
   const contentContracts = await GatewayContractObj.methods.getContentContracts().call();
 
-  console.log(contentContracts);
-  
   return {
     props: { contentContracts }
   }    
