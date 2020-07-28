@@ -181,7 +181,7 @@ const Index = () => {
                     <div
                       className='contentholder'
                       style={{
-                        backgroundImage: 'url(' + result[0] + ')',
+                        backgroundImage: 'url(' + result[1] + ')',
                         backgroundPosition: 'center'
                       }}
                     >
