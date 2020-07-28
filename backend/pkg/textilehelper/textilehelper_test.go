@@ -2,8 +2,10 @@ package textilehelper_test
 
 import (
 	"context"
+	"encoding/json"
 	"github.com/Guer-co/hackfs-mdc/backend/pkg/common"
-	"github.com/Guer-co/hackfs-mdc/backend/pkg/models"
+	pb "github.com/Guer-co/hackfs-mdc/backend/pkg/libp2pnode/pb"
+	"github.com/Guer-co/hackfs-mdc/backend/pkg/models/jsonapi"
 	"github.com/Guer-co/hackfs-mdc/backend/pkg/textilehelper"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
@@ -18,12 +20,13 @@ var _ = Describe("Textilehelper", func() {
 	textilehelper.Setup(context.Background())
 	textilehelper.SetupTesting() //changing clients.DBThreadId to testDBThreadId
 
-	testContentData := models.ContentData{
-		OwnerId:      "testowner01",
-		FileName:     "test01.png",
-		FileType:     "image",
-		FileSize:     500,
-		Description:  "test image",
+	testContentData := pb.ContentData{
+		//Id:                   "",
+		OwnerId:              "testowner02",
+		FileName:             "test01.png",
+		FileType:             "image",
+		FileSize:             500,
+		Description:          "test image",
 		ThreadKey:    "bafktw6svx7iwwtrzcnyzdmuc3yfzbvmdgg6td7cezp7cp7bye4hmzkq",
 		BucketKey:    "bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4",
 		EncryptedUrl: "https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4",
@@ -51,17 +54,42 @@ var _ = Describe("Textilehelper", func() {
 	Describe("QueryContentDB", func() {
 		It("Should return instances from query correctly", func() {
 			q := db.Where("ownerId").Eq(testContentData.OwnerId)
-			dummy := &models.ContentData{}
+			logger.Infof("q: %+v", q)
+			queryBytes, err := json.Marshal(q)
+			Expect(err).To(BeNil())
+			logger.Infof("queryBytes: %s", queryBytes)
+			dummy := &pb.ContentData{}
 			res, err := textilehelper.QueryContentDB(q, dummy)
 			Expect(err).To(BeNil())
 			Expect(res).NotTo(BeNil())
-			datas, ok := res.([]*models.ContentData)
+			datas, ok := res.([]*pb.ContentData)
 			Expect(ok).To(BeTrue())
 			Expect(len(datas)).Should(BeNumerically(">", 0))
 			logger.Infof("len %d, data0: %+v", len(datas), datas[0])
 		})
 	})
-	Describe("CreateBucketAndPushData", func() {
+	Describe("QueryWithJsonApiQuery", func() {
+		It("Should return instances from query correctly", func() {
+			jq := jsonapi.Query{
+				Collection: "ContentData",
+				FieldPath:  "ownerId",
+				Operation:  "Eq",
+				Value:      testContentData.OwnerId,
+			}
+			res, err := textilehelper.QueryWithJsonApiQuery(jq)
+			Expect(err).To(BeNil())
+			Expect(res).NotTo(BeNil())
+			datas, ok := res.([]*pb.ContentData)
+			Expect(ok).To(BeTrue())
+			Expect(len(datas)).Should(BeNumerically(">", 0))
+			logger.Infof("len %d, data0: %+v", len(datas), datas[0])
+			//outputJsonData, err := json.Marshal(datas)
+			//Expect(err).To(BeNil())
+			//logger.Infof("outputJsonData: %s", outputJsonData)
+			//example outputJsonData [{"ownerId":"testowner02","fileName":"test01.png","fileType":"image","fileSize":500,"description":"test image","threadKey":"bafktw6svx7iwwtrzcnyzdmuc3yfzbvmdgg6td7cezp7cp7bye4hmzkq","bucketKey":"bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","encryptedUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","previewUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","receivedAt":1595137568000,"updatedAt":1595137568200},{"ownerId":"testowner02","fileName":"test01.png","fileType":"image","fileSize":500,"description":"test image","threadKey":"bafktw6svx7iwwtrzcnyzdmuc3yfzbvmdgg6td7cezp7cp7bye4hmzkq","bucketKey":"bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","encryptedUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","previewUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","receivedAt":1595137568000,"updatedAt":1595137568200},{"ownerId":"testowner02","fileName":"test01.png","fileType":"image","fileSize":500,"description":"test image","threadKey":"bafktw6svx7iwwtrzcnyzdmuc3yfzbvmdgg6td7cezp7cp7bye4hmzkq","bucketKey":"bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","encryptedUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","previewUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","receivedAt":1595137568000,"updatedAt":1595137568200},{"ownerId":"testowner02","fileName":"test01.png","fileType":"image","fileSize":500,"description":"test image","threadKey":"bafktw6svx7iwwtrzcnyzdmuc3yfzbvmdgg6td7cezp7cp7bye4hmzkq","bucketKey":"bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","encryptedUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","previewUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","receivedAt":1595137568000,"updatedAt":1595137568200},{"ownerId":"testowner02","fileName":"test01.png","fileType":"image","fileSize":500,"description":"test image","threadKey":"bafktw6svx7iwwtrzcnyzdmuc3yfzbvmdgg6td7cezp7cp7bye4hmzkq","bucketKey":"bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","encryptedUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","previewUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","receivedAt":1595137568000,"updatedAt":1595137568200},{"ownerId":"testowner02","fileName":"test01.png","fileType":"image","fileSize":500,"description":"test image","threadKey":"bafktw6svx7iwwtrzcnyzdmuc3yfzbvmdgg6td7cezp7cp7bye4hmzkq","bucketKey":"bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","encryptedUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","previewUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","receivedAt":1595137568000,"updatedAt":1595137568200},{"ownerId":"testowner02","fileName":"test01.png","fileType":"image","fileSize":500,"description":"test image","threadKey":"bafktw6svx7iwwtrzcnyzdmuc3yfzbvmdgg6td7cezp7cp7bye4hmzkq","bucketKey":"bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","encryptedUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","previewUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","receivedAt":1595137568000,"updatedAt":1595137568200},{"ownerId":"testowner02","fileName":"test01.png","fileType":"image","fileSize":500,"description":"test image","threadKey":"bafktw6svx7iwwtrzcnyzdmuc3yfzbvmdgg6td7cezp7cp7bye4hmzkq","bucketKey":"bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","encryptedUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","previewUrl":"https://hub.textile.io/ipns/bafzbeiay356ciqdgtkpkzc66b2pswn6arohbzrpztewj3q3bne77macne4","receivedAt":1595137568000,"updatedAt":1595137568200}]
+		})
+	})
+	XDescribe("CreateBucketAndPushData", func() {
 		It("Should return the bucket ipns link correctly", func() {
 			threadKey, bucketKey, ipnsLink, err := textilehelper.CreateBucketAndPushData(common.GetUlid().String(), "test01.txt", []byte("testData01"), true)
 			Expect(err).To(BeNil())
@@ -81,7 +109,7 @@ var _ = Describe("Textilehelper", func() {
 			logger.Infof("threadKey: %v, bucketKey: %v, ipnsLink: %v", threadKey, bucketKey, ipnsLink)
 		})
 	})
-	Describe("PullBytesFromBucket", func() {
+	XDescribe("PullBytesFromBucket", func() {
 		It("Should return the bucket file in bytes correctly", func() {
 			fileBytes, err := ioutil.ReadFile("./test01.png")
 			Expect(err).To(BeNil())

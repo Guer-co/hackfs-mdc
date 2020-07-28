@@ -27,6 +27,7 @@ type Node struct {
 	host.Host     // lib-p2p host
 	*UploadProtocol // upload protocol impl
 	*DownloadProtocol // download protocol impl
+	*JsonProtocol // json api protocol impl
 	// add other protocols here...
 }
 
@@ -35,6 +36,7 @@ func NewNode(host host.Host) *Node {
 	node := &Node{Host: host}
 	node.UploadProtocol = NewUploadProtocol(node)
 	node.DownloadProtocol = NewDownloadProtocol(node)
+	node.JsonProtocol = NewJsonProtocol(node)
 	return node
 }
 
