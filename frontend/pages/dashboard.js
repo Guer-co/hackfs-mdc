@@ -437,7 +437,7 @@ const Publish = () => {
                             height: '125px',
                             margin: '5px'
                           }}
-                          src={result[0]}
+                          src={result[1]}
                         />
                       ) : (
                         <div
@@ -487,7 +487,7 @@ const Publish = () => {
                                   height: '125px',
                                   margin: '5px'
                                 }}
-                                src={result[0]}
+                                src={result[1]}
                               />
                             </a>
                           ) : (
