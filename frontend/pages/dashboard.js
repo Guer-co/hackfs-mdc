@@ -100,16 +100,18 @@ const uploadToIPFS = async () => {
     data.append('file', file);
     setFilename(file.name);
     setFiletype(file.type);
+    data.append('ownerId', myprofile[0]);
+    data.append('description', "Published by " + myprofile[1])
 
-    fetch('http://localhost:8888/api/ipfs', {
+    fetch('http://localhost:8888/api/upload', {
     body: data,
     method: 'POST'
     })
     .then((res) => res.json())
     .then((res) => {
         console.log(res);
-        setFilehash(res);
-        setFilepreview(res);
+        setFilehash(res.bucketKey);
+        setFilepreview(res.previewUrl);
         setLoading(false);
     })
     .catch((err) => {
@@ -268,7 +270,7 @@ return (
                     height: '125px',
                     margin: '5px'
                     }}
-                    src={filehash}
+                    src={filepreview}
                     onClick={() => setOpenmodal(true)}
                 />
                 ) : (
@@ -291,7 +293,7 @@ return (
                 <strong>Name:</strong> {filename}
                 </div>
                 <div id='hash'>
-                <strong>IPFS HASH:</strong> {filehash}
+                <strong>IPNS HASH:</strong> {filehash}
                 </div>
                 <div id='link'>
                 <strong>Link to file:</strong>{' '}
@@ -436,7 +438,7 @@ return (
                             height: '125px',
                             margin: '5px'
                         }}
-                        src={result[0]}
+                        src={result[1]}
                         />
                     ) : (
                         <div
@@ -486,7 +488,7 @@ return (
                                 height: '125px',
                                 margin: '5px'
                                 }}
-                                src={modalfilehash}
+                                src={modalfilepreview}
                             />
                             </a>
                         ) : (
