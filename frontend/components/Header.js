@@ -5,12 +5,9 @@ import { Menu, Message, Icon } from 'semantic-ui-react';
 import MiningIndicator from './MiningIndicator';
 import addrShortener from '../utils/addrShortener';
 import web3 from '../utils/getWeb3';
-import ENS from 'ethereum-ens';
-// import ensLookup from '../utils/ensLookup';
 
 const Header = () => {
   const [{ dapp }, dispatch] = useStateValue();
-  const [ensName, setName] = useState(null);
   const [errorMessage, setError] = useState('');
 
   useEffect(() => {
@@ -36,27 +33,20 @@ const Header = () => {
             type: 'SET_BALANCE',
             payload: balance
           });
-          const ens = new ENS(ethereum);
-          let name = await ens.reverse(address).name();
-          // Check to be sure the reverse record is correct.
-          if (address != (await ens.resolver(name).addr())) {
-            name = null;
-          }
-          setName(name);
         }
         // refreshes the dapp when a different address is selected in metamask
-        ethereum.on('accountsChanged', (accounts) => {
-          if (accounts) {
-            dispatch({
-              type: 'SET_ADDRESS',
-              payload: accounts[0]
-            });
-          } else {
-            dispatch({
-              tyle: 'CLEAR_ACCOUNT'
-            });
-          }
-        });
+        //ethereum.on('accountsChanged', (accounts) => {
+        //  if (accounts) {
+        //    dispatch({
+        //      type: 'SET_ADDRESS',
+        //      payload: accounts[0]
+        //    });
+        //  } else {
+        //    dispatch({
+        //      tyle: 'CLEAR_ACCOUNT'
+        //    });
+        //  }
+        //});
       } catch (err) {
         //setError(err.message);
         //setTimeout(() => setError(''), 3000);
