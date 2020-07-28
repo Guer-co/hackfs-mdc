@@ -15,13 +15,14 @@ contract Content {
     struct ContentInfo {
         string locationHash;
         string previewHash;
-        string name;
+        string filename;
         string fileType;
         string title;
         string description;
         uint256 date;
         bool free;
         uint256 price;
+        string publisherName;
     }
 
     mapping(address => ContentInfo) public Info;
@@ -29,32 +30,35 @@ contract Content {
     fallback() external payable {}
     receive() external payable {}
 
-    constructor(string memory _contentHash, string memory _previewHash, string memory _name, string memory _fileType, string memory _title, string memory _description, bool _free, uint _price) payable public{
+    constructor(string memory _contentHash, string memory _previewHash, string memory _filename, string memory _fileType, string memory _title, string memory _description, bool _free, uint _price, string memory _name) payable public {
         ownerId = msg.sender;
         contractId = address(this);
         Info[contractId].locationHash = _contentHash;
         Info[contractId].previewHash = _previewHash;
-        Info[contractId].name = _name;
+        Info[contractId].filename = _filename;
         Info[contractId].title = _title;
         Info[contractId].description = _description;
         Info[contractId].fileType = _fileType;
         Info[contractId].date = now;
         Info[contractId].free = _free;
         Info[contractId].price = _price;
+        Info[contractId].publisherName = _name;
+        contentWhitelist[msg.sender] = true;
     }
 
-    function getContentDetails() public view returns (string memory, string memory, string memory,string memory, string memory, string memory, uint, bool, uint, address) {
+    function getContentDetails() public view returns (string memory, string memory, string memory,string memory, string memory, string memory, uint, bool, uint, address, string memory) {
         return (
             Info[contractId].locationHash,
             Info[contractId].previewHash,
-            Info[contractId].name,
+            Info[contractId].filename,
             Info[contractId].fileType,
             Info[contractId].title,
             Info[contractId].description,
             Info[contractId].date,
             Info[contractId].free,
             Info[contractId].price,
-            address(this)
+            ownerId,
+            Info[contractId].publisherName
         );
     }
 

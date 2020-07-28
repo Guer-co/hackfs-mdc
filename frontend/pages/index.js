@@ -60,7 +60,7 @@ const Index = () => {
             temparray.push(c);
             });
             setContentinfo(temparray);
-
+            console.log(temparray);
             setContent(getcontent);
         }
 
@@ -181,7 +181,7 @@ const Index = () => {
                     <div
                       className='contentholder'
                       style={{
-                        backgroundImage: 'url(' + result[0] + ')',
+                        backgroundImage: 'url(' + result[1] + ')',
                         backgroundPosition: 'center'
                       }}
                     >
@@ -202,7 +202,6 @@ const Index = () => {
                         style={{ margin: 'auto', color: 'white' }}
                         name='file outline'
                         size='massive'
-                        onClick={() => setOpenmodal(true)}
                       />
                       {result[7] ? <div className='freeflag'>Free!</div> : ''}
                     </div>
@@ -231,14 +230,16 @@ const Index = () => {
                   {modalfiledate}
                 </Moment>
               </h4>
-              {modalfiletype ? (
+              {modalfiletype == 'image/png' ||
+               modalfiletype == 'image/jpg' ||
+               modalfiletype == 'image/jpeg' || 
+               modalfiletype == 'image/gif' ? (
                 <img src={modalfilepreview} />
               ) : (
                 <Icon
                   style={{ margin: 'auto', color: 'white' }}
                   name='file outline'
                   size='massive'
-                  onClick={() => setOpenmodal(true)}
                 />
               )}
               <br />

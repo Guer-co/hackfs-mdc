@@ -55,6 +55,7 @@ const Publish = () => {
           .getPublisherProfile(dapp.address)
           .call({ from: dapp.address });
         setMyprofile(profilefetch);
+        console.log(profilefetch);
         web3.eth.getBalance(profilefetch[0], function (error, result) {
           if (error) {
             console.log(error);
@@ -108,8 +109,8 @@ const Publish = () => {
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
-        setFilehash(res);
-        setFilepreview(res);
+        setFilehash(res.bucketKey);
+        setFilepreview(res.previewUrl);
         setLoading(false);
       })
       .catch((err) => {
@@ -128,7 +129,8 @@ const Publish = () => {
         title,
         description,
         free,
-        price
+        price,
+        myprofile[1]
       )
       .send({ from: dapp.address })
       .then(function (result) {
@@ -290,7 +292,7 @@ const Publish = () => {
                   <strong>Name:</strong> {filename}
                 </div>
                 <div id='hash'>
-                  <strong>IPFS HASH:</strong> {filehash}
+                  <strong>IPNS HASH:</strong> {filehash}
                 </div>
                 <div id='link'>
                   <strong>Link to file:</strong>{' '}
@@ -435,7 +437,7 @@ const Publish = () => {
                             height: '125px',
                             margin: '5px'
                           }}
-                          src={result[0]}
+                          src={result[1]}
                         />
                       ) : (
                         <div
@@ -485,7 +487,7 @@ const Publish = () => {
                                   height: '125px',
                                   margin: '5px'
                                 }}
-                                src={result[0]}
+                                src={result[1]}
                               />
                             </a>
                           ) : (

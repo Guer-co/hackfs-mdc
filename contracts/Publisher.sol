@@ -104,14 +104,10 @@ contract Publisher {
         subscriberTimestamp[_subscriber] = now;
     }
 
-    function withdrawEarnings() public payable {
-        //require(
-        //    msg.sender == ownerAddress,
-        //    "You are unauthorized to withdraw funds from this publishers account"
-        //);
-        payable(msg.sender).call{value: address(this).balance}("");
-    }
-
+    /**
+    * @notice Extract money from publisher contract to owner
+    * @param _to Who to send the funds to
+    */
     function transferFunds(address payable _to) payable external {
         (bool success,  ) = _to.call{value: address(this).balance}("");
         require(success, "Failed to transfer the funds, aborting.");
@@ -123,12 +119,12 @@ contract Publisher {
      * @notice Create a new Content Contract
      * @param _contentHash The public hash of the content (IPFS / FIlecoin)
      * @param _previewHash Encrypted hash of content
-     * @param _name Content title
+     * @param _filename Content title
      * @param _fileType Type of file
      * @param _free Free or Paid
      */
-    function createContent(string memory _contentHash, string memory _previewHash, string memory _name, string memory _fileType, string memory _title, string memory _description, bool _free, uint _price) public payable returns (address) {
-        Content contractId = new Content(_contentHash, _previewHash, _name, _fileType, _title, _description, _free, _price);
+    function createContent(string memory _contentHash, string memory _previewHash, string memory _filename, string memory _fileType, string memory _title, string memory _description, bool _free, uint _price, string memory _name) public payable returns (address) {
+        Content contractId = new Content(_contentHash, _previewHash, _filename, _fileType, _title, _description, _free, _price, _name);
         contentContracts.push(address(contractId));
         return address(contractId);
     }
@@ -139,15 +135,7 @@ contract Publisher {
      * @return All the content contracts associated with the Publisher
      * @return All the content contracts associated with the Publisher
      */
-    function getContentInformation(address payable _contract) public view returns (string memory, string memory, string memory,string memory, string memory,string memory,uint, bool, uint, address) {
+    function getContentInformation(address payable _contract) public view returns (string memory, string memory, string memory,string memory, string memory,string memory,uint, bool, uint, address, string memory) {
         return Content(_contract).getContentDetails();
     }
-
-    //this should probably come back soon, was just causing me issues tonight
-    //receive() external payable {
-    //}
-
-    //function getFile(address payable _contract) public view returns (string memory) {
-    //    return Content(_contract).getFile();
-    //}
 }

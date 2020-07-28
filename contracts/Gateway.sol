@@ -17,7 +17,6 @@ contract Gateway {
     }
 
     /*************************************************************************************/
-
     //THESE ARE USER FUNCTIONS// //THESE ARE USER FUNCTIONS// //THESE ARE USER FUNCTIONS//
 
     function createNewUser(string memory _name, string memory _email) public
@@ -39,8 +38,6 @@ contract Gateway {
     function getPurchased(address _user) public {
         User(userContract[_user]).getPurchased();
     }
-
-    /****************************************************************************************************/
 
     //THESE ARE PUBLISHER FUNCTIONS// //THESE ARE PUBLISHER FUNCTIONS// //THESE ARE PUBLISHER FUNCTIONS//
     function createNewPublisher(string memory _name, string memory _email, string memory _logo, uint256 _subscriptionCost) public payable
@@ -91,11 +88,6 @@ contract Gateway {
         User(userContract[_subscriber]).unsubscribe(_publisher);
     }
 
-    function withdrawEarnings() public
-    {
-        Publisher(publisherContract[msg.sender]).withdrawEarnings();
-    }
-
     function doTransferFunds(address payable _to) public payable {
         Publisher(publisherContract[msg.sender]).transferFunds(_to);
     }
@@ -104,13 +96,13 @@ contract Gateway {
 
     //THESE ARE CONTENT FUNCTIONS// //THESE ARE CONTENT FUNCTIONS// //THESE ARE CONTENT FUNCTIONS//
 
-    function getContentInfo(address payable _content) public view returns (string memory, string memory, string memory,string memory, string memory,string memory,uint, bool, uint, address) {
+    function getContentInfo(address payable _content) public view returns (string memory, string memory, string memory,string memory, string memory,string memory,uint, bool, uint, address, string memory) {
         return Content(_content).getContentDetails();
     }
 
-    function createContent(address payable _publisher,string memory _contentHash, string memory _previewHash, string memory _name, string memory _fileType, string memory _title, string memory _description, bool _free, uint _price) public
+    function createContent(address payable _publisher,string memory _contentHash, string memory _previewHash, string memory _filename, string memory _fileType, string memory _title, string memory _description, bool _free, uint _price, string memory _pubname) public
     {
-        address contractId = Publisher(_publisher).createContent(_contentHash, _previewHash, _fileType, _name, _title, _description, _free,_price);
+        address contractId = Publisher(_publisher).createContent(_contentHash, _previewHash, _fileType, _filename, _title, _description, _free, _price, _pubname);
         contentContracts.push(address(contractId));
     }
 
