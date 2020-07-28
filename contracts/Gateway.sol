@@ -92,8 +92,6 @@ contract Gateway {
         Publisher(publisherContract[msg.sender]).transferFunds(_to);
     }
 
-    /**********************************************************************************************/
-
     //THESE ARE CONTENT FUNCTIONS// //THESE ARE CONTENT FUNCTIONS// //THESE ARE CONTENT FUNCTIONS//
 
     function getContentInfo(address payable _content) public view returns (string memory, string memory, string memory,string memory, string memory,string memory,uint, bool, uint, address, string memory) {
