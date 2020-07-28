@@ -1,19 +1,17 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using Ipfs.Http;
 
 namespace TEELib.Storage
 {
-    public class IpfsService : IUploader
+    public class IpfsService
     {
         private IpfsClient GetClient()
         {
             return new IpfsClient("https://ipfs.infura.io:5001");
         }
 
-        public async Task<string> UploadFileAsync(string path,
-            IDictionary<string, string> metadata = null)
+        public async Task<string> UploadFileAsync(string path)
         {
             var ipfs = GetClient();
 
