@@ -23,7 +23,7 @@ const Index = () => {
   const [myuser, setMyuser] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [logo, setLogo] = useState('');
+  const [logo, setLogo] = useState('https://hub.textile.io/ipns/bafzbeid2hz44kd5zpnjbjeinjyyqxpbfgw5crazvmhf7tkmj4nfxy2hb4q/thumbnail.jpg');
   const [cost, setCost] = useState(1);
   const [content, setContent] = useState([]);
   const [contentAddress, setContentAddress] = useState('');
@@ -31,6 +31,7 @@ const Index = () => {
   const [usermodal, setUsermodal] = useState(false);
   const [contentmodal, setContentmodal] = useState(false);
   const [contentinfo, setContentinfo] = useState([]);
+  const [publisherfee, setPublisherfee] = useState('');
   const [modalfilename, setModalfilename] = useState('');
   const [modalfilehash, setModalfilehash] = useState('');
   const [modalfiletype, setModalfiletype] = useState('');
@@ -40,6 +41,8 @@ const Index = () => {
   const [modalfilefee, setModalfilefee] = useState('');
   const [modalfilefree, setModalfilefree] = useState('');
   const [modalfiledate, setModalfiledate] = useState('');
+  const [modalfilepublisher, setModalfilepublisher] = useState('');
+  const [modalfilepublisherfee, setModalfilepublisherfee] = useState('');
   const [forcerefresh, setForcerefresh] = useState(false);
   const GatewayContractObj = GatewayObjSetup();
 
@@ -48,7 +51,6 @@ const Index = () => {
   useEffect(() => {
     const loadProfile = async () => {
       if (content.length === 0) {
-          console.log(content.length);
         const getcontent = await GatewayContractObj.methods
           .getContentContracts()
           .call({ from: dapp.address });
@@ -129,6 +131,24 @@ const Index = () => {
     window.location.reload(false);
   };
 
+  const purchaseContent = async () => {
+    await GatewayContractObj.methods
+    //purchaseContent(address payable _contract, address _consumer, uint _contentCost)
+    .purchaseContent()
+    .send({ from: dapp.address })
+    window.location.reload(false);
+};
+
+const subscribeToPublisher = async () => {
+    await GatewayContractObj.methods
+    //addSubscriber(address payable _publisher, address _subscriber, uint256 _amount)
+    .addSubscriber()
+    .send({ from: dapp.address })
+    window.location.reload(false);
+};
+
+//Then, maybe in useeffect, some function that tags content as 'purchased' with a new 'purchased' state, so we can hide all 'payment' stuff and put another tag on the content that the user can access.
+
   return (
     <Layout style={{ backgroundColor: '#041727' }}>
       {errorMessage && <Message error header='Oops!' content={errorMessage} />}
@@ -156,6 +176,8 @@ const Index = () => {
         <Grid.Column width={16}>
           <div style={{ padding: '25px', display: 'flex' }}>
             {contentinfo.map((result) => {
+            console.log(result);
+
               return (
                 <div
                   key={result[6]}
@@ -163,14 +185,15 @@ const Index = () => {
                   onClick={() => {
                     setModalfilehash(result[0]);
                     setModalfilepreview(result[1]);
-                    setModalfiledate(result[6]);
-                    setModalfilename(result[3]);
                     setModalfiletype(result[2]);
-                    setModalfilefree(result[7]);
-                    setModalfilefee(result[8]);
+                    setModalfilename(result[3]);
                     setModalfiletitle(result[4]);
                     setModalfiledescription(result[5]);
-                    setContentAddress(result[9])
+                    setModalfiledate(result[6]);
+                    setModalfilefee(result[7]);
+                    setContentAddress(result[8]);
+                    setModalfilepublisher(result[9]);
+                    setModalfilepublisherfee(result[10]);
                     setContentmodal(true);
                   }}
                 >
@@ -186,7 +209,7 @@ const Index = () => {
                       }}
                     >
                       <div className='titleblock'>{result[3]}</div>
-                      {result[7] ? <div className='freeflag'>Free!</div> : ''}
+                      {result[7] == 0 ? <div className='freeflag'>Free!</div> : ''}
                     </div>
                   ) : (
                     <div
@@ -203,7 +226,7 @@ const Index = () => {
                         name='file outline'
                         size='massive'
                       />
-                      {result[7] ? <div className='freeflag'>Free!</div> : ''}
+                      {result[7] == 0 ? <div className='freeflag'>Free!</div> : ''}
                     </div>
                   )}
                 </div>
@@ -243,14 +266,15 @@ const Index = () => {
                 />
               )}
               <br />
-              {!modalfilefree ? (
+              {modalfilefee != 0 ? (
                 <Form>
-                  This content costs : {modalfilefee} Eth
+                
+                  This content costs : {modalfilefee} Eth to Buy now!
                   <Form.Field>
-                    <Checkbox label='Buy now!!!!!' />
+                    <Checkbox label={`Buy now! ${modalfilefee} Eth`} />
                   </Form.Field>
                   <Form.Field>
-                    <Checkbox label='Subscribe' />
+                    <Checkbox label={`Subscribe to ${modalfilepublisher} for ${modalfilepublisherfee} ETH for 1 month!`} />
                   </Form.Field>
                   <Button
                     style={{ backgroundColor: 'green', color: 'white' }}
@@ -258,6 +282,7 @@ const Index = () => {
                   >
                     Purchase
                   </Button>
+
                 </Form>
               ) : (
                 <Link href={`/content/${contentAddress}`}>
@@ -300,6 +325,13 @@ const Index = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
+                </Form.Field>
+                <Form.Field>
+                <label>Publisher Fee <small>How much per month should someone pay to view all your content?</small></label>
+                <input
+                    value={publisherfee}
+                    onChange={(e) => setPublisherfee(e.target.value)}
+                />
                 </Form.Field>
               </Form>
               <br />

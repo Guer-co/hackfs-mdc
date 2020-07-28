@@ -127,10 +127,10 @@ const addContentToContract = async () => {
         filetype,
         title,
         description,
-        free,
         price,
-        myprofile[1]
-    )
+        myprofile[1],
+        myprofile[4]
+        )
     .send({ from: dapp.address })
     .then(function (result) {
         console.log(result);
@@ -408,20 +408,20 @@ return (
             <hr />
             <div style={{ display: 'flex' }}>
             {allcontent.map((result) => {
+                console.log(result);
                 return (
                 <div className='imagebox' key={result[0]}>
                     <div
                     onClick={() => {
                         setModalfilehash(result[0]);
                         setModalfilepreview(result[1]);
-                        setModalfiledate(result[6]);
-                        setModalfilename(result[2]);
-                        setModalfiletype(result[3]);
-                        setModalfilefree(result[7]);
-                        setModalfilefee(result[8]);
+                        setModalfilename(result[3]);
+                        setModalfiletype(result[2]);
                         setModalfiletitle(result[4]);
                         setModalfiledescription(result[5]);
-                        setContentAddress(result[9]);
+                        setModalfiledate(result[6]);
+                        setModalfilefee(result[7]);
+                        setContentAddress(result[8]);
                         setOpenmodal(true);
                     }}
                     >
@@ -486,7 +486,7 @@ return (
                                 height: '125px',
                                 margin: '5px'
                                 }}
-                                src={result[0]}
+                                src={modalfilehash}
                             />
                             </a>
                         ) : (

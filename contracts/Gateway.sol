@@ -94,13 +94,13 @@ contract Gateway {
 
     //THESE ARE CONTENT FUNCTIONS// //THESE ARE CONTENT FUNCTIONS// //THESE ARE CONTENT FUNCTIONS//
 
-    function getContentInfo(address payable _content) public view returns (string memory, string memory, string memory,string memory, string memory,string memory,uint, bool, uint, address, string memory) {
+    function getContentInfo(address payable _content) public view returns (string memory, string memory, string memory,string memory, string memory,string memory,uint, uint, address, string memory, uint256) {
         return Content(_content).getContentDetails();
     }
 
-    function createContent(address payable _publisher,string memory _contentHash, string memory _previewHash, string memory _filename, string memory _fileType, string memory _title, string memory _description, bool _free, uint _price, string memory _pubname) public
+    function createContent(address payable _publisher,string memory _contentHash, string memory _previewHash, string memory _filename, string memory _fileType, string memory _title, string memory _description, uint _price, string memory _pubname, uint256 _pubfee) public
     {
-        address contractId = Publisher(_publisher).createContent(_contentHash, _previewHash, _fileType, _filename, _title, _description, _free, _price, _pubname);
+        address contractId = Publisher(_publisher).createContent(_contentHash, _previewHash, _fileType, _filename, _title, _description,  _price, _pubname, _pubfee);
         contentContracts.push(address(contractId));
     }
 

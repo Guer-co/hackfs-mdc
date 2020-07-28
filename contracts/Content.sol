@@ -20,9 +20,9 @@ contract Content {
         string title;
         string description;
         uint256 date;
-        bool free;
         uint256 price;
         string publisherName;
+        uint256 subscriptionPrice;
     }
 
     mapping(address => ContentInfo) public Info;
@@ -30,7 +30,7 @@ contract Content {
     fallback() external payable {}
     receive() external payable {}
 
-    constructor(string memory _contentHash, string memory _previewHash, string memory _filename, string memory _fileType, string memory _title, string memory _description, bool _free, uint _price, string memory _name) payable public {
+    constructor(string memory _contentHash, string memory _previewHash, string memory _filename, string memory _fileType, string memory _title, string memory _description,uint _price, string memory _name, uint256 _subscriptionPrice) payable public {
         ownerId = msg.sender;
         contractId = address(this);
         Info[contractId].locationHash = _contentHash;
@@ -40,13 +40,13 @@ contract Content {
         Info[contractId].description = _description;
         Info[contractId].fileType = _fileType;
         Info[contractId].date = now;
-        Info[contractId].free = _free;
         Info[contractId].price = _price;
         Info[contractId].publisherName = _name;
+        Info[contractId].subscriptionPrice = _subscriptionPrice;
         contentWhitelist[msg.sender] = true;
     }
 
-    function getContentDetails() public view returns (string memory, string memory, string memory,string memory, string memory, string memory, uint, bool, uint, address, string memory) {
+    function getContentDetails() public view returns (string memory, string memory, string memory,string memory, string memory, string memory, uint, uint, address, string memory, uint256) {
         return (
             Info[contractId].locationHash,
             Info[contractId].previewHash,
@@ -55,10 +55,10 @@ contract Content {
             Info[contractId].title,
             Info[contractId].description,
             Info[contractId].date,
-            Info[contractId].free,
             Info[contractId].price,
             ownerId,
-            Info[contractId].publisherName
+            Info[contractId].publisherName,
+            Info[contractId].subscriptionPrice
         );
     }
 
@@ -70,7 +70,7 @@ contract Content {
 
 
     function getFile(address _consumer) public view returns (string memory) {
-        if (Info[contractId].free == true){
+        if (Info[contractId].price == 0){
             if(contentWhitelist[_consumer] == true) {
                 return Info[contractId].previewHash; //probablyso it can be decrypted I guess.
             }
