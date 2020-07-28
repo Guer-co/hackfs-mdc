@@ -100,16 +100,18 @@ const Publish = () => {
     data.append('file', file);
     setFilename(file.name);
     setFiletype(file.type);
+    data.append('ownerId', myprofile[0]);
+    data.append('description', "Published by " + myprofile[1])
 
-    fetch('http://localhost:8888/api/ipfs', {
+    fetch('http://localhost:8888/api/upload', {
       body: data,
       method: 'POST'
     })
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
-        setFilehash(res);
-        setFilepreview(res);
+        setFilehash(res.encryptedUrl);
+        setFilepreview(res.previewUrl);
         setLoading(false);
       })
       .catch((err) => {
@@ -267,7 +269,7 @@ const Publish = () => {
                       height: '125px',
                       margin: '5px'
                     }}
-                    src={filehash}
+                    src={filepreview}
                     onClick={() => setOpenmodal(true)}
                   />
                 ) : (
