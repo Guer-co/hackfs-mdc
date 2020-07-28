@@ -282,10 +282,6 @@ const Index = ({ contentContracts }) => {
                   </Button>
                 </Form>
               ) : (
-                //<Link href={`/content/${contentAddress}`}>
-                //  <a>
-                //  </a>
-                //</Link>
                 <Button 
                   style={{ backgroundColor: 'green', color: 'white' }}
                   onClick={() => window.open( `http://localhost:8888/api/download/${myprofile[0]}/${modalfilehash}`, "_blank") }

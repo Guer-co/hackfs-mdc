@@ -152,9 +152,7 @@ func Run(node *libp2pnode.Node, serverAddrInfo *peer.AddrInfo) {
 	})
 
 	/*
-	curl -X GET http://localhost:8888/api/download/testrequester01/bafzbeibbpbqs6oizlyg7dh7tkjxmlldp3l2xdg5yghbtw4ehxl2xiwkyba
 	http://localhost:8888/api/download/testrequester01/bafzbeibbpbqs6oizlyg7dh7tkjxmlldp3l2xdg5yghbtw4ehxl2xiwkyba
-
 	*/
 	router.GET("/api/download/:requesterid/:bucketkey", func(c *gin.Context) {
 		requesterId := c.Param("requesterid")
