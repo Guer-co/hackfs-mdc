@@ -23,7 +23,9 @@ const Index = ({ contentContracts }) => {
   const [myuser, setMyuser] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [logo, setLogo] = useState('https://hub.textile.io/ipns/bafzbeid2hz44kd5zpnjbjeinjyyqxpbfgw5crazvmhf7tkmj4nfxy2hb4q/thumbnail.jpg');
+  const [logo, setLogo] = useState(
+    'https://hub.textile.io/ipns/bafzbeid2hz44kd5zpnjbjeinjyyqxpbfgw5crazvmhf7tkmj4nfxy2hb4q/thumbnail.jpg'
+  );
   const [cost, setCost] = useState(1);
   const [content, setContent] = useState([]);
   const [contentAddress, setContentAddress] = useState('');
@@ -50,30 +52,21 @@ const Index = ({ contentContracts }) => {
 
   useEffect(() => {
     const loadProfile = async () => {
-      if (content.length === 0) {
-        const getcontent = await GatewayContractObj.methods
-          .getContentContracts()
-          .call({ from: dapp.address });
-        if (getcontent.length > 0) {
-            getcontent.map(async (cadd) => {
-            let c = await GatewayContractObj.methods
-                .getContentInfo(cadd)
-                .call({ from: dapp.address });
-            temparray.push(c);
-            });
-            setContentinfo(temparray);
-            console.log(temparray);
-            setContent(getcontent);
-        }
-
+      if (content.length === 0 && contentContracts.length > 0) {
+        contentContracts.map(async (cadd) => {
+          let c = await GatewayContractObj.methods.getContentInfo(cadd).call();
+          temparray.push(c);
+        });
+        setContent(contentContracts);
+        setContentinfo(temparray);
       }
       if (dapp.address && myprofile === '') {
         const profilefetch = await GatewayContractObj.methods
           .getPublisherProfile(dapp.address)
-          .call({ from: dapp.address });
+          .call();
         const userfetch = await GatewayContractObj.methods
           .getUserProfile(dapp.address)
-          .call({ from: dapp.address });
+          .call();
         if (profilefetch[0] !== '0x0000000000000000000000000000000000000000') {
           setMyprofile(profilefetch);
         }
@@ -84,7 +77,7 @@ const Index = ({ contentContracts }) => {
     };
 
     loadProfile();
-  }, [dapp.address, myprofile,content]);
+  }, [dapp.address, myprofile, content]);
 
   const createPublisherProfile = async () => {
     try {
@@ -104,7 +97,7 @@ const Index = ({ contentContracts }) => {
           });
         });
       setProfilemodal(false);
-      window.location.href = '/dashboard';      
+      window.location.href = '/dashboard';
     } catch (err) {
       setError(err.message);
       setTimeout(() => setError(''), 5000);
@@ -133,21 +126,19 @@ const Index = ({ contentContracts }) => {
 
   const purchaseContent = async () => {
     await GatewayContractObj.methods
-    //purchaseContent(address payable _contract, address _consumer, uint _contentCost)
-    .purchaseContent()
-    .send({ from: dapp.address })
+      //purchaseContent(address payable _contract, address _consumer, uint _contentCost)
+      .purchaseContent()
+      .send({ from: dapp.address });
     window.location.reload(false);
-};
+  };
 
-const subscribeToPublisher = async () => {
+  const subscribeToPublisher = async () => {
     await GatewayContractObj.methods
-    //addSubscriber(address payable _publisher, address _subscriber, uint256 _amount)
-    .addSubscriber()
-    .send({ from: dapp.address })
+      //addSubscriber(address payable _publisher, address _subscriber, uint256 _amount)
+      .addSubscriber()
+      .send({ from: dapp.address });
     window.location.reload(false);
-};
-
-//Then, maybe in useeffect, some function that tags content as 'purchased' with a new 'purchased' state, so we can hide all 'payment' stuff and put another tag on the content that the user can access.
+  };
 
   return (
     <Layout style={{ backgroundColor: '#041727' }}>
@@ -175,9 +166,7 @@ const subscribeToPublisher = async () => {
         </Grid.Column>
         <Grid.Column width={16}>
           <div style={{ padding: '25px', display: 'flex' }}>
-            {contentinfo.map((result) => {
-            console.log(result);
-
+            {contentinfo.map((result, i) => {
               return (
                 <div
                   key={result[6]}
@@ -191,7 +180,7 @@ const subscribeToPublisher = async () => {
                     setModalfiledescription(result[5]);
                     setModalfiledate(result[6]);
                     setModalfilefee(result[7]);
-                    setContentAddress(result[8]);
+                    setContentAddress(contentContracts[i]);
                     setModalfilepublisher(result[9]);
                     setModalfilepublisherfee(result[10]);
                     setContentmodal(true);
@@ -199,8 +188,8 @@ const subscribeToPublisher = async () => {
                 >
                   {result[2] == 'image/png' ||
                   result[2] == 'image/jpg' ||
-                  result[2] == 'image/jpeg' || 
-                  result[2] == 'image/gif'? (
+                  result[2] == 'image/jpeg' ||
+                  result[2] == 'image/gif' ? (
                     <div
                       className='contentholder'
                       style={{
@@ -209,7 +198,11 @@ const subscribeToPublisher = async () => {
                       }}
                     >
                       <div className='titleblock'>{result[3]}</div>
-                      {result[7] == 0 ? <div className='freeflag'>Free!</div> : ''}
+                      {result[7] == 0 ? (
+                        <div className='freeflag'>Free!</div>
+                      ) : (
+                        ''
+                      )}
                     </div>
                   ) : (
                     <div
@@ -226,7 +219,11 @@ const subscribeToPublisher = async () => {
                         name='file outline'
                         size='massive'
                       />
-                      {result[7] == 0 ? <div className='freeflag'>Free!</div> : ''}
+                      {result[7] == 0 ? (
+                        <div className='freeflag'>Free!</div>
+                      ) : (
+                        ''
+                      )}
                     </div>
                   )}
                 </div>
@@ -254,9 +251,9 @@ const subscribeToPublisher = async () => {
                 </Moment>
               </h4>
               {modalfiletype == 'image/png' ||
-               modalfiletype == 'image/jpg' ||
-               modalfiletype == 'image/jpeg' || 
-               modalfiletype == 'image/gif' ? (
+              modalfiletype == 'image/jpg' ||
+              modalfiletype == 'image/jpeg' ||
+              modalfiletype == 'image/gif' ? (
                 <img src={modalfilepreview} />
               ) : (
                 <Icon
@@ -268,13 +265,14 @@ const subscribeToPublisher = async () => {
               <br />
               {modalfilefee != 0 ? (
                 <Form>
-                
                   This content costs : {modalfilefee} Eth to Buy now!
                   <Form.Field>
                     <Checkbox label={`Buy now! ${modalfilefee} Eth`} />
                   </Form.Field>
                   <Form.Field>
-                    <Checkbox label={`Subscribe to ${modalfilepublisher} for ${modalfilepublisherfee} ETH for 1 month!`} />
+                    <Checkbox
+                      label={`Subscribe to ${modalfilepublisher} for ${modalfilepublisherfee} ETH for 1 month!`}
+                    />
                   </Form.Field>
                   <Button
                     style={{ backgroundColor: 'green', color: 'white' }}
@@ -282,16 +280,12 @@ const subscribeToPublisher = async () => {
                   >
                     Purchase
                   </Button>
-
                 </Form>
               ) : (
                 <Link href={`/content/${contentAddress}`}>
                   <a>
-                    <Button
-                      style={{ backgroundColor: 'green', color: 'white' }}
-                      onClick={() => console.log('submit')}
-                    >
-                    View the full content!
+                    <Button style={{ backgroundColor: 'green', color: 'white' }}>
+                      View the full content!
                     </Button>
                   </a>
                 </Link>
@@ -327,11 +321,17 @@ const subscribeToPublisher = async () => {
                   />
                 </Form.Field>
                 <Form.Field>
-                <label>Publisher Fee <small>How much per month should someone pay to view all your content?</small></label>
-                <input
+                  <label>
+                    Publisher Fee{' '}
+                    <small>
+                      How much per month should someone pay to view all your
+                      content?
+                    </small>
+                  </label>
+                  <input
                     value={publisherfee}
                     onChange={(e) => setPublisherfee(e.target.value)}
-                />
+                  />
                 </Form.Field>
               </Form>
               <br />
@@ -375,7 +375,7 @@ const subscribeToPublisher = async () => {
                 </Form.Field>
               </Form>
               <br />
-            
+
               <Button
                 style={{ backgroundColor: 'blue', color: 'white' }}
                 onClick={createUserProfile}
@@ -395,6 +395,7 @@ export async function getStaticProps() {
   const contentContracts = await GatewayContractObj.methods
     .getContentContracts()
     .call();
+
   return {
     props: { contentContracts }
   };

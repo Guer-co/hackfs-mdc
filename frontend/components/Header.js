@@ -6,7 +6,7 @@ import MiningIndicator from './MiningIndicator';
 import addrShortener from '../utils/addrShortener';
 import web3 from '../utils/getWeb3';
 import ENS from 'ethereum-ens';
-// import ensLookup from '../utils/ensLookup';
+
 const Header = () => {
   const [{ dapp }, dispatch] = useStateValue();
   const [ensName, setName] = useState(null);

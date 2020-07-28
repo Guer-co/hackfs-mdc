@@ -19,22 +19,23 @@ const Content = ({
 }) => {
   const [{ dapp }, dispatch] = useStateValue();
 
-  useEffect(() => {
-    
-  }, [dapp.address])
+  useEffect(() => {}, [dapp.address]);
 
-  return (<Layout>
-    <h1>{title}</h1>
-    <h3>{description}</h3>
-
-  </Layout>);
+  return (
+    <Layout>
+      <h1>{title}</h1>
+      <h3>{description}</h3>
+    </Layout>
+  );
 };
 
 export async function getStaticProps({ params }) {
+  console.log(params.id);
   const GatewayContractObj = await GatewayObjSetup();
   const contentSummary = await GatewayContractObj.methods
     .getContentInfo(params.id)
     .call();
+  
 
   return {
     props: {
