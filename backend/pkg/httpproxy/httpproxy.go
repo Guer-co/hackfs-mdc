@@ -152,7 +152,8 @@ func Run(node *libp2pnode.Node, serverAddrInfo *peer.AddrInfo) {
 	})
 
 	/*
-	curl -X POST http://localhost:8888/api/download/testrequester01/bafzbeibbpbqs6oizlyg7dh7tkjxmlldp3l2xdg5yghbtw4ehxl2xiwkyba
+	curl -X GET http://localhost:8888/api/download/testrequester01/bafzbeibbpbqs6oizlyg7dh7tkjxmlldp3l2xdg5yghbtw4ehxl2xiwkyba
+	http://localhost:8888/api/download/testrequester01/bafzbeibbpbqs6oizlyg7dh7tkjxmlldp3l2xdg5yghbtw4ehxl2xiwkyba
 
 	*/
 	router.GET("/api/download/:requesterid/:bucketkey", func(c *gin.Context) {
@@ -197,7 +198,8 @@ func Run(node *libp2pnode.Node, serverAddrInfo *peer.AddrInfo) {
 		contentType := mimeType.MediaType()
 		reader := bytes.NewReader(resp.ContentDeliveryData.FileBytes)
 		extraHeaders := map[string]string{
-			"Content-Disposition": `attachment; filename="` + resp.ContentData.FileName + `"`,
+			//"Content-Disposition": `attachment; filename="` + resp.ContentData.FileName + `"`,
+			"Content-Disposition": `inline`,
 		}
 		c.DataFromReader(http.StatusOK, contentLength, contentType, reader, extraHeaders)
 
