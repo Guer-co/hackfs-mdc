@@ -1,9 +1,7 @@
 package httpproxy
 
 import (
-	//"crypto/sha256"
-	//"encoding/hex"
-	//shell "github.com/ipfs/go-ipfs-api"
+	"bytes"
 	"fmt"
 	commontools "github.com/Guer-co/hackfs-mdc/backend/pkg/common"
 	"github.com/Guer-co/hackfs-mdc/backend/pkg/libp2pnode"
@@ -11,32 +9,23 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/libp2p/go-libp2p-core/peer"
+	"github.com/zRedShift/mimemagic"
 	"io/ioutil"
 	"net/http"
 )
 
 var logger = commontools.Logger
 
-/*
-type smtpServer struct {
-	host string
-	port string
-}
-
-func (s *smtpServer) Address() string {
-	return s.host + ":" + s.port
-}
-
-func createHash(key string) string {
-	hasher := sha256.New()
-	hasher.Write([]byte(key))
-	return hex.EncodeToString(hasher.Sum(nil))
-}
-*/
-
 func Run(node *libp2pnode.Node, serverAddrInfo *peer.AddrInfo) {
-
 	fmt.Println("start go server")
+
+	/*
+	cacheDir, err := ioutil.TempDir("", "cacheDir")
+	if err != nil {
+		logger.Fatalf("ioutil.TempDir failed: %+v", err)
+	}
+	defer os.RemoveAll(cacheDir) // clean up
+	*/
 
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
@@ -163,10 +152,9 @@ func Run(node *libp2pnode.Node, serverAddrInfo *peer.AddrInfo) {
 	})
 
 	/*
-	curl -X POST http://localhost:8888/api/download/testrequester01/bafzbeibbpbqs6oizlyg7dh7tkjxmlldp3l2xdg5yghbtw4ehxl2xiwkyba
-
+	http://localhost:8888/api/download/testrequester01/bafzbeibbpbqs6oizlyg7dh7tkjxmlldp3l2xdg5yghbtw4ehxl2xiwkyba
 	*/
-	router.POST("/api/download/:requesterid/:bucketkey", func(c *gin.Context) {
+	router.GET("/api/download/:requesterid/:bucketkey", func(c *gin.Context) {
 		requesterId := c.Param("requesterid")
 		bucketKey := c.Param("bucketkey")
 		logger.Infof("processing POST requesterId: %+v, bucketKey: %+v", requesterId, bucketKey)
@@ -201,7 +189,18 @@ func Run(node *libp2pnode.Node, serverAddrInfo *peer.AddrInfo) {
 			c.JSON(int(resp.ResponseData.Code), resp.ResponseData.Err)
 			return
 		}
-		c.JSON(int(resp.ResponseData.Code), resp)
+
+		//c.JSON(int(resp.ResponseData.Code), resp)
+		contentLength := resp.ContentData.FileSize
+		mimeType := mimemagic.Match(resp.ContentDeliveryData.FileBytes, resp.ContentData.FileName, -1)
+		contentType := mimeType.MediaType()
+		reader := bytes.NewReader(resp.ContentDeliveryData.FileBytes)
+		extraHeaders := map[string]string{
+			//"Content-Disposition": `attachment; filename="` + resp.ContentData.FileName + `"`,
+			"Content-Disposition": `inline`,
+		}
+		c.DataFromReader(http.StatusOK, contentLength, contentType, reader, extraHeaders)
+
 		return
 	})
 
