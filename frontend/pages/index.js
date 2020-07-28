@@ -15,7 +15,7 @@ import {
 import GatewayObjSetup from '../utils/GatewayConstructor';
 import Moment from 'react-moment';
 
-const Index = () => {
+const Index = ({ contentContracts }) => {
   const [{ dapp }, dispatch] = useStateValue();
   const [loading, setLoading] = useState(false);
   const [errorMessage, setError] = useState('');
@@ -390,15 +390,14 @@ const subscribeToPublisher = async () => {
   );
 };
 
-// export async function getStaticProps() {
-//   const GatewayContractObj = await GatewayObjSetup();
-//   const contentContracts = await GatewayContractObj.methods
-//     .getContentContracts()
-//     .call();
-
-//   return {
-//     props: { contentContracts }
-//   };
-// }
+export async function getStaticProps() {
+  const GatewayContractObj = await GatewayObjSetup();
+  const contentContracts = await GatewayContractObj.methods
+    .getContentContracts()
+    .call();
+  return {
+    props: { contentContracts }
+  };
+}
 
 export default Index;
