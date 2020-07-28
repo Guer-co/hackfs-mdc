@@ -110,7 +110,7 @@ const Publish = () => {
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
-        setFilehash(res.encryptedUrl);
+        setFilehash(res.bucketKey);
         setFilepreview(res.previewUrl);
         setLoading(false);
       })
@@ -292,7 +292,7 @@ const Publish = () => {
                   <strong>Name:</strong> {filename}
                 </div>
                 <div id='hash'>
-                  <strong>IPFS HASH:</strong> {filehash}
+                  <strong>IPNS HASH:</strong> {filehash}
                 </div>
                 <div id='link'>
                   <strong>Link to file:</strong>{' '}
