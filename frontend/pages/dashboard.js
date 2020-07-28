@@ -205,21 +205,7 @@ const Publish = () => {
         </Grid.Column>
         <Grid.Column width={3}>
           <div style={{ padding: '25px', fontSize: '16px' }}>
-            <a href='/dashboard'>home</a>
-            <br />
-            <br />
-            <a href='#'>publish</a>
-            <br />
-            <br />
-            <a href='#'>payments</a>
-            <br />
-            <br />
-            <a href='#'>profile</a>
-            <br />
-            <br />
-            <a href='/browse'>browse</a>
-            <br />
-            <br />
+            <a href='/'>home</a>
           </div>
         </Grid.Column>
         <Grid.Column width={7}>
@@ -272,7 +258,8 @@ const Publish = () => {
               <>
                 {filetype == 'image/png' ||
                 filetype == 'image/jpg' ||
-                filetype == 'image/jpeg' ? (
+                filetype == 'image/jpeg' ||
+                filetype == 'image/gif' ? (
                   <img
                     style={{
                       border: '1px dotted #999',
@@ -439,7 +426,8 @@ const Publish = () => {
                     >
                       {result[2] == 'image/png' ||
                       result[2] == 'image/jpg' ||
-                      result[2] == 'image/jpeg' ? (
+                      result[2] == 'image/jpeg' ||
+                    result[2] == 'image/gif' ? (
                         <img
                           style={{
                             border: '1px dotted #999',
@@ -482,7 +470,9 @@ const Publish = () => {
                       <Modal.Content style={{ backgroundColor: '#999' }}>
                         <Modal.Description style={{ textAlign: 'center' }}>
                           {result[2] == 'image/png' ||
-                          result[2] == 'image/jpg' ? (
+                          result[2] == 'image/jpg' ||
+                          result[2] == 'image/jpeg' ||
+                          result[2] == 'image/gif' ? (
                             <a
                               rel='noopener noreferrer'
                               target='_blank'

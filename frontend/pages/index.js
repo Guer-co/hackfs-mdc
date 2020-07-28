@@ -47,18 +47,23 @@ const Index = () => {
 
   useEffect(() => {
     const loadProfile = async () => {
-      if (content.length === 0 && contentinfo.length === 0) {
+      if (content.length === 0) {
+          console.log(content.length);
         const getcontent = await GatewayContractObj.methods
           .getContentContracts()
           .call({ from: dapp.address });
-        setContent(getcontent);
-        getcontent.map(async (cadd) => {
-          let c = await GatewayContractObj.methods
-            .getContentInfo(cadd)
-            .call({ from: dapp.address });
-          temparray.push(c);
-        });
-        setContentinfo(temparray);
+        if (getcontent.length > 0) {
+            getcontent.map(async (cadd) => {
+            let c = await GatewayContractObj.methods
+                .getContentInfo(cadd)
+                .call({ from: dapp.address });
+            temparray.push(c);
+            });
+            setContentinfo(temparray);
+
+            setContent(getcontent);
+        }
+
       }
       if (dapp.address && myprofile === '') {
         const profilefetch = await GatewayContractObj.methods
@@ -77,7 +82,7 @@ const Index = () => {
     };
 
     loadProfile();
-  }, [dapp.address, myprofile, content, contentinfo]);
+  }, [dapp.address, myprofile,content]);
 
   const createPublisherProfile = async () => {
     try {
@@ -171,7 +176,8 @@ const Index = () => {
                 >
                   {result[2] == 'image/png' ||
                   result[2] == 'image/jpg' ||
-                  result[2] == 'image/jpeg' ? (
+                  result[2] == 'image/jpeg' || 
+                  result[2] == 'image/gif'? (
                     <div
                       className='contentholder'
                       style={{
@@ -303,13 +309,6 @@ const Index = () => {
               >
                 Create Publisher Profile
               </Button>
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              <Button
-                style={{ backgroundColor: 'blue', color: 'white' }}
-                onClick={createUserProfile}
-              >
-                Create User Profile
-              </Button>
             </div>
           </Modal.Description>
         </Modal.Content>
@@ -343,14 +342,7 @@ const Index = () => {
                 </Form.Field>
               </Form>
               <br />
-              <p className='blacktext'>Logo? Profile Image?</p>
-              <Button
-                style={{ backgroundColor: 'green', color: 'white' }}
-                onClick={createPublisherProfile}
-              >
-                Create Publisher Profile
-              </Button>
-              &nbsp;&nbsp;&nbsp;&nbsp;
+            
               <Button
                 style={{ backgroundColor: 'blue', color: 'white' }}
                 onClick={createUserProfile}
