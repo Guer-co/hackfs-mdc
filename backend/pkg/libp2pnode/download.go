@@ -3,7 +3,6 @@ package libp2pnode
 import (
 	commontools "github.com/Guer-co/hackfs-mdc/backend/pkg/common"
 	pb "github.com/Guer-co/hackfs-mdc/backend/pkg/libp2pnode/pb"
-	"github.com/Guer-co/hackfs-mdc/backend/pkg/models"
 	"github.com/Guer-co/hackfs-mdc/backend/pkg/textilehelper"
 	"github.com/gogo/protobuf/proto"
 	"github.com/libp2p/go-libp2p-core/network"
@@ -45,16 +44,16 @@ func (e *DownloadProtocol) getDownloadResponseWithError(req *pb.DownloadRequest,
 	}
 }
 
-func (e *DownloadProtocol) GetContentDataRecordWithDownloadRequest(req *pb.DownloadRequest) (*models.ContentData, error) {
-	dummy := &models.ContentData{}
+func GetContentDataRecordWithDownloadData(data *pb.DownloadData) (*pb.ContentData, error) {
+	dummy := &pb.ContentData{}
 	var res interface{}
 	var err error
 
-	if len(req.DownloadData.BucketKey) > 0 {
-		q := db.Where("bucketKey").Eq(req.DownloadData.BucketKey)
+	if len(data.BucketKey) > 0 {
+		q := db.Where("bucketKey").Eq(data.BucketKey)
 		res, err = textilehelper.QueryContentDB(q, dummy)
-	} else if len(req.DownloadData.PreviewUrl) > 0 {
-		q := db.Where("previewUrl").Eq(req.DownloadData.PreviewUrl)
+	} else if len(data.PreviewUrl) > 0 {
+		q := db.Where("previewUrl").Eq(data.PreviewUrl)
 		res, err = textilehelper.QueryContentDB(q, dummy)
 	}
 
@@ -64,9 +63,9 @@ func (e *DownloadProtocol) GetContentDataRecordWithDownloadRequest(req *pb.Downl
 	if res == nil {
 		return nil, commontools.Errorf(nil, "res is nil")
 	}
-	datas, ok := res.([]*models.ContentData)
+	datas, ok := res.([]*pb.ContentData)
 	if !ok {
-		return nil, commontools.Errorf(nil, "res is not []*models.ContentData")
+		return nil, commontools.Errorf(nil, "res is not []*pb.ContentData")
 	}
 	if len(datas) == 0 {
 		return nil, commontools.Errorf(nil, "no ContentData found")
@@ -80,9 +79,9 @@ func (e *DownloadProtocol) processDownloadRequest(req *pb.DownloadRequest) *pb.D
 	receivedAt := commontools.GetTimeStampMillisecond()
 
 	//Look up ContentData from Thread
-	contentData, err := e.GetContentDataRecordWithDownloadRequest(req)
+	contentData, err := GetContentDataRecordWithDownloadData(req.DownloadData)
 	if err != nil {
-		return e.getDownloadResponseWithError(req, http.StatusInternalServerError, commontools.Errorf(err, "e.GetContentDataRecordWithDownloadRequest failed"))
+		return e.getDownloadResponseWithError(req, http.StatusInternalServerError, commontools.Errorf(err, "e.GetContentDataRecordWithDownloadData failed"))
 	}
 
 	//TODO: check smart contract for access control
@@ -105,7 +104,7 @@ func (e *DownloadProtocol) processDownloadRequest(req *pb.DownloadRequest) *pb.D
 			Code:                 http.StatusOK,
 			Err:                  "",
 		},
-		ContentData:          models.GetPbContentDataFromModelsContentData(contentData),
+		ContentData:          contentData,
 		ContentDeliveryData:  &pb.ContentDeliveryData{
 			Id:                   commontools.GetUlid().String(),
 			RequesterId:          req.DownloadData.RequesterId,

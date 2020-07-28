@@ -66,6 +66,16 @@ message DownloadData {
     int64 createdAt = 4; //unix timestamp at milli sec
 }
 
+message JsonData {
+    string id = 1;
+    string requesterId = 2;
+    string type = 3;
+    string jsonInput = 4;
+    string jsonOutput = 5;
+    int64 receivedAt = 6; //unix timestamp at milli sec when the request was received
+    int64 updatedAt = 7; //unix timestamp at milli sec
+}
+
 ////very simple upload protocol
 // a protocol define a set of request and responses
 message UploadRequest {
@@ -93,4 +103,17 @@ message DownloadResponse {
     ResponseData responseData = 2;
     ContentData contentData = 3;
     ContentDeliveryData contentDeliveryData = 4;
+}
+
+message JsonRequest {
+    MessageData messageData = 1;
+    // request specific data
+    JsonData jsonData = 2;
+}
+
+message JsonResponse {
+    MessageData messageData = 1;
+    // response specific data
+    ResponseData responseData = 2;
+    JsonData jsonData = 3;
 }
