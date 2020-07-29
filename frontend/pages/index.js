@@ -45,7 +45,9 @@ const Index = ({ contentContracts }) => {
   const [modalfiledate, setModalfiledate] = useState('');
   const [modalfilepublisher, setModalfilepublisher] = useState('');
   const [modalfilepublisherfee, setModalfilepublisherfee] = useState('');
-  const [forcerefresh, setForcerefresh] = useState(false);
+  const [buynow, setBuynow] = useState(false);
+  const [subscribe, setSubscribe] = useState(false);
+
   const GatewayContractObj = GatewayObjSetup();
 
   let temparray = [];
@@ -267,11 +269,21 @@ const Index = ({ contentContracts }) => {
                 <Form>
                   This content costs : {modalfilefee} Eth to Buy now!
                   <Form.Field>
-                    <Checkbox label={`Buy now! ${modalfilefee} Eth`} />
+                    <Checkbox
+                        className='blacktext'
+                        checked={buynow}
+                        onChange={() => setBuynow(!buynow)}
+                        label={`Buy now! ${modalfilefee} ETH`} 
+                        disabled={subscribe}
+                    />
                   </Form.Field>
                   <Form.Field>
                     <Checkbox
-                      label={`Subscribe to ${modalfilepublisher} for ${modalfilepublisherfee} ETH for 1 month!`}
+                        className='blacktext'
+                        checked={subscribe}
+                        onChange={() => setSubscribe(!subscribe)}
+                        label={`Subscribe to ${modalfilepublisher} for ${modalfilepublisherfee} ETH for 1 month!`}
+                        disabled={buynow}
                     />
                   </Form.Field>
                   <Button
@@ -284,6 +296,7 @@ const Index = ({ contentContracts }) => {
               ) : (
                 <Button 
                   style={{ backgroundColor: 'green', color: 'white' }}
+                  //<a href={`/content/${contentAddress}`}>View the full content!</a>
                   onClick={() => window.open( `http://localhost:8888/api/download/${myprofile[0]}/${modalfilehash}`, "_blank") }
                 >
                   View the full content!
