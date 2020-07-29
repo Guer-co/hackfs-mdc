@@ -1,7 +1,5 @@
 # S.I.M.P.L.E.
 
-Logos here???
-
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
 S.I.M.P.L.E. is :  **S**ervices for **I**nformation and **M**edia **P**ayments, **L**egitimacy and **E**ncryption
@@ -13,18 +11,32 @@ S.I.M.P.L.E. is :  **S**ervices for **I**nformation and **M**edia **P**ayments, 
 -- Guarantee provenance and authenticity of delivered content using Hash-based Message Authentication Codes (HMAC) and/or a Zero-knowledge Scheme
 
 ## Built with
-* [Truffle](https://www.google.com)
-* [Solidity](https://www.google.com)
-* [IPFS](https://www.google.com)
-* [FileCoin](https://www.google.com)
-* [Textile](https://www.google.com)
-* [React](https://www.google.com)
+* [Truffle](https://www.trufflesuite.com/)
+* [Solidity](https://github.com/ethereum/solidity)
+* [IPFS](https://github.com/ipfs/ipfs)
+* [Textile](https://textile.io/)
+* [Fleek](https://fleek.co/)
+* [React](https://reactjs.org/)
+* [semantic-ui](https://react.semantic-ui.com/)
+* [Web3](https://github.com/ethereum/web3.js/)
+
 
 
 ### Getting started for dev
 
 * **clone the repo:** git clone https://github.com/Guer-co/hackfs-mdc.git
-* **open the dir:** cd /whateverdirectoryyoucloneditin
+* **open the dir:** cd /hackfs-mdc
+
+## Blockchain
+* **install Truffle:** npm install -g truffle
+* **install Ganache (local ethereum blockchain):** [https://www.trufflesuite.com/ganache](https://www.trufflesuite.com/ganache) and run it
+* **BUILD:** cd /hackfs-mdc truffle build --network development --reset
+
+## Frontend
+* cd hackfs-mdc/frontend
+* npm i
+* npm run dev
+
 
 ## Backend
 A libp2p based micro-service node, which provide service for storing, encrypting and decrypting contents.
@@ -104,17 +116,3 @@ curl -i -k -H "Content-Type: application/json" -d '{"requesterId":"testRequester
 return
 {"messageData":{"clientVersion":"pay3-server-node/0.0.1","timestamp":1595816336,"id":"01EE711Q5KJGJ2BB58SER22WJ0","nodeId":"QmR4adopEs97RKS737SCaT6jfCaPExbAN2ohE7nzhyLyLu","nodePubKey":"CAASpgIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC51cbCBoEhvZt61FmlGgWcbS7A3jPJuWRY0RZN8UKDkn79vkSubywbZQ4QUh9ivsKiIV82UE5p8qsJ7dtEFN1Jde+u3PtEeLhwLb5iwqumUO80Kjg6bkWsGG2v1vyAGu3VqqVNTmQ/JQ7xQ6yhcIXleFM61+wXHJMa9p5EA0dh9SAjILBHnlZIQqzsRDjLqWdaDwYiP96DltiGNtj3RhxTuHgUCHSJF5FI4x9dQMpAewqsdwhZC461g8RGMqUpopLDhflyZWLfzmLQ5XP6Xcl9EiwsB2kG8Dn/XBLeq1qDZlM6A8XVKL8MRGT8oybUOcNHkhnfkFwLExe3cC6AQeZzAgMBAAE=","sign":"M1ZvcQDIM50Iooh2ulnaeciR3Z2yQ1PnyXW4Tr2xw6wcN8RF1g0i7keRHakVm36WYnfNvm1nPDeyckYCOXRdbB3WBxQc8JUoj4I2/v01Z9BgwXrXK+Nk1E1rY7Gc/yzP3iSZPv4QGgRKAUIiBtQcp2w+lEcXUoSQCtV449swpJbo1mw1jwU5dplKtlt+eoDMmAHke4V1U4ZKrUzkCZMl0YU7BmHSlR/eC+EMPKrxdrJrZwhX6eg4FraMFLHJ03t3w5jLAv5E13PYPi+TvJ7JW+Yw7Un/zgV/kjHRlWnpAss+KM0zx9798YjXt/S8ZYWZAAPfPnsr28a+0FGqvRl3Fg=="},"responseData":{"code":200},"jsonData":{"requesterId":"testRequester01","type":"query","jsonOutput":"[{\"ownerId\":\"testowner01\",\"fileName\":\"test01.png\",\"fileType\":\"image\",\"fileSize\":500269,\"description\":\"test01\",\"threadKey\":\"bafkqyvemctry6u5zbmzdmws5ubgwnnmitniribu7xe2qudfvhaqffka\",\"bucketKey\":\"bafzbeig57kazgtszsil3vjk64ccgmtf34hqu43yqzdzzgqu45dy3edi3bu\",\"encryptedUrl\":\"https://hub.textile.io/ipns/bafzbeig57kazgtszsil3vjk64ccgmtf34hqu43yqzdzzgqu45dy3edi3bu\",\"previewUrl\":\"https://hub.textile.io/ipns/bafzbeidfjtnkf6dp472oxixfsdxksyivrysulmlomgfyq5gqumuuvxj5ui/test01.png\",\"receivedAt\":1595254379594,\"updatedAt\":1595254383095},...]","receivedAt":1595816336565,"updatedAt":1595816336728}}
 ```
-
-## Blockchain
-* **install Truffle:** npm install -g truffle
-* **install Ganache (local ethereum blockchain):** [https://www.trufflesuite.com/ganache](https://www.trufflesuite.com/ganache) and run it
-* **BUILD:** truffle build --network development --reset    (I like doing reset each time)
-
-## Frontend
-* //once you are in the directory
-* cd frontend
-* npm i
-* npm run dev
-
-## Other
-* ??????
