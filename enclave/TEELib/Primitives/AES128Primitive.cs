@@ -110,5 +110,24 @@ namespace TEELib.Primitives
             File.Delete(filePath);
             File.Move(tempFileName, filePath);
         }
+
+        public async Task<Stream> EncryptStreamAsync(Stream inputStream, KeyInfo keyInfo)
+        {
+            // Create a new AesManaged   
+            using (AesManaged aes = new AesManaged())
+            {
+                // Create encryptor    
+                var encryptor = aes.CreateEncryptor(keyInfo.Key, keyInfo.Vector);
+
+                var outputStream = new MemoryStream();
+
+                using (var cryptoStream = new CryptoStream(outputStream, encryptor, CryptoStreamMode.Write))
+                {
+                    await inputStream.CopyToAsync(cryptoStream);
+                }
+
+                return outputStream;
+            }
+        }        
     }
 }

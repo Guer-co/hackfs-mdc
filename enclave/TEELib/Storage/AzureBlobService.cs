@@ -10,7 +10,7 @@ namespace TEELib.Storage
         private const string CONNECTION_STRING =
             "DefaultEndpointsProtocol=https;AccountName=decstoragehack;AccountKey=42S5zyrVX1d+kBp6AGlIUPVJeP0/o6qXg/YqL+IMfmD33QQzhXNpSkr5GP61kQwwP0o27IdY/R+7nrqCrYscMw==;EndpointSuffix=core.windows.net";
 
-        private const string CONTAINER_NAME = "basic";
+        private const string CONTAINER_NAME = "stage-in";
 
         private BlobContainerClient GetContainerClient()
         {

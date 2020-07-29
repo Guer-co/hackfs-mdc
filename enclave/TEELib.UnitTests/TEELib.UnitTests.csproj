@@ -19,4 +19,12 @@
   <ItemGroup>
     <ProjectReference Include="..\TEELib\TEELib.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <None Remove="basic-ledger.mp4" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="**/*">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
 </Project>
