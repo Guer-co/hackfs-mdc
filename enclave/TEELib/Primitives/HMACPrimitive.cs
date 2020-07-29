@@ -6,10 +6,16 @@ namespace TEELib.Primitives
 {
     public class HMACPrimitive
     {
-        public async Task<Stream> SignStreamAsync(byte[] key, Stream sourceStream)
+        /// <summary>
+        /// Creates a HMAC signature for the given Stream and secret key
+        /// </summary>
+        /// <param name="secretKey"></param>
+        /// <param name="sourceStream"></param>
+        /// <returns></returns>
+        public async Task<Stream> SignStreamAsync(byte[] secretKey, Stream sourceStream)
         {
             // Initialize the keyed hash object
-            using (HMACSHA256 hmac = new HMACSHA256(key))
+            using (HMACSHA256 hmac = new HMACSHA256(secretKey))
             {
                 // Compute the hash of the input file
                 var inputHash = hmac.ComputeHash(sourceStream);
@@ -39,13 +45,17 @@ namespace TEELib.Primitives
                 return targetStream;
             }
         }
-
-        // Compares the key in the source file with a new key created for the data portion of the file. If the keys
-        // compare the data has not been tampered with.
-        public async Task<bool> VerifySignatureAsync(byte[] key, Stream signedStream)
+        
+        /// <summary>
+        /// Performs a symmetric signature validation
+        /// </summary>
+        /// <param name="secretKey"></param>
+        /// <param name="signedStream"></param>
+        /// <returns></returns>
+        public async Task<bool> IsSignatureValidAsync(byte[] secretKey, Stream signedStream)
         {
             // Initialize the keyed hash object.
-            using (HMACSHA256 hmac = new HMACSHA256(key))
+            using (HMACSHA256 hmac = new HMACSHA256(secretKey))
             {
                 // Create an array to hold the keyed hash value read from the file.
                 byte[] storedHash = new byte[hmac.HashSize / 8];
