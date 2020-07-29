@@ -11,6 +11,7 @@ contract User {
     uint numberOfSubscribed;
 
     address[] purchased;
+    address[] subscribed;
     uint createdDate;
     address ownerAddress;
     address userContractAddress;
@@ -25,8 +26,8 @@ contract User {
         email = _email;
     }
 
-    function getUserProfile() public view returns(address, string memory, string memory, uint256) {
-        return (userContractAddress, name, email, createdDate);
+    function getUserProfile() public view returns(address, string memory, string memory, uint256, address[] memory, address[] memory) {
+        return (userContractAddress, name, email, createdDate,purchased, subscribed);
     }
 
     function getPurchased() public view returns (address[] memory) {
@@ -39,9 +40,11 @@ contract User {
 
     function subscribe(address _publisher) public {
         subscribedTo[_publisher] = true;
+        subscribed.push(_publisher);
     }
 
     function unsubscribe(address _publisher) public {
         subscribedTo[_publisher] = false;
     }
+
 }

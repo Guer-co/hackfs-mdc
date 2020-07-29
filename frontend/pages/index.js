@@ -20,7 +20,7 @@ const Index = ({ contentContracts }) => {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setError] = useState('');
   const [myprofile, setMyprofile] = useState('');
-  const [myuser, setMyuser] = useState('');
+  const [myuser, setMyuser] = useState(0,0,0,['0'],['0']);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [logo, setLogo] = useState(
@@ -41,10 +41,11 @@ const Index = ({ contentContracts }) => {
   const [modalfiledescription, setModalfiledescription] = useState('');
   const [modalfilepreview, setModalfilepreview] = useState('');
   const [modalfilefee, setModalfilefee] = useState('');
-  const [modalfilefree, setModalfilefree] = useState('');
   const [modalfiledate, setModalfiledate] = useState('');
   const [modalfilepublisher, setModalfilepublisher] = useState('');
+  const [modalfilepublishername, setModalfilepublishername] = useState('');
   const [modalfilepublisherfee, setModalfilepublisherfee] = useState('');
+  const [modalfilecontent, setModalfilecontent] = useState('');
   const [buynow, setBuynow] = useState(false);
   const [subscribe, setSubscribe] = useState(false);
 
@@ -73,6 +74,7 @@ const Index = ({ contentContracts }) => {
           setMyprofile(profilefetch);
         }
         if (userfetch[0] !== '0x0000000000000000000000000000000000000000') {
+          console.log(userfetch);
           setMyuser(userfetch);
         }
       }
@@ -127,19 +129,36 @@ const Index = ({ contentContracts }) => {
   };
 
   const purchaseContent = async () => {
-    await GatewayContractObj.methods
-      //purchaseContent(address payable _contract, address _consumer, uint _contentCost)
-      .purchaseContent()
-      .send({ from: dapp.address });
-    window.location.reload(false);
+    dapp.web3.eth.sendTransaction(
+    {
+        to: modalfilepublisher,
+        from: dapp.address,
+        value: dapp.web3.utils.toWei(modalfilefee, 'ether')
+    },
+    async function (error) {
+        await GatewayContractObj.methods
+        .purchaseContent(modalfilecontent, modalfilefee)
+        .send({ from: dapp.address });
+        //take user to the content
+    }
+    );
   };
 
   const subscribeToPublisher = async () => {
+    dapp.web3.eth.sendTransaction(
+    {
+        to: modalfilepublisher,
+        from: dapp.address,
+        value: dapp.web3.utils.toWei(modalfilefee, 'ether')
+    },
+    async function (error) {
     await GatewayContractObj.methods
-      //addSubscriber(address payable _publisher, address _subscriber, uint256 _amount)
-      .addSubscriber()
+      .addSubscriber(modalfilepublisher,modalfilepublisherfee)
       .send({ from: dapp.address });
-    window.location.reload(false);
+      //take user to content
+      //window.location.reload(false);
+    }
+    );
   };
 
   return (
@@ -149,12 +168,17 @@ const Index = ({ contentContracts }) => {
         <Grid.Column width={16}>
           <div style={{ textAlign: 'center' }}>
             <div style={{ textAlign: 'center' }}>
-              {myprofile ? (
+              {myprofile || myuser ? (
                 <Button href='/dashboard'>My Publisher Dashboard</Button>
               ) : (
+                <>
                 <Button onClick={() => setProfilemodal(true)}>
                   I want to publish on Pay3
                 </Button>
+                <Button onClick={() => setUsermodal(true)}>
+                  I want to be a user on Pay3
+                </Button>
+                </>
               )}
               {/*
                 <p>
@@ -182,9 +206,11 @@ const Index = ({ contentContracts }) => {
                     setModalfiledescription(result[5]);
                     setModalfiledate(result[6]);
                     setModalfilefee(result[7]);
-                    setContentAddress(contentContracts[i]);
-                    setModalfilepublisher(result[9]);
+                    setModalfilepublisher(result[8]);
+                    setModalfilepublishername(result[9]);
                     setModalfilepublisherfee(result[10]);
+                    setContentAddress(contentContracts[i]);
+                    setModalfilecontent(contentContracts[i]);
                     setContentmodal(true);
                   }}
                 >
@@ -265,10 +291,18 @@ const Index = ({ contentContracts }) => {
                 />
               )}
               <br />
-              {modalfilefee != 0 ? (
+              {modalfilefee == 0 || (myuser ? myuser[4].includes(modalfilecontent) || myuser[5].includes(modalfilepublisher) : false) ? (
+                <Button 
+                style={{ backgroundColor: 'green', color: 'white' }}
+                //<a href={`/content/${contentAddress}`}>View the full content!</a>
+                onClick={() => window.open( `http://localhost:8888/api/download/${myprofile[0]}/${modalfilehash}`, "_blank") }
+                >
+                View the full content!
+                </Button>
+              ) : (
                 <Form>
-                  This content costs : {modalfilefee} Eth to Buy now!
-                  <Form.Field>
+                This content costs : {modalfilefee} Eth to Buy now!
+                <Form.Field>
                     <Checkbox
                         className='blacktext'
                         checked={buynow}
@@ -276,31 +310,23 @@ const Index = ({ contentContracts }) => {
                         label={`Buy now! ${modalfilefee} ETH`} 
                         disabled={subscribe}
                     />
-                  </Form.Field>
-                  <Form.Field>
+                </Form.Field>
+                <Form.Field>
                     <Checkbox
                         className='blacktext'
                         checked={subscribe}
                         onChange={() => setSubscribe(!subscribe)}
-                        label={`Subscribe to ${modalfilepublisher} for ${modalfilepublisherfee} ETH for 1 month!`}
+                        label={`Subscribe to ${modalfilepublishername} for ${modalfilepublisherfee} ETH per month!`}
                         disabled={buynow}
                     />
-                  </Form.Field>
-                  <Button
+                </Form.Field>
+                <Button
                     style={{ backgroundColor: 'green', color: 'white' }}
-                    onClick={() => console.log('submit')}
-                  >
-                    Purchase
-                  </Button>
-                </Form>
-              ) : (
-                <Button 
-                  style={{ backgroundColor: 'green', color: 'white' }}
-                  //<a href={`/content/${contentAddress}`}>View the full content!</a>
-                  onClick={() => window.open( `http://localhost:8888/api/download/${myprofile[0]}/${modalfilehash}`, "_blank") }
+                    onClick={() => {buynow ? purchaseContent() : subscribeToPublisher()}}
                 >
-                  View the full content!
+                    {buynow ? "Purchase Content" : subscribe ? "Subscribe to Publisher" : "Purchase" }
                 </Button>
+                </Form>
               )}
             </div>
           </Modal.Description>
@@ -334,7 +360,7 @@ const Index = ({ contentContracts }) => {
                 </Form.Field>
                 <Form.Field>
                   <label>
-                    Publisher Fee{' '}
+                    Publisher Subscription Fee{' '}
                     <small>
                       How much per month should someone pay to view all your
                       content?

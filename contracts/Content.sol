@@ -62,10 +62,10 @@ contract Content {
         );
     }
 
-   function purchaseContent(address _consumer, uint256 _amount) payable public {
+   function purchaseContent(uint256 _amount) payable public {
         require(_amount == Info[contractId].price, 'Amount sent is less than what this content is priced at. Please send the exact amount') ;
         earnings += msg.value;
-        contentWhitelist[_consumer] = true;
+        contentWhitelist[msg.sender] = true;
    }
 
 
@@ -81,5 +81,9 @@ contract Content {
         require(_amount <= earnings, 'The amount you are trying to withdraw exceeds the contract earnings');
         earnings = earnings.sub(_amount);
         ownerId.transfer(_amount);
+    }
+
+    function getIsWhitelisted(uint _consumer) public returns(bool) {
+        return (contentWhitelist[msg.sender]);
     }
 }

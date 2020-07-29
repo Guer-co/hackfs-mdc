@@ -25,18 +25,32 @@ contract Gateway {
         userContract[msg.sender] = address(userId);
     }
 
-    function getUserProfile(address _user) public view returns (address, string memory, string memory, uint256)
+    function getUserProfile(address _user) public view returns (address, string memory, string memory, uint256, address[] memory, address[] memory)
     {
         if (userContract[_user] != 0x0000000000000000000000000000000000000000) {
             return User(userContract[_user]).getUserProfile();
         }
         else {
-            return (0x0000000000000000000000000000000000000000, '','',0);
+            //this is messy
+            return (0x0000000000000000000000000000000000000000, '','', 0, contentContracts, contentContracts);
         }
     }
 
-    function getPurchased(address _user) public {
-        User(userContract[_user]).getPurchased();
+    function purchaseContent(address payable _content, uint _contentCost) public payable {
+        Content(_content).purchaseContent(_contentCost);
+        User(userContract[msg.sender]).purchase(_content);
+    }
+
+    function getUserPurchases() public returns (address[] memory) {
+        User(userContract[msg.sender]).getPurchased();
+    }
+
+
+    function addSubscriber(address payable _publisher, uint256 _amount) public
+    {
+        Publisher(_publisher).addSubscriber(msg.sender, _amount);
+        User(userContract[msg.sender]).subscribe(_publisher);
+
     }
 
     //THESE ARE PUBLISHER FUNCTIONS// //THESE ARE PUBLISHER FUNCTIONS// //THESE ARE PUBLISHER FUNCTIONS//
@@ -76,12 +90,6 @@ contract Gateway {
         return Publisher(publisherContract[_publisher]).isSubscribed(_consumer);
     }
 
-    function addSubscriber(address payable _publisher, address _subscriber, uint256 _amount) public
-    {
-        Publisher(publisherContract[_publisher]).addSubscriber(_subscriber, _amount);
-        User(userContract[_subscriber]).subscribe(_publisher);
-    }
-
     function removeSubscriber(address payable _publisher, address _subscriber) public
     {
         Publisher(publisherContract[_publisher]).removeSubscriber(_subscriber);
@@ -102,10 +110,5 @@ contract Gateway {
     {
         address contractId = Publisher(_publisher).createContent(_contentHash, _previewHash, _fileType, _filename, _title, _description,  _price, _pubname, _pubfee);
         contentContracts.push(address(contractId));
-    }
-
-    function purchaseContent(address payable _contract, address _consumer, uint _contentCost) public payable {
-        User(_consumer).purchase(_contract);
-        Content(_contract).purchaseContent(_consumer, _contentCost);
     }
 }
