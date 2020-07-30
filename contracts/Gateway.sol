@@ -111,4 +111,8 @@ contract Gateway {
         address contractId = Publisher(_publisher).createContent(_contentHash, _previewHash, _fileType, _filename, _title, _description,  _price, _pubname, _pubfee);
         contentContracts.push(address(contractId));
     }
+
+    function isWhitelisted(address payable _content, address _consumer) public view returns (bool) {
+        return Content(_content).isWhitelisted(_consumer);
+    }
 }

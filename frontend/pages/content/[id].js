@@ -14,12 +14,24 @@ const Content = ({
   title,
   description,
   date,
-  free,
-  price
+  fee,
+  publisher,
+  publisherName,
+  publisherFee
 }) => {
   const [{ dapp }, dispatch] = useStateValue();
+  const GatewayContractObj = GatewayObjSetup();
 
-  useEffect(() => {}, [dapp.address]);
+  useEffect(() => {
+    const checkAuth = async () => {
+      const isSubscribed = await GatewayContractObj.methods.isSubscribed(publisher, dapp.address).call();
+      const isWhitelisted = await GatewayContractObj.methods.isWhitelisted(address, dapp.address).call();
+
+      isSubscribed || isWhitelisted ? true : false
+    }
+
+    checkAuth();
+  }, [dapp.address]);
 
   return (
     <Layout>
@@ -30,12 +42,10 @@ const Content = ({
 };
 
 export async function getStaticProps({ params }) {
-  console.log(params.id);
   const GatewayContractObj = await GatewayObjSetup();
   const contentSummary = await GatewayContractObj.methods
     .getContentInfo(params.id)
     .call();
-  
 
   return {
     props: {
@@ -47,8 +57,10 @@ export async function getStaticProps({ params }) {
       title: contentSummary[4],
       description: contentSummary[5],
       date: contentSummary[6],
-      free: contentSummary[7],
-      price: contentSummary[8]
+      fee: contentSummary[7],
+      publisher: contentSummary[8],
+      publisherName: contentSummary[9],
+      publisherFee: contentSummary[10]
     }
   };
 }

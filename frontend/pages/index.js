@@ -72,10 +72,19 @@ const Index = ({ contentContracts }) => {
           .call();
         if (profilefetch[0] !== '0x0000000000000000000000000000000000000000') {
           setMyprofile(profilefetch);
+          dispatch({
+            type: 'SET_PUBLISHER',
+            payload: profilefetch
+          });
         }
         if (userfetch[0] !== '0x0000000000000000000000000000000000000000') {
           console.log(userfetch);
           setMyuser(userfetch);
+          dispatch({
+            type: 'SET_USER',
+            payload: userfetch
+          });
+          console.log(dapp.user)
         }
       }
     };
