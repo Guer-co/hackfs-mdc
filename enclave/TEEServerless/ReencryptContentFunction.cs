@@ -8,9 +8,11 @@ namespace ReencryptContentFunction
 {
     public static class ReencryptContentFunction
     {
-        private static async Task ExecuteFunctionAsync()
+        private static async Task ExecuteFunctionAsync(Stream myBlob)
         {
+            var primitive = new AES128Primitive();
 
+            await primitive.EncryptStreamAsync(myBlob, new KeyInfo());
         }
 
         [FunctionName("ReencryptContentFunction")]
@@ -21,7 +23,7 @@ namespace ReencryptContentFunction
 
             var primitive = new AES128Primitive();
 
-            Task.Run(() => primitive.EncryptStreamAsync(myBlob, new KeyInfo()));
+            Task.Run(() => ExecuteFunctionAsync(myBlob));
         }
     }
 }

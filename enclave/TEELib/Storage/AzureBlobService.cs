@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Azure.Storage.Blobs;
@@ -36,6 +37,26 @@ namespace TEELib.Storage
 
                 return response.Value.ETag.ToString();
             }
+        }
+
+        public Task<string> UploadStreamAsync(Stream stream, IDictionary<string, string> metadata = null)
+        {
+            /*
+            var containerClient = GetContainerClient();
+
+            // Get a reference to a blob
+            var blobClient = containerClient.GetBlobClient(path);
+
+            // Open the file and upload its data
+            using (var fileStream = File.OpenRead(path))
+            {
+                var response = await blobClient.UploadAsync(fileStream,
+                    metadata: metadata);
+
+                return response.Value.ETag.ToString();
+            }
+            */
+            throw new NotImplementedException();
         }
     }
 }

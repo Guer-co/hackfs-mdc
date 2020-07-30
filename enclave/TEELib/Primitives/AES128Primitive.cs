@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TEELib.Primitives
 {
-    public class AES128Primitive
+    public class AES128Primitive : IAES128Primitive
     {
         public string EncryptText(string plainText, KeyInfo keyInfo)
         {

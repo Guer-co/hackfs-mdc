@@ -4,8 +4,26 @@ using System.Threading.Tasks;
 
 namespace TEELib.Primitives
 {
-    public class HMACPrimitive
+    public class HMACPrimitive : IHMACPrimitive
     {
+        /// <summary>
+        /// Create a random key using a random number generator. This would be the
+        /// secret key shared by sender and receiver.
+        /// </summary>
+        /// <returns></returns>
+        public byte[] GenerateHmacKey()
+        {
+            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
+            {
+                var secretkey = new byte[64];
+
+                // The array is now filled with cryptographically strong random bytes.
+                rng.GetBytes(secretkey);
+
+                return secretkey;
+            }
+        }
+
         /// <summary>
         /// Creates a HMAC signature for the given Stream and secret key
         /// </summary>

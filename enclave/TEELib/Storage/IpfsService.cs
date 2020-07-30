@@ -12,6 +12,14 @@ namespace TEELib.Storage
             return new IpfsClient("https://ipfs.infura.io:5001");
         }
 
+        public async Task<string> UploadStreamAsync(Stream stream, IDictionary<string, string> metadata = null)
+        {
+            var ipfs = GetClient();
+
+            var node = await ipfs.FileSystem.AddAsync(stream, name: metadata["name"]);
+            return node.Id;
+        }
+
         public async Task<string> UploadFileAsync(string path,
             IDictionary<string, string> metadata = null)
         {

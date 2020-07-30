@@ -1,5 +1,4 @@
 using System.IO;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
 using TEELib.Primitives;
 using Xunit;
@@ -11,17 +10,9 @@ namespace TEELib.UnitTests.Primitives
         [Fact]
         public async Task TestIsSignatureValidAsync()
         {
-            // Create a random key using a random number generator. This would be the
-            //  secret key shared by sender and receiver.
-            var secretkey = new byte[64];
-
-            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
-            {
-                // The array is now filled with cryptographically strong random bytes.
-                rng.GetBytes(secretkey);
-            }
-
             var primitive = new HMACPrimitive();
+
+            var secretkey = primitive.GenerateHmacKey();
 
             using (var sourceStream = new FileStream("hmac-demo.mp4", FileMode.Open))
             {
@@ -38,17 +29,9 @@ namespace TEELib.UnitTests.Primitives
         [Fact]
         public async Task TestIsSignatureInvalidAsync()
         {
-            // Create a random key using a random number generator. This would be the
-            //  secret key shared by sender and receiver.
-            var secretkey = new byte[64];
-
-            using (RNGCryptoServiceProvider rng = new RNGCryptoServiceProvider())
-            {
-                // The array is now filled with cryptographically strong random bytes.
-                rng.GetBytes(secretkey);
-            }
-
             var primitive = new HMACPrimitive();
+
+            var secretkey = primitive.GenerateHmacKey();
 
             using (var sourceStream = new FileStream("hmac-demo.mp4", FileMode.Open))
             {
