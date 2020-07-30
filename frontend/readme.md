@@ -1,13 +1,15 @@
-P^3 PROTOCOLS
-MICROSERVICES BRINGING DECENTRALIZED CONTENT TO THE WORLD
-Introduction
+#P^3 PROTOCOLS
+
+##MICROSERVICES BRINGING DECENTRALIZED CONTENT TO THE WORLD
+
+###Introduction
 We're building modular, independent microservice protocols allowing web developers, content producers, and consumers to mutually benefit from the advantages of emerging technologies in Web3 / Decentralized Computing. 
 
-Functionally, we provide:
+#####Functionally, we provide:
 Payments & Paywall: Frictionless, integrated payments for consumers using cryptocurrencies and smart contracts with innovative revenue modeling
 Advanced Distribution and Licensing: Providing content producers more secure methods to legitatemely distribute their work using encryption and emerging technologies
 Content Authentication: Cryptographically authenticated copies help ensure consumers receive untampered content, and producers can verify if a user should have access to that copy
-Context
+###Context
 Cryptocurrencies as payment for subscriptions is not enough to fundamentally improve relationships between digital platforms, content producers, and content consumers. While theoretically "programmable money" has obvious advantages over credit cards, in practice, it does not provide sufficient utility over existing systems to warrant overcoming unfamiliarity. 
     We believe a systematic approach is required for adoption, where several microservices can collectively provide greater utility over existing systems, while remaining modular enough to provide developers and communities the flexibility they desire to address their needs.
     In this section, we want to highlight advantages and motivations of adopting our Web3 protocols. 
