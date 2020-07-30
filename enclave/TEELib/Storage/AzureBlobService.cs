@@ -11,7 +11,7 @@ namespace TEELib.Storage
         private const string CONNECTION_STRING =
             "DefaultEndpointsProtocol=https;AccountName=decstoragehack;AccountKey=42S5zyrVX1d+kBp6AGlIUPVJeP0/o6qXg/YqL+IMfmD33QQzhXNpSkr5GP61kQwwP0o27IdY/R+7nrqCrYscMw==;EndpointSuffix=core.windows.net";
 
-        private const string CONTAINER_NAME = "stage-in";
+        private const string CONTAINER_NAME = "original-content";
 
         private BlobContainerClient GetContainerClient()
         {
@@ -31,7 +31,7 @@ namespace TEELib.Storage
 
             // Open the file and upload its data
             using (var fileStream = File.OpenRead(path))
-            {
+            {                
                 var response = await blobClient.UploadAsync(fileStream,
                     metadata: metadata);
 
@@ -39,24 +39,26 @@ namespace TEELib.Storage
             }
         }
 
-        public Task<string> UploadStreamAsync(Stream stream, IDictionary<string, string> metadata = null)
+        public async Task<string> UploadStreamAsync(Stream stream, IDictionary<string, string> metadata = null)
         {
-            /*
             var containerClient = GetContainerClient();
 
             // Get a reference to a blob
-            var blobClient = containerClient.GetBlobClient(path);
+            var blobClient = containerClient.GetBlobClient(metadata["name"]);
 
-            // Open the file and upload its data
-            using (var fileStream = File.OpenRead(path))
-            {
-                var response = await blobClient.UploadAsync(fileStream,
+            var response = await blobClient.UploadAsync(stream,
                     metadata: metadata);
+            
+            return response.Value.ETag.ToString();            
+        }
 
-                return response.Value.ETag.ToString();
-            }
-            */
-            throw new NotImplementedException();
+        public async Task PurgeBlobAsync(string containerName, string blobName)
+        {
+            var blobServiceClient = new BlobServiceClient(CONNECTION_STRING);
+
+            var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+
+            await containerClient.DeleteBlobIfExistsAsync(blobName);
         }
     }
 }

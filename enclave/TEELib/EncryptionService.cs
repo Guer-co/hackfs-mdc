@@ -71,7 +71,7 @@ namespace TEELib
             return message;
         }
 
-        public async Task ProcessContentForViewing(Stream encryptedStream)
+        public Task ProcessContentForViewing(Stream encryptedStream)
         {
             // Get AES128 Key and IV
 

@@ -110,8 +110,7 @@ namespace TEEConsole
                 case ActionType.UploadToServerless:
                     action.SourceFilePath = CheckFile(args[1]);
 
-                    if (action.ActionType == ActionType.EncryptFile ||
-                        action.ActionType == ActionType.UploadToServerless)
+                    if (action.ActionType == ActionType.EncryptFile)
                     {
                         if (args.Length < 4)
                         {
@@ -196,14 +195,10 @@ namespace TEEConsole
 
         private async Task UploadFileToServerlessAsync(Action action)
         {
-            await EncryptFileAsync(action);
-
-            var metadata = new Dictionary<string, string>();
-            metadata.Add("key", action.Key);
-            metadata.Add("vector", action.Vector);
+            //await EncryptFileAsync(action);
 
             var service = new AzureBlobService();
-            var etag = await service.UploadFileAsync(action.SourceFilePath, metadata);
+            var etag = await service.UploadFileAsync(action.SourceFilePath);
 
             Console.WriteLine($"Successfully uploaded file '{action.SourceFilePath}' to Azure.");
         }
