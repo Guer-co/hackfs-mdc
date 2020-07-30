@@ -133,7 +133,7 @@ const Index = ({ contentContracts }) => {
     {
         to: modalfilepublisher,
         from: dapp.address,
-        value: dapp.web3.utils.toWei(modalfilefee, 'ether')
+        value: modalfilefee
     },
     async function (error) {
         await GatewayContractObj.methods
@@ -149,7 +149,7 @@ const Index = ({ contentContracts }) => {
     {
         to: modalfilepublisher,
         from: dapp.address,
-        value: dapp.web3.utils.toWei(modalfilefee, 'ether')
+        value: modalfilefee
     },
     async function (error) {
     await GatewayContractObj.methods
@@ -301,13 +301,13 @@ const Index = ({ contentContracts }) => {
                 </Button>
               ) : (
                 <Form>
-                This content costs : {modalfilefee} Eth to Buy now!
+                This content costs : {dapp.web3.utils.fromWei(modalfilefee, 'ether')} Eth to Buy now!
                 <Form.Field>
                     <Checkbox
                         className='blacktext'
                         checked={buynow}
                         onChange={() => setBuynow(!buynow)}
-                        label={`Buy now! ${modalfilefee} ETH`} 
+                        label={`Buy now! ${dapp.web3.utils.fromWei(modalfilefee, 'ether')} ETH`} 
                         disabled={subscribe}
                     />
                 </Form.Field>
