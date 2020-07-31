@@ -71,13 +71,13 @@ contract Gateway {
         publisherContract[msg.sender] = address(publisherId);
     }
 
-    function getPublisherProfile(address payable _publisher) public view returns (address, string memory ,string memory ,string memory, uint256)
+    function getPublisherProfile(address payable _publisher) public view returns (address, string memory ,string memory ,string memory, address [] memory, uint256)
     {
         if (publisherContract[_publisher] != 0x0000000000000000000000000000000000000000) {
             return Publisher(publisherContract[_publisher]).getPublisherProfile();
         }
         else {
-            return (0x0000000000000000000000000000000000000000, '','','',0);
+            return (0x0000000000000000000000000000000000000000, '','','', contentContracts, 0);
         }
     }
 

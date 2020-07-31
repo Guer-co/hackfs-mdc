@@ -218,6 +218,7 @@ const createUserAndPurchase = async () => {
         <Grid.Column width={16}>
           <div style={{ padding: '25px', display: 'flex' }}>
             {contentinfo.map((result, i) => {
+              console.log(result);
               return (
                 <div
                   key={result[6]}
@@ -317,13 +318,20 @@ const createUserAndPurchase = async () => {
               )}
               <br />
               {modalfilefee == 0 || (myuser ? myuser[4].includes(modalfilecontent) || myuser[5].includes(modalfilepublisher) : false) ? (
-                <Button 
+                <Link href={`/content/${contentAddress}`}>
+                  <a>
+                    <Button style={{ backgroundColor: 'green', color: 'white' }}>
+                      View the full content!
+                    </Button>
+                  </a>
+                {/* <Button 
                 style={{ backgroundColor: 'green', color: 'white' }}
                 //<a href={`/content/${contentAddress}`}>View the full content!</a>
                 onClick={() => window.open( `http://localhost:8888/api/download/${myprofile[0]}/${modalfilehash}`, "_blank") }
                 >
                 View the full content!
-                </Button>
+                </Button> */}
+                </Link>
               ) : (
                 <Form>
                 This content costs : {dapp.web3.utils.fromWei(modalfilefee, 'ether')} Eth to Buy now!
@@ -458,6 +466,8 @@ export async function getStaticProps() {
   const contentContracts = await GatewayContractObj.methods
     .getContentContracts()
     .call();
+
+  console.log(contentContracts);
 
   return {
     props: { contentContracts }
