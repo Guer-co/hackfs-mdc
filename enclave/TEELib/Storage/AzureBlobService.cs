@@ -41,7 +41,9 @@ namespace TEELib.Storage
 
         public async Task<string> UploadStreamAsync(Stream stream, IDictionary<string, string> metadata = null)
         {
-            var containerClient = GetContainerClient();
+            var blobServiceClient = new BlobServiceClient(CONNECTION_STRING);
+
+            var containerClient = blobServiceClient.GetBlobContainerClient(metadata["containerName"]);
 
             // Get a reference to a blob
             var blobClient = containerClient.GetBlobClient(metadata["name"]);

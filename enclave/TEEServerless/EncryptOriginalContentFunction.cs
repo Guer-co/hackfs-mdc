@@ -31,6 +31,7 @@ namespace TEEServerless
 
                 var metadata = new Dictionary<string, string>();
 
+                metadata.Add("containerName", "encrypted-content");
                 metadata.Add("name", name);
                 metadata.Add("encryptionKey", Convert.ToBase64String(result.EncryptionKey));
                 metadata.Add("vector", Convert.ToBase64String(result.Vector));
