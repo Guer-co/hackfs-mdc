@@ -83,7 +83,7 @@ contract Content {
         ownerId.transfer(_amount);
     }
 
-    function getIsWhitelisted(uint _consumer) public returns(bool) {
-        return (contentWhitelist[msg.sender]);
+    function isWhitelisted(address _consumer) public view returns (bool) {
+        return (contentWhitelist[_consumer]);
     }
 }

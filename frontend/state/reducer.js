@@ -16,10 +16,16 @@ function dappReducer(state = {}, action) {
       return { ...state, ...newState };
     case 'SET_CURRENTLY_MINING':
       newState.currentlyMining = action.payload;
-      return { ...state, ...newState }
+      return { ...state, ...newState };
     case 'CLEAR_ACCOUNT':
       newState.address = undefined;
       newState.balance = undefined;
+      return { ...state, ...newState };
+    case 'SET_PUBLISHER':
+      newState.publisher = action.payload;
+      return { ...state, ...newState };
+    case 'SET_content':
+      newState.content = action.payload;
       return { ...state, ...newState };
     default:
       return state;
