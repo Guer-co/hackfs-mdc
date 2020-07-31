@@ -144,6 +144,22 @@ const Index = ({ contentContracts }) => {
     );
   };
 
+const createUserAndPurchase = async () => {
+    dapp.web3.eth.sendTransaction(
+    {
+        to: modalfilepublisher,
+        from: dapp.address,
+        value: modalfilefee
+    },
+    async function (error) {
+        await GatewayContractObj.methods
+        .createNewUserAndPurchase('','',modalfilecontent, modalfilefee)
+        .send({ from: dapp.address });
+        //take user to the content
+    }
+    );
+};
+
   const subscribeToPublisher = async () => {
     dapp.web3.eth.sendTransaction(
     {

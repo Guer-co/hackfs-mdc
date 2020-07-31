@@ -36,23 +36,34 @@ contract Gateway {
         }
     }
 
+    function createNewUserAndPurchase(string memory _name, string memory _email,address payable _content, uint _contentCost) public
+    {
+        User userId = new User(_name, _email);
+        userContract[msg.sender] = address(userId);
+        Content(_content).purchaseContent(_contentCost);
+        User(userContract[msg.sender]).purchase(_content);
+    }
+
+    function createNewUserAndSubscribe(string memory _name, string memory _email,address payable _publisher, uint256 _amount) public
+    {
+        User userId = new User(_name, _email);
+        userContract[msg.sender] = address(userId);
+        Publisher(_publisher).addSubscriber(msg.sender, _amount);
+        User(userContract[msg.sender]).subscribe(_publisher);
+    }
+
     function purchaseContent(address payable _content, uint _contentCost) public payable {
         Content(_content).purchaseContent(_contentCost);
         User(userContract[msg.sender]).purchase(_content);
     }
 
-    function getUserPurchases() public returns (address[] memory) {
-        User(userContract[msg.sender]).getPurchased();
-    }
-
-
     function addSubscriber(address payable _publisher, uint256 _amount) public
     {
         Publisher(_publisher).addSubscriber(msg.sender, _amount);
         User(userContract[msg.sender]).subscribe(_publisher);
-
     }
 
+    /*************************************************************************************/
     //THESE ARE PUBLISHER FUNCTIONS// //THESE ARE PUBLISHER FUNCTIONS// //THESE ARE PUBLISHER FUNCTIONS//
     function createNewPublisher(string memory _name, string memory _email, string memory _logo, uint256 _subscriptionCost) public payable
     {

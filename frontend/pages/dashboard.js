@@ -127,15 +127,21 @@ const Publish = () => {
   };
 
   const addContentToContract = async () => {
-        let finalprice;
-    if (usd) {
-        let calcprice = (price / ethprice);
-        finalprice = dapp.web3.utils.toWei(calcprice.toString().substring(0, calcprice.toString().length - 2), 'ether');
+    free ? setPrice(0) : '';
+      console.log(price);
+    let calcprice;
+    let finalprice = price;
+    if (price) {
+        if (usd) {
+            calcprice = (price / ethprice);
+            finalprice = dapp.web3.utils.toWei(calcprice.toString().substring(0, calcprice.toString().length - 2), 'ether');
+        }
+        else {
+            finalprice = dapp.web3.utils.toWei(price);
+        }
     }
-    else {
-        finalprice = dapp.web3.utils.toWei(price);
-    }
-
+    let msg = (finalprice === 0 ? "Publish this content for free!" : usd === true ? "Publish this content for " + calcprice + " ETH?" : "Publish this content for " + price + " ETH?");
+    if (confirm(msg) == true) {
     await GatewayContractObj.methods
       .createContent(
         myprofile[0],
@@ -157,6 +163,7 @@ const Publish = () => {
       .catch(function (error) {
         console.log(error);
       });
+    }
   };
 
   const withdrawEarnings = async () => {
@@ -204,7 +211,7 @@ const Publish = () => {
         <Grid.Column width={16}>
           <div style={{ textAlign: 'center' }}>
             <h3>
-              Publisher Dashboard P3{' '}
+              Dashboard
               <img
                 src='https://hub.textile.io/ipns/bafzbeid2hz44kd5zpnjbjeinjyyqxpbfgw5crazvmhf7tkmj4nfxy2hb4q/thumbnail.jpg'
                 style={{
@@ -215,16 +222,16 @@ const Publish = () => {
               />
             </h3>
             <hr />
-            <div>
-              Publisher Address: {myprofile[0]}
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Name: {myprofile[1]}
-              &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Email: {myprofile[2]}{' '}
-            </div>
           </div>
         </Grid.Column>
         <Grid.Column width={3}>
           <div style={{ padding: '25px', fontSize: '16px' }}>
-            <a href='/'>home</a>
+            <div>
+            <p>Logo Here</p>
+            <p>Publisher Address: {myprofile ? myprofile[0].substring(0, 4) + '...' + myprofile[0].substring(31, 36) : ''}</p>
+            <p>Name: {myprofile[1]}</p>
+            <p>Email: {myprofile[2]}</p>
+            </div>
           </div>
         </Grid.Column>
         <Grid.Column width={7}>
@@ -309,7 +316,7 @@ const Publish = () => {
                   <strong>Name:</strong> {filename}
                 </div>
                 <div id='hash'>
-                <strong>IPNS HASH:</strong> {filehash}
+                <strong>IPNS HASH:</strong> {filehash.substring(0, 10) + '....' + filehash.substring(50, 86)}
                 </div>
                 <div id='link'>
                   <strong>Link to file:</strong>{' '}
@@ -397,8 +404,8 @@ const Publish = () => {
                 </Form.Field>
                 {!free ? (
                 <>
-                <div className='blacktext'>
-                One time price for this content in {usd ? "$USD" : <Icon name='ethereum'>Eth </Icon>} <Button onClick={() => setUsd(!usd)}>Use {usd ? "ETH" : "USD"} Instead</Button>
+                <div className='blacktext' style={{display:'inline-block'}}>
+                One time price for this content in {usd ? "$USD" : <Icon name='ethereum'>Eth </Icon>} <Button onClick={() => setUsd(!usd)}>Use {usd ? "ETH" : "USD"}?</Button>
                 </div>
                 <Form.Field>
                     <div className="ui labeled input">
