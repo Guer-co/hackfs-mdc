@@ -116,16 +116,17 @@ namespace TEELib.Primitives
             // Create a new AesManaged   
             using (AesManaged aes = new AesManaged())
             {
-                // Create encryptor    
+                // Create encryptor
                 var encryptor = aes.CreateEncryptor(keyInfo.Key, keyInfo.Vector);
 
                 var outputStream = new MemoryStream();
 
-                using (var cryptoStream = new CryptoStream(outputStream, encryptor, CryptoStreamMode.Write))
+                using (var cryptoStream = new CryptoStream(outputStream, encryptor, CryptoStreamMode.Write, true))
                 {
                     await inputStream.CopyToAsync(cryptoStream);
                 }
 
+                // We don't want to dispose of the stream, thus outside the using
                 return outputStream;
             }
         }        

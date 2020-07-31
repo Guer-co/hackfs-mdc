@@ -49,25 +49,22 @@ namespace TEELib
             var primitive = new HMACPrimitive();
 
             message.SigningKey = primitive.GenerateHmacKey();
-
+            
             using (var signedStream = await primitive.SignStreamAsync(message.SigningKey,
                 sourceStream))
             {
                 // Upload HMAC to IPFS
-                var uploadSignature = _uploader.UploadStreamAsync(signedStream, GetIpfsMetadata(blobName));
-
-                var keyInfo = new KeyInfo();
-
-                message.SignedContentIpfsAddress = await uploadSignature;
-
-                var encryptStream = _aES128Primitive.EncryptStreamAsync(sourceStream, keyInfo);
-
-                message.EncryptionKey = keyInfo.Key;
-                message.Vector = keyInfo.Vector;
-
-                message.EncryptedStream = await encryptStream;
+                message.SignedContentIpfsAddress = await _uploader.UploadStreamAsync(signedStream, GetIpfsMetadata(blobName));
             }
-            
+
+            var keyInfo = new KeyInfo();
+            message.EncryptionKey = keyInfo.Key;
+            message.Vector = keyInfo.Vector;
+            message.EncryptedStream = await _aES128Primitive.EncryptStreamAsync(sourceStream, keyInfo);
+
+            // Reset position to first byte
+            message.EncryptedStream.Position = 0;
+
             return message;
         }
 
