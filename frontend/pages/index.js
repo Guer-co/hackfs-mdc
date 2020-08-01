@@ -153,15 +153,27 @@ const Index = ({ contentContracts }) => {
     );
   };
 
-const createUserAndPurchase = async () => {
-        await GatewayContractObj.methods
-        .createNewUserAndPurchase('a','a',modalfilecontent, modalfilefee, modalfilepublisher)
-        .send({ 
-            from: dapp.address,
-            value: modalfilefee
-        });
-        //take user to the content
-};
+    const createUserAndPurchase = async () => {
+            await GatewayContractObj.methods
+            .createNewUserAndPurchase('a','a',modalfilecontent, modalfilefee, modalfilepublisher)
+            .send({ 
+                from: dapp.address,
+                value: modalfilefee
+            });
+            //take user to the content
+    };
+
+    const createUserAndSubscribe = async () => {
+        console.log(modalfilepublisherfee);
+        console.log(modalfilefee);
+            await GatewayContractObj.methods
+            .createNewUserAndSubscribe('a','a',modalfilepublisher,modalfilepublisherfee)
+            .send({ 
+                from: dapp.address,
+                value: dapp.web3.utils.toWei(modalfilepublisherfee)
+            });
+            //take user to the content
+    };
 
   const subscribeToPublisher = async () => {
     dapp.web3.eth.sendTransaction(
@@ -359,7 +371,7 @@ const createUserAndPurchase = async () => {
                 :
                     <Button
                         style={{ backgroundColor: 'green', color: 'white' }}
-                        onClick={() => {buynow ? createUserAndPurchase() : ''}}
+                        onClick={() => {buynow ? createUserAndPurchase() : createUserAndSubscribe()}}
                     >
                     {buynow ? "Purchase Content" : subscribe ? "Subscribe to Publisher" : "Purchase" }
                     </Button>

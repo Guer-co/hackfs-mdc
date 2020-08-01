@@ -44,9 +44,10 @@ contract Gateway {
         Content(_content).purchaseContent(_contentCost);
         User(userContract[msg.sender]).purchase(_content);
     }
-//
-    function createNewUserAndSubscribe(string memory _name, string memory _email,address payable _publisher, uint256 _amount) public
+
+    function createNewUserAndSubscribe(string memory _name, string memory _email,address payable _publisher, uint256 _amount) public payable
     {
+        _publisher.transfer(msg.value);
         User userId = new User(_name, _email);
         userContract[msg.sender] = address(userId);
         Publisher(_publisher).addSubscriber(msg.sender, _amount);
