@@ -9,11 +9,13 @@ import {
   Modal,
   Form,
   Popup,
-  Checkbox
+  Checkbox,
+  Container
 } from 'semantic-ui-react';
 import Loader from 'react-loader-spinner';
 import GatewayContractObjSetup from '../utils/GatewayConstructor';
 import Moment from 'react-moment';
+import ContentCell from '../components/ContentCell'
 
 const Publish = () => {
   const [{ dapp }, dispatch] = useStateValue();
@@ -204,9 +206,20 @@ const Publish = () => {
   //const updateProfile = async () => {
   //};
 
+  const testContent = {title:"SpaceX GPS III Space Vehicle 03 Mission", description:"Following stage separation, SpaceX landed Falcon 9’s first stage on the droneship, which was stationed in the Atlantic Ocean. The spacecraft was deployed approximately 1 hour and 29 minutes after liftoff. #spacex", hideDescription:true};
+
   return (
     <Layout style={{ backgroundColor: '#041727' }}>
       {errorMessage && <Message error header='Oops!' content={errorMessage} />}
+      <Container>
+        <Grid.Row>
+          <ContentCell content={testContent}/>
+        </Grid.Row>
+        <Grid.Row>
+          <ContentCell content={testContent} />
+        </Grid.Row>
+      </Container>
+
       <Grid centered>
         <Grid.Column width={16}>
           <div style={{ textAlign: 'center' }}>
