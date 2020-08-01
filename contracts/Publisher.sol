@@ -5,6 +5,7 @@ pragma experimental ABIEncoderV2;
 import "./Content.sol";
 import "./lib/OpenZeppelin/SafeMath.sol";
 
+
 contract Publisher {
     using SafeMath for uint256;
     address ownerAddress;
@@ -19,8 +20,7 @@ contract Publisher {
     address[] contentContracts;
     address[] purchased;
 
-
-    mapping(address => uint256) subscriberTimestamp;
+    mapping(address => uint256) subscriberExpiration;
     mapping(address => bool) subscribers;
 
     fallback() external payable {}
@@ -54,7 +54,7 @@ contract Publisher {
     /**
     * @notice Get Publisher information
     */
-    function getPublisherProfile() public view returns(address, string memory, string memory, string memory, address[] memory, uint256 ) {
+    function getPublisherProfile() public view returns(address, string memory, string memory, string memory, address[] memory, uint256) {
         return (publisherAddress, name, email, logo, purchased, subscriptionCost);
     }
 
@@ -78,8 +78,13 @@ contract Publisher {
     * @notice Checks if someone is subscribed to the publisher
     * @return True or false
     */
-    function isSubscribed(address _consumer) public view returns (bool) {
-        return subscribers[_consumer];
+    function isSubscribed(address _consumer) public returns (bool) {
+        if (subscriberExpiration[_consumer] < now) {
+            return subscribers[_consumer];
+        }
+        else {
+            return false;
+        }
     }
 
     /**
@@ -94,7 +99,9 @@ contract Publisher {
         balance += msg.value;
         subscribers[_subscriber] = true;
         numberSubscribers++;
-        subscriberTimestamp[_subscriber] = now;
+        //5 minutes  subscriberExpiration[_subscriber] = now + 300;
+        //subscriberExpiration[_subscriber] = now + 2592000;
+        subscriberExpiration[_subscriber] = now;
     }
     
     /**
@@ -104,7 +111,7 @@ contract Publisher {
     function removeSubscriber(address _subscriber) public {
         subscribers[_subscriber] = false;
         numberSubscribers--;
-        subscriberTimestamp[_subscriber] = now;
+        subscriberExpiration[_subscriber] = now;
     }
 
     /**

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useStateValue } from '../../state';
 import Layout from '../../components/Layout';
-import { Grid } from 'semantic-ui-react';
+import { Grid, Message } from 'semantic-ui-react';
+import Moment from 'react-moment';
 import Loader from 'react-loader-spinner';
 import GatewayObjSetup from '../../utils/GatewayConstructor';
 
@@ -21,22 +22,77 @@ const Content = ({
 }) => {
   const [{ dapp }, dispatch] = useStateValue();
   const GatewayContractObj = GatewayObjSetup();
+  const [errorMessage, setError] = useState('');
+  const [image, setImage] = useState('');
 
   useEffect(() => {
     const checkAuth = async () => {
-      const isSubscribed = await GatewayContractObj.methods.isSubscribed(publisher, dapp.address).call();
-      const isWhitelisted = await GatewayContractObj.methods.isWhitelisted(address, dapp.address).call();
+      try {
+        if (dapp.address) {
+          // const isSubscribed = await GatewayContractObj.methods
+          //   .isSubscribed(publisher, dapp.address)
+          //   .call();
+          const isWhitelisted = await GatewayContractObj.methods
+            .isWhitelisted(address, dapp.address)
+            .call();
 
-      isSubscribed || isWhitelisted ? true : false
-    }
+          console.log(isWhitelisted)
 
+          // isSubscribed || isWhitelisted ? true : false;
+        }
+      } catch (err) {
+        setError(err.message);
+        // setTimeout(() => setError(''), 5000);
+      }
+    };
+
+    const fetchImage = async () => {
+      const temp = await fetch(
+        `http://localhost:8888/api/download/${publisher}/${locationHash}`,
+        {
+          method: 'GET'
+        }
+      );
+      setImage(temp.url);
+    };
+
+    fetchImage();
     checkAuth();
-  }, [dapp.address]);
+  }, [dapp.address, image]);
+
 
   return (
-    <Layout>
-      <h1>{title}</h1>
-      <h3>{description}</h3>
+    <Layout style={{ backgroundColor: '#041727' }}>
+      {errorMessage && <Message error header='Oops!' content={errorMessage} />}
+      <Grid centered>
+        <Grid.Row>
+          <Grid.Column width={16}>
+            <div style={{ textAlign: 'center' }}>
+              <h1>{title}</h1>
+            </div>
+            <br/>
+            <div style={{ textAlign: 'center' }}>
+              <h3>by: {publisherName}</h3>
+            </div>
+          </Grid.Column>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Column width={8}>
+            <div style={{ textAlign: 'right' }}>
+              <Moment format='Do MMM YYYY' unix>
+                {date}
+              </Moment>
+            </div>
+            <br/>
+            <div style={{ textAlign: 'center' }}>
+              <h3>{description}</h3>
+            </div>
+          </Grid.Column>
+          <Grid.Column width={8}>
+            { image && <img src={image} />}
+          </Grid.Column>
+        </Grid.Row>
+      </Grid>
     </Layout>
   );
 };
@@ -46,6 +102,8 @@ export async function getStaticProps({ params }) {
   const contentSummary = await GatewayContractObj.methods
     .getContentInfo(params.id)
     .call();
+
+  console.log(contentSummary);
 
   return {
     props: {

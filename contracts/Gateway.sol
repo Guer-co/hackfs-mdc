@@ -36,16 +36,18 @@ contract Gateway {
         }
     }
 
-    function createNewUserAndPurchase(string memory _name, string memory _email,address payable _content, uint _contentCost) public
+    function createNewUserAndPurchase(string memory _name, string memory _email,address payable _content, uint _contentCost,address payable _publisher) public payable
     {
+        _publisher.transfer(msg.value);
         User userId = new User(_name, _email);
         userContract[msg.sender] = address(userId);
         Content(_content).purchaseContent(_contentCost);
         User(userContract[msg.sender]).purchase(_content);
     }
 
-    function createNewUserAndSubscribe(string memory _name, string memory _email,address payable _publisher, uint256 _amount) public
+    function createNewUserAndSubscribe(string memory _name, string memory _email,address payable _publisher, uint256 _amount) public payable
     {
+        _publisher.transfer(msg.value);
         User userId = new User(_name, _email);
         userContract[msg.sender] = address(userId);
         Publisher(_publisher).addSubscriber(msg.sender, _amount);
@@ -71,13 +73,13 @@ contract Gateway {
         publisherContract[msg.sender] = address(publisherId);
     }
 
-    function getPublisherProfile(address payable _publisher) public view returns (address, string memory ,string memory ,string memory, uint256)
+    function getPublisherProfile(address payable _publisher) public view returns (address, string memory ,string memory ,string memory, address[] memory, uint256)
     {
         if (publisherContract[_publisher] != 0x0000000000000000000000000000000000000000) {
             return Publisher(publisherContract[_publisher]).getPublisherProfile();
         }
         else {
-            return (0x0000000000000000000000000000000000000000, '','','',0);
+            return (0x0000000000000000000000000000000000000000, '','','', contentContracts, 0);
         }
     }
 
@@ -96,7 +98,7 @@ contract Gateway {
         return Publisher(publisherContract[_publisher]).subscriberCount();
     }
 
-    function isSubscribed(address _publisher, address _consumer) public view returns (bool)
+    function isSubscribed(address _publisher, address _consumer) public returns (bool)
     {
         return Publisher(publisherContract[_publisher]).isSubscribed(_consumer);
     }

@@ -153,21 +153,27 @@ const Index = ({ contentContracts }) => {
     );
   };
 
-const createUserAndPurchase = async () => {
-    dapp.web3.eth.sendTransaction(
-    {
-        to: modalfilepublisher,
-        from: dapp.address,
-        value: modalfilefee
-    },
-    async function (error) {
-        await GatewayContractObj.methods
-        .createNewUserAndPurchase('','',modalfilecontent, modalfilefee)
-        .send({ from: dapp.address });
-        //take user to the content
-    }
-    );
-};
+    const createUserAndPurchase = async () => {
+            await GatewayContractObj.methods
+            .createNewUserAndPurchase('a','a',modalfilecontent, modalfilefee, modalfilepublisher)
+            .send({ 
+                from: dapp.address,
+                value: modalfilefee
+            });
+            //take user to the content
+    };
+
+    const createUserAndSubscribe = async () => {
+        console.log(modalfilepublisherfee);
+        console.log(modalfilefee);
+            await GatewayContractObj.methods
+            .createNewUserAndSubscribe('a','a',modalfilepublisher,modalfilepublisherfee)
+            .send({ 
+                from: dapp.address,
+                value: dapp.web3.utils.toWei(modalfilepublisherfee)
+            });
+            //take user to the content
+    };
 
   const subscribeToPublisher = async () => {
     dapp.web3.eth.sendTransaction(
@@ -200,9 +206,11 @@ const createUserAndPurchase = async () => {
                 <Button onClick={() => setProfilemodal(true)}>
                   I want to publish on Pay3
                 </Button>
+                {/*
                 <Button onClick={() => setUsermodal(true)}>
                   I want to be a user on Pay3
                 </Button>
+                */}
                 </>
               )}
               {/*
@@ -218,6 +226,7 @@ const createUserAndPurchase = async () => {
         <Grid.Column width={16}>
           <div style={{ padding: '25px', display: 'flex' }}>
             {contentinfo.map((result, i) => {
+              console.log(result);
               return (
                 <div
                   key={result[6]}
@@ -317,13 +326,20 @@ const createUserAndPurchase = async () => {
               )}
               <br />
               {modalfilefee == 0 || (myuser ? myuser[4].includes(modalfilecontent) || myuser[5].includes(modalfilepublisher) : false) ? (
-                <Button 
+                <Link href={`/content/${contentAddress}`}>
+                  <a>
+                    <Button style={{ backgroundColor: 'green', color: 'white' }}>
+                      View the full content!
+                    </Button>
+                  </a>
+                {/* <Button 
                 style={{ backgroundColor: 'green', color: 'white' }}
                 //<a href={`/content/${contentAddress}`}>View the full content!</a>
                 onClick={() => window.open( `http://localhost:8888/api/download/${myprofile[0]}/${modalfilehash}`, "_blank") }
                 >
                 View the full content!
-                </Button>
+                </Button> */}
+                </Link>
               ) : (
                 <Form>
                 This content costs : {dapp.web3.utils.fromWei(modalfilefee, 'ether')} Eth to Buy now!
@@ -345,12 +361,21 @@ const createUserAndPurchase = async () => {
                         disabled={buynow}
                     />
                 </Form.Field>
-                <Button
-                    style={{ backgroundColor: 'green', color: 'white' }}
-                    onClick={() => {buynow ? purchaseContent() : subscribeToPublisher()}}
-                >
+                {myuser ?
+                    <Button
+                        style={{ backgroundColor: 'green', color: 'white' }}
+                        onClick={() => {buynow ? purchaseContent() : subscribeToPublisher()}}
+                    >
                     {buynow ? "Purchase Content" : subscribe ? "Subscribe to Publisher" : "Purchase" }
-                </Button>
+                    </Button>
+                :
+                    <Button
+                        style={{ backgroundColor: 'green', color: 'white' }}
+                        onClick={() => {buynow ? createUserAndPurchase() : createUserAndSubscribe()}}
+                    >
+                    {buynow ? "Purchase Content" : subscribe ? "Subscribe to Publisher" : "Purchase" }
+                    </Button>
+                }
                 </Form>
               )}
             </div>
@@ -458,6 +483,8 @@ export async function getStaticProps() {
   const contentContracts = await GatewayContractObj.methods
     .getContentContracts()
     .call();
+
+  console.log(contentContracts);
 
   return {
     props: { contentContracts }

@@ -144,6 +144,10 @@ const Publish = () => {
     }
     let msg = (finalprice === 0 ? "Publish this content for free!" : usd === true ? "Publish this content for " + calcprice + " ETH?" : "Publish this content for " + price + " ETH?");
     if (confirm(msg) == true) {
+    console.log(myprofile[0]);
+    console.log(myprofile[1]);
+    console.log(myprofile[4]);
+
     await GatewayContractObj.methods
       .createContent(
         myprofile[0],
@@ -155,7 +159,7 @@ const Publish = () => {
         description,
         finalprice,
         myprofile[1],
-        myprofile[4]
+        myprofile[5]
       )
       .send({ from: dapp.address })
       .then(function (result) {
