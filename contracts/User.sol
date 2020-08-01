@@ -3,6 +3,7 @@ pragma solidity >=0.4.17 <0.7.0;
 pragma experimental ABIEncoderV2;
 
 import "./lib/OpenZeppelin/SafeMath.sol";
+import "./Publisher.sol";
 
 contract User {
     using SafeMath for uint256;

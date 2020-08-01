@@ -154,19 +154,13 @@ const Index = ({ contentContracts }) => {
   };
 
 const createUserAndPurchase = async () => {
-    dapp.web3.eth.sendTransaction(
-    {
-        to: modalfilepublisher,
-        from: dapp.address,
-        value: modalfilefee
-    },
-    async function (error) {
         await GatewayContractObj.methods
-        .createNewUserAndPurchase('','',modalfilecontent, modalfilefee)
-        .send({ from: dapp.address });
+        .createNewUserAndPurchase('a','a',modalfilecontent, modalfilefee, modalfilepublisher)
+        .send({ 
+            from: dapp.address,
+            value: modalfilefee
+        });
         //take user to the content
-    }
-    );
 };
 
   const subscribeToPublisher = async () => {
@@ -200,9 +194,11 @@ const createUserAndPurchase = async () => {
                 <Button onClick={() => setProfilemodal(true)}>
                   I want to publish on Pay3
                 </Button>
+                {/*
                 <Button onClick={() => setUsermodal(true)}>
                   I want to be a user on Pay3
                 </Button>
+                */}
                 </>
               )}
               {/*
@@ -353,12 +349,21 @@ const createUserAndPurchase = async () => {
                         disabled={buynow}
                     />
                 </Form.Field>
-                <Button
-                    style={{ backgroundColor: 'green', color: 'white' }}
-                    onClick={() => {buynow ? purchaseContent() : subscribeToPublisher()}}
-                >
+                {myuser ?
+                    <Button
+                        style={{ backgroundColor: 'green', color: 'white' }}
+                        onClick={() => {buynow ? purchaseContent() : subscribeToPublisher()}}
+                    >
                     {buynow ? "Purchase Content" : subscribe ? "Subscribe to Publisher" : "Purchase" }
-                </Button>
+                    </Button>
+                :
+                    <Button
+                        style={{ backgroundColor: 'green', color: 'white' }}
+                        onClick={() => {buynow ? createUserAndPurchase() : ''}}
+                    >
+                    {buynow ? "Purchase Content" : subscribe ? "Subscribe to Publisher" : "Purchase" }
+                    </Button>
+                }
                 </Form>
               )}
             </div>
