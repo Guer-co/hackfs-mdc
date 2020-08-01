@@ -51,3 +51,18 @@ body {
 .blacktext {
     color:black;
 }
+
+.verticallinecenteredwhite {
+    background-image: linear-gradient(#fff, #fff);
+    background-size: 2px 100%;
+    background-repeat: no-repeat;
+    background-position: center center;    
+}
+
+.textaligncenter {
+  text-align: center;
+}
+
+.displayinlineblock {
+  display: inline-block;
+}

@@ -210,7 +210,11 @@ const Publish = () => {
   //const updateProfile = async () => {
   //};
 
-  const testContent = {title:"SpaceX GPS III Space Vehicle 03 Mission", description:"Following stage separation, SpaceX landed Falcon 9’s first stage on the droneship, which was stationed in the Atlantic Ocean. The spacecraft was deployed approximately 1 hour and 29 minutes after liftoff. #spacex", hideDescription:true};
+  const testContent = {
+    title:"SpaceX GPS III Space Vehicle 03 Mission", 
+    description:"Following stage separation, SpaceX landed Falcon 9’s first stage on the droneship, which was stationed in the Atlantic Ocean. The spacecraft was deployed approximately 1 hour and 29 minutes after liftoff. #spacex",
+    previewUrl:"https://hub.textile.io/ipns/bafzbeia3xeel532rph7k5drvvgtggdxcgr4aztewn6ajtwifedb7jlcfga/thumbnail.jpg"
+  };
 
   return (
     <Layout style={{ backgroundColor: '#041727' }}>
