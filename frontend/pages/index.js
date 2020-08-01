@@ -19,12 +19,12 @@ const Index = ({ contentContracts }) => {
   const [{ dapp }, dispatch] = useStateValue();
   const [loading, setLoading] = useState(false);
   const [errorMessage, setError] = useState('');
-  const [myprofile, setMyprofile] = useState('');
-  const [myuser, setMyuser] = useState(0,0,0,['0'],['0']);
+  const [myprofile, setMyprofile] = useState([0,0,0,0,[0],1]);
+  const [myuser, setMyuser] = useState([0,0,0,[0],[0],[0]]);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [logo, setLogo] = useState(
-    'https://hub.textile.io/ipns/bafzbeid2hz44kd5zpnjbjeinjyyqxpbfgw5crazvmhf7tkmj4nfxy2hb4q/thumbnail.jpg'
+    ''
   );
   const [cost, setCost] = useState(1);
   const [content, setContent] = useState([]);
@@ -63,10 +63,11 @@ const Index = ({ contentContracts }) => {
         setContent(contentContracts);
         setContentinfo(temparray);
       }
-      if (dapp.address && myprofile === '') {
+      if (dapp.address && myprofile[0] === 0) {
         const profilefetch = await GatewayContractObj.methods
           .getPublisherProfile(dapp.address)
           .call();
+          console.log(profilefetch);
         const userfetch = await GatewayContractObj.methods
           .getUserProfile(dapp.address)
           .call();
@@ -78,18 +79,17 @@ const Index = ({ contentContracts }) => {
           });
         }
         if (userfetch[0] !== '0x0000000000000000000000000000000000000000') {
-          console.log(userfetch);
           setMyuser(userfetch);
           dispatch({
             type: 'SET_USER',
             payload: userfetch
           });
-          console.log(dapp.user)
         }
       }
     };
 
     loadProfile();
+
   }, [dapp.address, myprofile, content]);
 
   const createPublisherProfile = async () => {
@@ -164,8 +164,7 @@ const Index = ({ contentContracts }) => {
     };
 
     const createUserAndSubscribe = async () => {
-        console.log(modalfilepublisherfee);
-        console.log(modalfilefee);
+
             await GatewayContractObj.methods
             .createNewUserAndSubscribe('a','a',modalfilepublisher,modalfilepublisherfee)
             .send({ 
@@ -199,19 +198,17 @@ const Index = ({ contentContracts }) => {
         <Grid.Column width={16}>
           <div style={{ textAlign: 'center' }}>
             <div style={{ textAlign: 'center' }}>
-              {myprofile || myuser ? (
+              {myprofile[0] !== 0 ? (
                 <Button href='/dashboard'>My Publisher Dashboard</Button>
-              ) : (
-                <>
+                ) 
+                : myuser[0] !== 0 ? 
+                (
+                    ''
+                ) :
+                (
                 <Button onClick={() => setProfilemodal(true)}>
                   I want to publish on Pay3
                 </Button>
-                {/*
-                <Button onClick={() => setUsermodal(true)}>
-                  I want to be a user on Pay3
-                </Button>
-                */}
-                </>
               )}
               {/*
                 <p>
@@ -226,7 +223,6 @@ const Index = ({ contentContracts }) => {
         <Grid.Column width={16}>
           <div style={{ padding: '25px', display: 'flex' }}>
             {contentinfo.map((result, i) => {
-              console.log(result);
               return (
                 <div
                   key={result[6]}
@@ -325,7 +321,7 @@ const Index = ({ contentContracts }) => {
                 />
               )}
               <br />
-              {modalfilefee == 0 || (myuser ? myuser[4].includes(modalfilecontent) || myuser[5].includes(modalfilepublisher) : false) ? (
+              {modalfilefee == 0 || (myuser[0] !== 0  || myprofile[0] !== 0  ? myuser[4].includes(modalfilecontent) || myuser[5].includes(modalfilepublisher) || myprofile[4].includes(modalfilecontent) : false) ? (
                 <Link href={`/content/${contentAddress}`}>
                   <a>
                     <Button style={{ backgroundColor: 'green', color: 'white' }}>
@@ -342,13 +338,13 @@ const Index = ({ contentContracts }) => {
                 </Link>
               ) : (
                 <Form>
-                This content costs : {dapp.web3.utils.fromWei(modalfilefee, 'ether')} Eth to Buy now!
+                This content costs : {dapp.web3.utils.fromWei(modalfilefee, 'ether').substring(0, 8)} Eth to Buy now!
                 <Form.Field>
                     <Checkbox
                         className='blacktext'
                         checked={buynow}
                         onChange={() => setBuynow(!buynow)}
-                        label={`Buy now! ${dapp.web3.utils.fromWei(modalfilefee, 'ether')} ETH`} 
+                        label={`Buy now! ${dapp.web3.utils.fromWei(modalfilefee, 'ether').substring(0, 8)} ETH`} 
                         disabled={subscribe}
                     />
                 </Form.Field>
@@ -361,7 +357,7 @@ const Index = ({ contentContracts }) => {
                         disabled={buynow}
                     />
                 </Form.Field>
-                {myuser ?
+                {myuser[0] !== 0  || myprofile[0] !== 0  ?
                     <Button
                         style={{ backgroundColor: 'green', color: 'white' }}
                         onClick={() => {buynow ? purchaseContent() : subscribeToPublisher()}}
@@ -483,8 +479,6 @@ export async function getStaticProps() {
   const contentContracts = await GatewayContractObj.methods
     .getContentContracts()
     .call();
-
-  console.log(contentContracts);
 
   return {
     props: { contentContracts }
