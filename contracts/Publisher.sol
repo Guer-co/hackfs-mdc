@@ -34,7 +34,6 @@ contract Publisher {
         logo = _logo;
         subscriptionCost = _subscriptionCost;
         createdDate = now;
-        purchased.push(address(this));
     }
 
     /**
@@ -55,7 +54,7 @@ contract Publisher {
     * @notice Get Publisher information
     */
     function getPublisherProfile() public view returns(address, string memory, string memory, string memory, address[] memory, uint256) {
-        return (publisherAddress, name, email, logo, purchased, subscriptionCost);
+        return (publisherAddress, name, email, logo, contentContracts, subscriptionCost);
     }
 
     /**

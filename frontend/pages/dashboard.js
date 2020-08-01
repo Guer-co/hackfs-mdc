@@ -140,7 +140,7 @@ const Publish = () => {
             finalprice = dapp.web3.utils.toWei(price);
         }
     }
-    let msg = (finalprice === 0 ? "Publish this content for free!" : usd === true ? "Publish this content for " + calcprice + " ETH?" : "Publish this content for " + price + " ETH?");
+    let msg = (finalprice === 0 ? "Publish this content for free!" : usd === true ? "Publish this content for " + calcprice.toFixed(6) + " ETH?" : "Publish this content for " + price + " ETH?");
     if (confirm(msg) == true) {
     console.log(myprofile[0]);
     console.log(myprofile[1]);
@@ -217,7 +217,7 @@ const Publish = () => {
             <h3>
               Dashboard
               <img
-                src='https://hub.textile.io/ipns/bafzbeid2hz44kd5zpnjbjeinjyyqxpbfgw5crazvmhf7tkmj4nfxy2hb4q/thumbnail.jpg'
+                src=''
                 style={{
                   width: '50px',
                   backgroundColor: 'white',
@@ -231,8 +231,9 @@ const Publish = () => {
         <Grid.Column width={3}>
           <div style={{ padding: '25px', fontSize: '16px' }}>
             <div>
-            <p>Logo Here</p>
-            <p>Publisher Address: {myprofile ? myprofile[0].substring(0, 4) + '...' + myprofile[0].substring(31, 36) : ''}</p>
+            <p><img style={{width:'50px;'}} src="https://hub.textile.io/ipns/bafzbeiats3a7igb7iuj7d667ye6nxooe437g2zsnmz6eo5s6a6ahdgquki/thumbnail.jpg"/></p>
+            <p>Publisher Account: {myprofile ? myprofile[0].substring(0, 4) + '...' + myprofile[0].substring(31, 36) : ''}</p>
+            <p>Creator's Account: {dapp.address ? dapp.address.substring(0, 4) + '...' + dapp.address.substring(31, 36) : ''}</p>
             <p>Name: {myprofile[1]}</p>
             <p>Email: {myprofile[2]}</p>
             </div>
@@ -451,7 +452,7 @@ const Publish = () => {
                         setModalfiletitle(result[4]);
                         setModalfiledescription(result[5]);
                         setModalfiledate(result[6]);
-                        setModalfilefee(result[7]);
+                        setModalfilefee(dapp.web3.utils.fromWei(result[7], 'ether').substring(0, 8));
                         setContentAddress(result[8]);
                         setOpenmodal(true);
                       }}
