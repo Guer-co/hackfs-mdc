@@ -66,16 +66,19 @@ const Content = ({
       }
     };
 
-    const getUserContract = async () => {
+    const getUserProfile = async () => {
       try {
         if (dapp.address) {
           const user = await GatewayContractObj.methods
             .getUserProfile(dapp.address)
             .call();
-          dispatch({
-            type: 'SET_USER_CONTRACT',
-            payload: user[0]
-          });
+
+          if (user[0] !== '0x0000000000000000000000000000000000000000') {
+            dispatch({
+              type: 'SET_USER_CONTRACT',
+              payload: user[0]
+            });
+          }
         }
       } catch (err) {
         setError(err.message);
@@ -83,8 +86,8 @@ const Content = ({
       }
     };
 
+    getUserProfile();
     checkAuth();
-    getUserContract();
   }, [dapp.address]);
 
   const purchaseContent = async () => {
