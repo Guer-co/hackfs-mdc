@@ -15,7 +15,7 @@ import {
 import Loader from 'react-loader-spinner';
 import GatewayContractObjSetup from '../utils/GatewayConstructor';
 import Moment from 'react-moment';
-import { UploadCell, ContentCell } from '../components/ContentCell'
+import { UploadCell, PublishCell, ContentCell } from '../components/ContentCell'
 
 const Publish = () => {
   const [{ dapp }, dispatch] = useStateValue();
@@ -224,6 +224,15 @@ const Publish = () => {
           <UploadCell />
         </Grid.Row>
         <Grid.Row>
+          <UploadCell isLoading={true}/>
+        </Grid.Row>
+        <Grid.Row>
+          <PublishCell previewUrl={testContent.previewUrl}/>
+        </Grid.Row>
+        <Grid.Row>
+          <PublishCell />
+        </Grid.Row>
+        <Grid.Row>
           <ContentCell content={testContent} />
         </Grid.Row>
         <Grid.Row>
@@ -264,15 +273,7 @@ const Publish = () => {
             <h3>Publish New Content</h3>
             {filehash === '' ? (
               loading === true ? (
-                <>
-                  <Loader
-                    type='Grid'
-                    color='#fcfcfc'
-                    height={100}
-                    width={100}
-                    timeout={10000} //3 secs
-                  />
-                </>
+                <UploadCell isLoading={true}/>
               ) : (
                 <>
                   <input
@@ -280,27 +281,8 @@ const Publish = () => {
                     type='file'
                     style={{ display: 'none' }}
                     onChange={uploadToIPFS}
-                  />                  
-                  <label htmlFor='data_file'>
-                    <div
-                      id='uploadarea file-field input-field'
-                      className='ui basic button'
-                      style={{
-                        borderRadius: '115px',
-                        width: '230px',
-                        height: '230px',
-                        border: '2px #fff',
-                        textAlign: 'center',
-                        paddingTop: '0px'
-                      }}
-                    >
-                      <Icon style={{ margin: 'auto' }} name='add' size='huge' />
-                      <br />
-                      <br />
-                      <br />
-                      <p style={{ fontSize: '18px' }}>Upload New Content</p>
-                    </div>
-                  </label>
+                  />
+                  <UploadCell/>
                   <br />
                   <br />
                 </>
@@ -451,6 +433,25 @@ const Publish = () => {
             </div>
           )}
         </Grid.Column>
+
+        <Grid.Column width={16}>
+{allcontent.map((result) => {
+  return (
+    <ContentCell title={result[4]}
+    description={result[5]}
+    previewUrl={result[1]}
+    filehash={result[0]}
+    filename={result[3]}
+    filetype={result[2]}
+    filedate={result[6]}
+    filefee={dapp.web3.utils.fromWei(result[7], 'ether').substring(0, 8)}
+    contentAddress={result[8]}
+    />
+  )
+})}
+        </Grid.Column>
+
+
         <Grid.Column width={3}>
           <div></div>
         </Grid.Column>

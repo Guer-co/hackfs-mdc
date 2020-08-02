@@ -59,18 +59,31 @@ body {
     background-position: center center;    
 }
 
+.verticallinewhitecontentcell {
+    background-image: linear-gradient(#fff, #fff);
+    background-size: 2px 100%;
+    background-repeat: no-repeat;
+    background-position: 31.25% center;    
+}
+
+.verticallineheight {
+    height: 100;
+}
+
 .textaligncenter {
   text-align: center;
 }
 
+.textalignright {
+  text-align: right;
+}
+  
 .displayinlineblock {
   display: inline-block;
 }
 
 .circlewhite {
     border:2px solid white;
-    width: 226px;
-    height: 226px;
     margin: 0px;
     border-radius:50%;
     -moz-border-radius:50%;
@@ -78,14 +91,22 @@ body {
     background: #041727;
 }
 
+.circlesizelarge {
+    width: 226px;
+    height: 226px;
+}
+
+.circlesizemedium {
+    width: 128px;
+    height: 128px;
+}
+
 .uploadcell {
     height: 256px;
 }
 
-.uploadcellbutton {
+.cellcenter {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 226px;
-  width: 226px;
 }
