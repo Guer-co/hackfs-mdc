@@ -116,7 +116,6 @@ const Publish = () => {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         setFilehash(res.bucketKey);
         setFilepreview(res.previewUrl);
         setLoading(false);

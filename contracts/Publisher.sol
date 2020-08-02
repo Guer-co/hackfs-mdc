@@ -98,9 +98,9 @@ contract Publisher {
         balance += msg.value;
         subscribers[_subscriber] = true;
         numberSubscribers++;
-        //5 minutes  subscriberExpiration[_subscriber] = now + 300;
+        subscriberExpiration[_subscriber] = (now + 300);
         //subscriberExpiration[_subscriber] = now + 2592000;
-        subscriberExpiration[_subscriber] = now;
+        //subscriberExpiration[_subscriber] = now;
     }
     
     /**

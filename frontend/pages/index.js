@@ -148,7 +148,7 @@ const Index = ({ contentContracts }) => {
         await GatewayContractObj.methods
         .purchaseContent(modalfilecontent, modalfilefee)
         .send({ from: dapp.address });
-        //take user to the content
+        window.location.reload(false);
     }
     );
   };
@@ -160,18 +160,17 @@ const Index = ({ contentContracts }) => {
                 from: dapp.address,
                 value: modalfilefee
             });
-            //take user to the content
+            window.location.reload(false);
     };
 
     const createUserAndSubscribe = async () => {
-
             await GatewayContractObj.methods
             .createNewUserAndSubscribe('a','a',modalfilepublisher,modalfilepublisherfee)
             .send({ 
                 from: dapp.address,
                 value: dapp.web3.utils.toWei(modalfilepublisherfee)
             });
-            //take user to the content
+            window.location.reload(false);
     };
 
   const subscribeToPublisher = async () => {
@@ -186,10 +185,18 @@ const Index = ({ contentContracts }) => {
       .addSubscriber(modalfilepublisher,modalfilepublisherfee)
       .send({ from: dapp.address });
       //take user to content
-      //window.location.reload(false);
+      window.location.reload(false);
     }
     );
   };
+
+  const checkIfSubscribed = async () => {
+      console.log(modalfilepublisher);
+    let issubbed = await GatewayContractObj.methods
+    .isSubscribed(modalfilepublisher, dapp.address)
+    .call();
+    console.log(issubbed);
+  }
 
   return (
     <Layout style={{ backgroundColor: '#041727' }}>
@@ -324,7 +331,7 @@ const Index = ({ contentContracts }) => {
               {modalfilefee == 0 || (myuser[0] !== 0  || myprofile[0] !== 0  ? myuser[4].includes(modalfilecontent) || myuser[5].includes(modalfilepublisher) || myprofile[4].includes(modalfilecontent) : false) ? (
                 <Link href={`/content/${contentAddress}`}>
                   <a>
-                    <Button style={{ backgroundColor: 'green', color: 'white' }}>
+                    <Button style={{ backgroundColor: 'green', color: 'white' }} onClick={() => checkIfSubscribed()}>
                       View the full content!
                     </Button>
                   </a>

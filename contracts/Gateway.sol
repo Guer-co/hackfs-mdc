@@ -98,9 +98,9 @@ contract Gateway {
         return Publisher(publisherContract[_publisher]).subscriberCount();
     }
 
-    function isSubscribed(address _publisher, address _consumer) public returns (bool)
+    function isSubscribed(address payable _publisher, address _consumer) public returns (bool)
     {
-        return Publisher(publisherContract[_publisher]).isSubscribed(_consumer);
+        return Publisher(_publisher).isSubscribed(_consumer);
     }
 
     function removeSubscriber(address payable _publisher, address _subscriber) public
