@@ -231,7 +231,7 @@ const Publish = () => {
         <Grid.Column width={3}>
           <div style={{ padding: '25px', fontSize: '16px' }}>
             <div>
-            <p><img style={{width:'50px;'}} src="https://hub.textile.io/ipns/bafzbeiats3a7igb7iuj7d667ye6nxooe437g2zsnmz6eo5s6a6ahdgquki/thumbnail.jpg"/></p>
+            <p><img style={{width:'50px'}} src="https://hub.textile.io/ipns/bafzbeiats3a7igb7iuj7d667ye6nxooe437g2zsnmz6eo5s6a6ahdgquki/thumbnail.jpg"/></p>
             <p>Publisher Account: {myprofile ? myprofile[0].substring(0, 4) + '...' + myprofile[0].substring(31, 36) : ''}</p>
             <p>Creator's Account: {dapp.address ? dapp.address.substring(0, 4) + '...' + dapp.address.substring(31, 36) : ''}</p>
             <p>Name: {myprofile[1]}</p>

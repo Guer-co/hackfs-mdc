@@ -479,6 +479,8 @@ export async function getStaticProps() {
   const contentContracts = await GatewayContractObj.methods
     .getContentContracts()
     .call();
+  
+  console.log(contentContracts)
 
   return {
     props: { contentContracts }
