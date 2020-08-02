@@ -66,3 +66,26 @@ body {
 .displayinlineblock {
   display: inline-block;
 }
+
+.circlewhite {
+    border:2px solid white;
+    width: 226px;
+    height: 226px;
+    margin: 0px;
+    border-radius:50%;
+    -moz-border-radius:50%;
+    -webkit-border-radius:50%;
+    background: #041727;
+}
+
+.uploadcell {
+    height: 256px;
+}
+
+.uploadcellbutton {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 226px;
+  width: 226px;
+}

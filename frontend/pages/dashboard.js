@@ -15,7 +15,7 @@ import {
 import Loader from 'react-loader-spinner';
 import GatewayContractObjSetup from '../utils/GatewayConstructor';
 import Moment from 'react-moment';
-import ContentCell from '../components/ContentCell'
+import { UploadCell, ContentCell } from '../components/ContentCell'
 
 const Publish = () => {
   const [{ dapp }, dispatch] = useStateValue();
@@ -221,7 +221,10 @@ const Publish = () => {
       {errorMessage && <Message error header='Oops!' content={errorMessage} />}
       <Container>
         <Grid.Row>
-          <ContentCell content={testContent}/>
+          <UploadCell />
+        </Grid.Row>
+        <Grid.Row>
+          <ContentCell content={testContent} />
         </Grid.Row>
         <Grid.Row>
           <ContentCell content={testContent} />
@@ -277,18 +280,18 @@ const Publish = () => {
                     type='file'
                     style={{ display: 'none' }}
                     onChange={uploadToIPFS}
-                  />
+                  />                  
                   <label htmlFor='data_file'>
                     <div
                       id='uploadarea file-field input-field'
                       className='ui basic button'
                       style={{
-                        borderRadius: '20px',
-                        width: '100%',
-                        height: '150px',
-                        border: 'dashed 2px #999',
+                        borderRadius: '115px',
+                        width: '230px',
+                        height: '230px',
+                        border: '2px #fff',
                         textAlign: 'center',
-                        paddingTop: '20px'
+                        paddingTop: '0px'
                       }}
                     >
                       <Icon style={{ margin: 'auto' }} name='add' size='huge' />

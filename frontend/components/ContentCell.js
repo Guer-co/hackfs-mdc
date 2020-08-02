@@ -8,7 +8,7 @@ import makeStyles from '@material-ui/styles/makeStyles'
 //import Grid from '@material-ui/core/Grid'
 import Avatar from '@material-ui/core/Avatar';
 //import TextField from '@material-ui/core/TextField';
-import { Grid, Container, Header, Segment, Divider } from 'semantic-ui-react'
+import { Grid, Container, Header, Button, Icon } from 'semantic-ui-react'
 
 const useStyles = makeStyles({
     root: {
@@ -39,6 +39,57 @@ const SimpleP = (props) => {
     return null;
 }
 
+const UploadCell = (props) => {
+    const classes = useStyles();
+    return (
+        <div class='uploadcell'>
+
+        <Grid verticalAlign='middle'>
+              <Grid.Column width={6}>
+              </Grid.Column>
+
+              <Grid.Column width={4}>
+                  <div class='textaligncenter'>
+                      <div class='displayinlineblock'>
+                          <div class='circlewhite'>
+                              <div class='uploadcellbutton'>
+                              <label htmlFor='data_file'>
+                                    <div
+                                      className='ui basic button inverted'
+                                      style={{
+                                        borderRadius: '113px',
+                                        width: '226px',
+                                        height: '226px',
+                                        border: '2px #fff',
+                                        textAlign: 'center',
+                                        paddingTop: '0px',
+                                        display: 'flex',
+                                        'justify-content': 'center',
+                                        'align-items': 'center',                                      
+                                      }}
+                                    >
+                                      <Icon inverted style={{ margin: 'auto' }} name='add' size='big' />
+                                    </div>
+                                  </label>
+
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+
+              </Grid.Column>
+
+              <Grid.Column width={6}>
+                <Container fluid>
+                    <Header as='h2' inverted>{"Upload content here"}</Header>
+                </Container>
+              </Grid.Column>
+        </Grid>
+
+        </div>
+    );
+};
+
 const ContentCell = (props) => {
     const classes = useStyles();
     return (
@@ -62,8 +113,12 @@ const ContentCell = (props) => {
                 </Container>
               </Grid.Column>
         </Grid>
+
         </div>
     );
 };
 
-export default ContentCell;
+export {
+    UploadCell,
+    ContentCell,
+};
