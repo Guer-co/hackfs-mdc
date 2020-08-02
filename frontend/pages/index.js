@@ -23,9 +23,7 @@ const Index = ({ contentContracts }) => {
   const [myuser, setMyuser] = useState([0,0,0,[0],[0],[0]]);
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
-  const [logo, setLogo] = useState(
-    ''
-  );
+  const [logo, setLogo] = useState('');
   const [cost, setCost] = useState(1);
   const [content, setContent] = useState([]);
   const [contentAddress, setContentAddress] = useState('');
@@ -48,6 +46,8 @@ const Index = ({ contentContracts }) => {
   const [modalfilecontent, setModalfilecontent] = useState('');
   const [buynow, setBuynow] = useState(false);
   const [subscribe, setSubscribe] = useState(false);
+  const [usd, setUsd] = useState(true);
+  const [ethprice, setEthprice] = useState('');
 
   const GatewayContractObj = GatewayObjSetup();
 
@@ -63,11 +63,15 @@ const Index = ({ contentContracts }) => {
         setContent(contentContracts);
         setContentinfo(temparray);
       }
+        if (ethprice == '') {
+        await fetch('https://api.infura.io/v1/ticker/ethusd')
+        .then((resp) => resp.json())
+        .then(resp => setEthprice(resp.ask));
+        }
       if (dapp.address && myprofile[0] === 0) {
         const profilefetch = await GatewayContractObj.methods
           .getPublisherProfile(dapp.address)
           .call();
-          console.log(profilefetch);
         const userfetch = await GatewayContractObj.methods
           .getUserProfile(dapp.address)
           .call();
@@ -92,10 +96,23 @@ const Index = ({ contentContracts }) => {
 
   }, [dapp.address, myprofile, content]);
 
+  
+
   const createPublisherProfile = async () => {
     try {
+    let calcprice;
+    let finalprice = publisherfee;
+    if (publisherfee) {
+        //if (usd) {
+        //    calcprice = (publisherfee / ethprice);
+        //    finalprice = dapp.web3.utils.toWei(calcprice.toString().substring(0, calcprice.toString().length - 2), 'ether');
+        //}
+        //else {
+            finalprice = dapp.web3.utils.toWei(publisherfee);
+        //}
+    }
       await GatewayContractObj.methods
-        .createNewPublisher(name, email, logo, cost)
+        .createNewPublisher(name, email, logo, finalprice)
         .send({ from: dapp.address })
         .on('transactionHash', (hash) => {
           dispatch({
@@ -154,23 +171,23 @@ const Index = ({ contentContracts }) => {
   };
 
     const createUserAndPurchase = async () => {
-            await GatewayContractObj.methods
-            .createNewUserAndPurchase('a','a',modalfilecontent, modalfilefee, modalfilepublisher)
-            .send({ 
-                from: dapp.address,
-                value: modalfilefee
-            });
-            window.location.reload(false);
+        await GatewayContractObj.methods
+        .createNewUserAndPurchase('a','a',modalfilecontent, modalfilefee, modalfilepublisher)
+        .send({ 
+            from: dapp.address,
+            value: modalfilefee
+        });
+        window.location.reload(false);
     };
 
     const createUserAndSubscribe = async () => {
-            await GatewayContractObj.methods
-            .createNewUserAndSubscribe('a','a',modalfilepublisher,modalfilepublisherfee)
-            .send({ 
-                from: dapp.address,
-                value: dapp.web3.utils.toWei(modalfilepublisherfee)
-            });
-            window.location.reload(false);
+        let a = await GatewayContractObj.methods
+        .createNewUserAndSubscribe('a','a',modalfilepublisher,modalfilepublisherfee)
+        .send({ 
+            from: dapp.address,
+            value: modalfilepublisherfee
+        });
+        //window.location.reload(false);
     };
 
   const subscribeToPublisher = async () => {
@@ -178,24 +195,40 @@ const Index = ({ contentContracts }) => {
     {
         to: modalfilepublisher,
         from: dapp.address,
-        value: modalfilefee
+        value: modalfilepublisherfee
     },
     async function (error) {
     await GatewayContractObj.methods
       .addSubscriber(modalfilepublisher,modalfilepublisherfee)
       .send({ from: dapp.address });
       //take user to content
-      window.location.reload(false);
+      //window.location.reload(false);
     }
     );
   };
 
-  const checkIfSubscribed = async () => {
-      console.log(modalfilepublisher);
+  const checkIfSubscribedOrBought = async () => {
+      console.log(modalfilecontent);
+    let ispurchased = await GatewayContractObj.methods
+    .isWhitelisted(modalfilecontent,dapp.address)
+    .call();
+    if (ispurchased) {
+        window.location.href = `/content/${modalfilecontent}`;
+    }
+    //console.log(ispurchased);
     let issubbed = await GatewayContractObj.methods
     .isSubscribed(modalfilepublisher, dapp.address)
     .call();
-    console.log(issubbed);
+    //console.log(issubbed);
+    if (issubbed[0] == false) {
+        if( confirm(`oops, it looks like your subscription with this publisher is expired! Click yes to re-subscribe for ${modalfilepublisherfee}`) == true) {
+            if (subscribeToPublisher()){
+                window.location.href = `/content/${modalfilecontent}`;
+            }
+        }
+    } else {
+        window.location.href = `/content/${modalfilecontent}`;
+    }
   }
 
   return (
@@ -230,6 +263,7 @@ const Index = ({ contentContracts }) => {
         <Grid.Column width={16}>
           <div style={{ padding: '25px', display: 'flex' }}>
             {contentinfo.map((result, i) => {
+                console.log(contentinfo);
               return (
                 <div
                   key={result[6]}
@@ -329,20 +363,9 @@ const Index = ({ contentContracts }) => {
               )}
               <br />
               {modalfilefee == 0 || (myuser[0] !== 0  || myprofile[0] !== 0  ? myuser[4].includes(modalfilecontent) || myuser[5].includes(modalfilepublisher) || myprofile[4].includes(modalfilecontent) : false) ? (
-                <Link href={`/content/${contentAddress}`}>
-                  <a>
-                    <Button style={{ backgroundColor: 'green', color: 'white' }} onClick={() => checkIfSubscribed()}>
-                      View the full content!
-                    </Button>
-                  </a>
-                {/* <Button 
-                style={{ backgroundColor: 'green', color: 'white' }}
-                //<a href={`/content/${contentAddress}`}>View the full content!</a>
-                onClick={() => window.open( `http://localhost:8888/api/download/${myprofile[0]}/${modalfilehash}`, "_blank") }
-                >
+                <Button style={{ backgroundColor: 'green', color: 'white' }} onClick={() => checkIfSubscribedOrBought()}>
                 View the full content!
-                </Button> */}
-                </Link>
+                </Button>
               ) : (
                 <Form>
                 This content costs : {dapp.web3.utils.fromWei(modalfilefee, 'ether').substring(0, 8)} Eth to Buy now!
@@ -360,7 +383,7 @@ const Index = ({ contentContracts }) => {
                         className='blacktext'
                         checked={subscribe}
                         onChange={() => setSubscribe(!subscribe)}
-                        label={`Subscribe to ${modalfilepublishername} for ${modalfilepublisherfee} ETH per month!`}
+                        label={`Subscribe to ${modalfilepublishername} for ${dapp.web3.utils.fromWei(modalfilepublisherfee, 'ether')} ETH per month!`}
                         disabled={buynow}
                     />
                 </Form.Field>
@@ -487,7 +510,6 @@ export async function getStaticProps() {
     .getContentContracts()
     .call();
   
-  console.log(contentContracts)
 
   return {
     props: { contentContracts }

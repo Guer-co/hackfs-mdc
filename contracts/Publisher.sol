@@ -77,12 +77,12 @@ contract Publisher {
     * @notice Checks if someone is subscribed to the publisher
     * @return True or false
     */
-    function isSubscribed(address _consumer) public returns (bool) {
-        if (subscriberExpiration[_consumer] < now) {
-            return subscribers[_consumer];
+    function isSubscribed(address _consumer) public view returns (bool, uint, uint) {
+        if (subscriberExpiration[_consumer] > now) {
+            return (subscribers[_consumer], subscriberExpiration[_consumer], now);
         }
         else {
-            return false;
+            return (false,0,0);
         }
     }
 
@@ -90,17 +90,17 @@ contract Publisher {
      * @notice Add a subscriber to the publisher
      * @param _subscriber Subscribers's address
     */
-    function addSubscriber(address _subscriber, uint256 _amount) public payable{
-        require(
-            _amount == subscriptionCost,
-            "Amount sent is less than the publishers subscription cost."
-        );
+    function addSubscriber(address _subscriber, uint256 _amount) public payable returns (uint,uint) {
+        //require(
+        //    _amount == subscriptionCost,
+        //    "Amount sent is less than the publishers subscription cost."
+        //);
         balance += msg.value;
         subscribers[_subscriber] = true;
         numberSubscribers++;
-        subscriberExpiration[_subscriber] = (now + 300);
-        //subscriberExpiration[_subscriber] = now + 2592000;
+        subscriberExpiration[_subscriber] = now + (5 minutes);
         //subscriberExpiration[_subscriber] = now;
+        return (now, subscriberExpiration[_subscriber]);
     }
     
     /**

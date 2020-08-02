@@ -61,20 +61,20 @@ contract Content {
         );
     }
 
-   function purchaseContent(uint256 _amount) payable public {
+   function purchaseContent(address _consumer, uint256 _amount) payable public {
         require(_amount == Info[contractId].price, 'Amount sent is less than what this content is priced at. Please send the exact amount') ;
         earnings += msg.value;
-        contentWhitelist[msg.sender] = true;
+        contentWhitelist[_consumer] = true;
    }
 
 
-    function getFile(address _consumer) public view returns (string memory) {
-        if (Info[contractId].price == 0){
-            if(contentWhitelist[_consumer] == true) {
-                return Info[contractId].previewHash; //probablyso it can be decrypted I guess.
-            }
-        }
-    }
+    //function getFile(address _consumer) public view returns (string memory) {
+    //    if (Info[contractId].price == 0){
+    //        if(contentWhitelist[_consumer] == true) {
+    //            return Info[contractId].previewHash; //probablyso it can be decrypted I guess.
+    //        }
+    //    }
+    //}
 
     function withdrawEarnings(uint _amount) public {
         require(_amount <= earnings, 'The amount you are trying to withdraw exceeds the contract earnings');

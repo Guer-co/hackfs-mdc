@@ -67,9 +67,11 @@ const Publish = () => {
         });
       }
 
+    if (ethprice == '') {
     await fetch('https://api.infura.io/v1/ticker/ethusd')
     .then((resp) => resp.json())
     .then(resp => setEthprice(resp.ask));
+    }
     
       if (dapp.address && contentarray.length === 0) {
         const contentaddresses = await GatewayContractObj.methods
