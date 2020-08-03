@@ -81,6 +81,7 @@ const Index = ({ contentContracts }) => {
             type: 'SET_PUBLISHER',
             payload: profilefetch
           });
+          console.log(profilefetch);
         }
         if (userfetch[0] !== '0x0000000000000000000000000000000000000000') {
           setMyuser(userfetch);
@@ -214,21 +215,20 @@ const Index = ({ contentContracts }) => {
         let ispurchased = await GatewayContractObj.methods
         .isWhitelisted(modalfilecontent,dapp.address)
         .call();
+        console.log(ispurchased);
         if (ispurchased) {
             window.location.href = `/content/${modalfilecontent}`;
-        }
+        } else {
         let issubbed = await GatewayContractObj.methods
         .isSubscribed(modalfilepublisher, dapp.address)
         .call();
-        console.log(issubbed);
-        if (issubbed[0] == false) {
-            if( confirm(`oops, it looks like your subscription with this publisher is expired! Click yes to re-subscribe for ${dapp.web3.utils.fromWei(modalfilepublisherfee, 'ether').substring(0, 8)}`) == true) {
-                if (subscribeToPublisher()){
-                    window.location.href = `/content/${modalfilecontent}`;
+            if (issubbed[0] == false) {
+                if( confirm(`oops, it looks like your subscription with this publisher is expired! Click yes to re-subscribe for ${dapp.web3.utils.fromWei(modalfilepublisherfee, 'ether').substring(0, 8)} ETH`) == true ) {
+                    if (subscribeToPublisher()){
+                        window.location.href = `/content/${modalfilecontent}`;
+                    }
                 }
-            }
-        } else {
-            window.location.href = `/content/${modalfilecontent}`;
+            } 
         }
   }
 
@@ -238,28 +238,18 @@ const Index = ({ contentContracts }) => {
       <Grid centered>
         <Grid.Column width={16}>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ textAlign: 'center' }}>
               {myprofile[0] !== 0 ? (
                 <Button href='/dashboard'>My Publisher Dashboard</Button>
                 ) 
-                : myuser[0] !== 0 ? 
-                (
-                    ''
-                ) :
+                :
                 (
                 <Button onClick={() => setProfilemodal(true)}>
                   I want to publish on Pay3
                 </Button>
               )}
-              {/*
-                <p>
-                Welcome: {myprofile[1]} {myprofile[2]} 
-                </p>
-                <h2>Browse decentralized content on P3!</h2>
-                <hr />
-                */}
-            </div>
+            <h2 className="maintitle">New Content</h2>
           </div>
+          
         </Grid.Column>
         <Grid.Column width={16}>
           <div style={{ padding: '25px', display: 'flex' }}>
@@ -332,14 +322,15 @@ const Index = ({ contentContracts }) => {
         </Grid.Column>
       </Grid>
       <Modal
+        className="mymodal"
         closeIcon
         open={contentmodal}
         size='small'
         onClose={() => setContentmodal(false)}
       >
-        <Modal.Content style={{ backgroundColor: '#999' }}>
+        <Modal.Content>
           <Modal.Description style={{ textAlign: 'center' }}>
-            <div className='blacktext'>
+            <div>
               <h2 style={{ margin: '0px' }}>{modalfiletitle}</h2>
               <h4 style={{ margin: '0px 0px 0px 0px' }}>
                 {modalfiledescription}
@@ -363,15 +354,14 @@ const Index = ({ contentContracts }) => {
               )}
               <br />
               {modalfilefee == 0 || (myuser[0] !== 0  || myprofile[0] !== 0  ? myuser[4].includes(modalfilecontent) || myuser[5].includes(modalfilepublisher) || myprofile[4].includes(modalfilecontent) : false) ? (
-                <Button style={{ backgroundColor: 'green', color: 'white' }} onClick={() => {console.log('wtf');checkIfSubscribedOrBought()}}>
+                <Button disabled={loading} style={{ backgroundColor: 'green', color: 'white' }} onClick={() => {checkIfSubscribedOrBought(); setLoading(true);}}>
                 View the full content!
                 </Button>
               ) : (
-                <Form>
+                <Form style={{ margin: 'auto', color: 'white' }}>
                 This content costs : {dapp.web3.utils.fromWei(modalfilefee, 'ether').substring(0, 8)} Eth to Buy now!
                 <Form.Field>
                     <Checkbox
-                        className='blacktext'
                         checked={buynow}
                         onChange={() => setBuynow(!buynow)}
                         label={`Buy now! ${dapp.web3.utils.fromWei(modalfilefee, 'ether').substring(0, 8)} ETH`} 
@@ -380,7 +370,6 @@ const Index = ({ contentContracts }) => {
                 </Form.Field>
                 <Form.Field>
                     <Checkbox
-                        className='blacktext'
                         checked={subscribe}
                         onChange={() => setSubscribe(!subscribe)}
                         label={`Subscribe to ${modalfilepublishername} for ${dapp.web3.utils.fromWei(modalfilepublisherfee, 'ether')} ETH per month!`}
@@ -409,19 +398,20 @@ const Index = ({ contentContracts }) => {
         </Modal.Content>
       </Modal>
       <Modal
+        className="mymodal"
         open={profilemodal}
         size='small'
         closeIcon
         onClose={() => setProfilemodal(false)}
       >
-        <Modal.Content style={{ backgroundColor: '#999' }}>
+        <Modal.Content>
           <Modal.Description style={{ textAlign: 'center' }}>
-            <div className='blacktext'>
+            <div>
               <h2>Create publisher account</h2>
               <h4>Ethereum Address: {dapp.address}</h4>
               <Form>
                 <Form.Field>
-                  <label>Name</label>
+                  <label className="whitetext">Name</label>
                   <input
                     value={name}
                     onChange={(e) => setName(e.target.value)}
@@ -449,9 +439,8 @@ const Index = ({ contentContracts }) => {
                 </Form.Field>
               </Form>
               <br />
-              <p className='blacktext'>Logo? Profile Image?</p>
               <Button
-                style={{ backgroundColor: 'green', color: 'white' }}
+                style={{ backgroundColor: '#f6f6f6', color: 'black' }}
                 onClick={createPublisherProfile}
               >
                 Create Publisher Profile

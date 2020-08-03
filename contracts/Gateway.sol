@@ -121,7 +121,7 @@ contract Gateway {
 
     function createContent(address payable _publisher,string memory _contentHash, string memory _previewHash, string memory _filename, string memory _fileType, string memory _title, string memory _description, uint _price, string memory _pubname, uint256 _pubfee) public
     {
-        address contractId = Publisher(_publisher).createContent(_contentHash, _previewHash, _fileType, _filename, _title, _description,  _price, _pubname, _pubfee);
+        address contractId = Publisher(_publisher).createContent(msg.sender, _contentHash, _previewHash, _fileType, _filename, _title, _description,  _price, _pubname, _pubfee);
         contentContracts.push(address(contractId));
     }
 

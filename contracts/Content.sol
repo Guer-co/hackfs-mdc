@@ -29,8 +29,8 @@ contract Content {
     fallback() external payable {}
     receive() external payable {}
 
-    constructor(string memory _contentHash, string memory _previewHash, string memory _filename, string memory _fileType, string memory _title, string memory _description,uint _price, string memory _name, uint256 _subscriptionPrice) payable public {
-        ownerId = msg.sender;
+    constructor(address payable _creator, string memory _contentHash, string memory _previewHash, string memory _filename, string memory _fileType, string memory _title, string memory _description,uint _price, string memory _name, uint256 _subscriptionPrice) payable public {
+        ownerId = _creator;
         contractId = address(this);
         Info[contractId].locationHash = _contentHash;
         Info[contractId].previewHash = _previewHash;
@@ -42,7 +42,7 @@ contract Content {
         Info[contractId].price = _price;
         Info[contractId].publisherName = _name;
         Info[contractId].subscriptionPrice = _subscriptionPrice;
-        contentWhitelist[msg.sender] = true;
+        contentWhitelist[_creator] = true;
     }
 
     function getContentDetails() public view returns (string memory, string memory, string memory,string memory, string memory, string memory, uint, uint, address, string memory, uint256) {
@@ -66,15 +66,6 @@ contract Content {
         earnings += msg.value;
         contentWhitelist[_consumer] = true;
    }
-
-
-    //function getFile(address _consumer) public view returns (string memory) {
-    //    if (Info[contractId].price == 0){
-    //        if(contentWhitelist[_consumer] == true) {
-    //            return Info[contractId].previewHash; //probablyso it can be decrypted I guess.
-    //        }
-    //    }
-    //}
 
     function withdrawEarnings(uint _amount) public {
         require(_amount <= earnings, 'The amount you are trying to withdraw exceeds the contract earnings');

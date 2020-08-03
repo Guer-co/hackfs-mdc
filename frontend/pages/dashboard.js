@@ -142,7 +142,10 @@ const Publish = () => {
             finalprice = dapp.web3.utils.toWei(price);
         }
     }
-    let msg = (finalprice === 0 ? "Publish this content for free!" : usd === true ? "Publish this content for " + calcprice.toFixed(6) + " ETH?" : "Publish this content for " + price + " ETH?");
+    let msg = (finalprice === 0 ? "Publish this content for free!" : usd === true ? 
+    "Publish this content for $" + price + ' USD / ' + calcprice.toFixed(6) + " ETH?"
+     : 
+     "Publish this content for $" + (dapp.web3.utils.fromWei(myprofile[5].toString(), 'ether') * ethprice).toString().substring(0, 5) + ' USD / ' + price + " ETH?");
     if (confirm(msg) == true) {
     console.log(myprofile[0]);
     console.log(myprofile[1]);
@@ -216,7 +219,7 @@ const Publish = () => {
       <Grid centered>
         <Grid.Column width={16}>
           <div style={{ textAlign: 'center' }}>
-            <h3>
+            <h1 className="maintitle">
               Dashboard
               <img
                 src=''
@@ -226,18 +229,17 @@ const Publish = () => {
                   borderRadius: '25px'
                 }}
               />
-            </h3>
-            <hr />
+            </h1>
           </div>
         </Grid.Column>
         <Grid.Column width={3}>
           <div style={{ padding: '25px', fontSize: '16px' }}>
             <div>
-            <p>Logo: <Icon style={{ margin: 'auto' }} name='book' size='large' /></p>
+            <p>Logo: <Icon style={{ margin: 'auto' }} name='newspaper' size='big' /></p>
             <p>Name: <strong>{myprofile[1]}</strong></p>
             <p>Email: <strong>{myprofile[2]}</strong></p>
             {myprofile[5] ?
-            <p>Subscription price: <strong>{dapp.web3.utils.fromWei(myprofile[5].toString(), 'ether').substring(0, 6)} ETH</strong></p>
+            <p>Subscription : <strong><Icon name="dollar sign"/>{(dapp.web3.utils.fromWei(myprofile[5].toString(), 'ether') * ethprice).toString().substring(0, 5)}<br/><Icon name="ethereum"/>{dapp.web3.utils.fromWei(myprofile[5].toString(), 'ether').substring(0, 6)}</strong></p>
             : '' }
             <p>Publisher Account: <strong>{myprofile ? myprofile[0].substring(0, 4) + '...' + myprofile[0].substring(31, 36) : ''}</strong></p>
             <p>Creator's Account: <strong>{dapp.address ? dapp.address.substring(0, 4) + '...' + dapp.address.substring(31, 36) : ''}</strong></p>
@@ -349,6 +351,8 @@ const Publish = () => {
               <br />
               <h5 style={{ margin: '0px' }}>Earnings $</h5>
               <h2 style={{ margin: '0px' }}>
+                <Icon name="dollar sign"/>
+                {(dapp.web3.utils.fromWei(balance.toString(), 'ether') * ethprice).toString().substring(0, 5) + ' USD /' }
                 <Icon name='ethereum' />{' '}
                 {balance ? balance / 1000000000000000000 + ' eth' : '0.00'}
                 &nbsp;&nbsp;&nbsp;&nbsp;
@@ -383,14 +387,14 @@ const Publish = () => {
             >
               <Form>
                 <Form.Field>
-                  <label className='blacktext'>Title</label>
+                  <label style={{color:'black'}}>Title</label>
                   <input
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   />
                 </Form.Field>
                 <Form.Field>
-                  <label className='blacktext'>Description</label>
+                  <label style={{color:'black'}}>Description</label>
                   <input
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
@@ -412,7 +416,7 @@ const Publish = () => {
                 <Form.Field>
                     <div className="ui labeled input">
                     <div className="ui label label">{usd ? <Icon name='usd'> USD</Icon> : <Icon name='ethereum'> ETH</Icon>}</div>
-                    <input type="text" value={price} onChange={(e) => setPrice(e.target.value)} />
+                    <input placeholder=".50" type="text" value={price} onChange={(e) => setPrice(e.target.value)} />
                     </div>
                 </Form.Field>
                 </>
@@ -492,6 +496,7 @@ const Publish = () => {
                       </Moment>
                     </p>
                     <Modal
+                      className="modal"
                       open={openmodal}
                       size='small'
                       closeIcon
@@ -561,7 +566,7 @@ const Publish = () => {
                             <br />
                             {modalfilefree
                               ? 'Free content'
-                              : 'Price: ' + modalfilefee + ' ETH'}
+                              : 'Price: ' + (modalfilefee*ethprice).toString().substring(0, 5) + 'USD / ' + modalfilefee + ' ETH'}
                           </p>
                           <Button onClick={() => setOpenmodal(false)}>
                             close

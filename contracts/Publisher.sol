@@ -131,8 +131,8 @@ contract Publisher {
      * @param _filename Content title
      * @param _fileType Type of file
      */
-    function createContent(string memory _contentHash, string memory _previewHash, string memory _filename, string memory _fileType, string memory _title, string memory _description, uint _price, string memory _name, uint256 _subscriptionPrice) public payable returns (address) {
-        Content contractId = new Content(_contentHash, _previewHash, _filename, _fileType, _title, _description, _price, _name, _subscriptionPrice);
+    function createContent(address payable _creator, string memory _contentHash, string memory _previewHash, string memory _filename, string memory _fileType, string memory _title, string memory _description, uint _price, string memory _name, uint256 _subscriptionPrice) public payable returns (address) {
+        Content contractId = new Content(_creator, _contentHash, _previewHash, _filename, _fileType, _title, _description, _price, _name, _subscriptionPrice);
         contentContracts.push(address(contractId));
         return address(contractId);
     }
