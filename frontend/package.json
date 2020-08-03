@@ -26,6 +26,7 @@
     "react-moment": "^0.9.7",
     "semantic-ui-css": "^2.4.1",
     "semantic-ui-react": "^0.88.2",
+    "truffle-hdwallet-provider": "^1.0.17",
     "web3": "^1.2.8"
   }
 }

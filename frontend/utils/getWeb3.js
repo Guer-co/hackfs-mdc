@@ -19,7 +19,7 @@ if (typeof window !== 'undefined') {
 // Fallback to Infura Node.
 else {
   const provider = new Web3.providers.HttpProvider(
-    `https://rinkeby.infura.io/v3/${process.env.INFURA_ID}` 
+    `https://goreli.infura.io/v3/${process.env.INFURA_ID}` 
   );
   web3 = new Web3(provider);
 }
