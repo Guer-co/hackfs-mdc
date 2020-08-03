@@ -11,7 +11,7 @@ namespace TEELib
     public class EncryptionService : IEncryptionService
     {
         private readonly IHMACPrimitive _hMACPrimitive;
-        private readonly IUploader _uploader;
+        private readonly IIpfsService _ipfsService;
         private readonly IAES128Primitive _aES128Primitive;
 
         #region Private Implementation
@@ -30,11 +30,11 @@ namespace TEELib
 
         #region Constructor
 
-        public EncryptionService(IHMACPrimitive hMACPrimitive, IUploader uploader,
+        public EncryptionService(IHMACPrimitive hMACPrimitive, IIpfsService ipfsService,
             IAES128Primitive aES128Primitive)
         {
             _hMACPrimitive = hMACPrimitive;
-            _uploader = uploader;
+            _ipfsService = ipfsService;
             _aES128Primitive = aES128Primitive;
         }
 
@@ -46,15 +46,14 @@ namespace TEELib
             string blobName)
         {
             var message = new OriginalContentProcessedMessage();
-            var primitive = new HMACPrimitive();
 
-            message.SigningKey = primitive.GenerateHmacKey();
+            message.SigningKey = _hMACPrimitive.GenerateHmacKey();
             
-            using (var signedStream = await primitive.SignStreamAsync(message.SigningKey,
+            using (var signedStream = await _hMACPrimitive.SignStreamAsync(message.SigningKey,
                 sourceStream))
             {
                 // Upload HMAC to IPFS
-                message.SignedContentIpfsAddress = await _uploader.UploadStreamAsync(signedStream, GetIpfsMetadata(blobName));
+                message.SignedContentIpfsAddress = await _ipfsService.UploadStreamAsync(signedStream, GetIpfsMetadata(blobName));
             }
 
             var keyInfo = new KeyInfo();
@@ -68,23 +67,36 @@ namespace TEELib
             return message;
         }
 
-        public Task ProcessContentForViewing(Stream encryptedStream)
-        {
-            // Get AES128 Key and IV
+        public async Task<ReecnryptedContentProcessedMessage> ProcessContentForViewingAsync(Stream encryptedStream,
+            byte[] encryptionKey, byte[] vector, byte[] signingKey, string signatureAddress)
+        {   
+            // Get Signed Content from IPFS
+            var signedContent = await _ipfsService.DownloadContentAsync(signatureAddress);
 
+            var message = new ReecnryptedContentProcessedMessage();
 
+            message.ContentIsValid = await _hMACPrimitive.IsSignatureValidAsync(signingKey,
+                signedContent);
 
-            // Descrypt
+            if (message.ContentIsValid)
+            {
+                var keyInfo = new KeyInfo(encryptionKey, vector);
 
-            // Get Signing Key and Signed Message
+                // Unencrypt
+                var originalContentStream = await _aES128Primitive.DecryptStreamAsync(encryptedStream, keyInfo);
 
-            // Validate descrypted file
+                // Rencrypt
+                keyInfo = new KeyInfo();
+                message.EncryptionKey = keyInfo.Key;
+                message.Vector = keyInfo.Vector;
+                message.EncryptedStream = await _aES128Primitive.EncryptStreamAsync(originalContentStream,
+                    keyInfo);
 
-            // Rencrypt
+                // Reset position to first byte
+                message.EncryptedStream.Position = 0;
+            }
 
-            // Dispatch
-
-            throw new NotImplementedException();
+            return message;
         }
 
         #endregion

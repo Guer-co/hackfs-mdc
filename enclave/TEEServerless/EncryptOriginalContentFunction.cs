@@ -18,7 +18,7 @@ namespace TEEServerless
         {
             try
             {
-                log.LogInformation($"C# Blob trigger function processing blob\n Name:{name} \n Size: {myBlob.Length} Bytes");
+                log.LogInformation($"EncryptOriginalContentFunction processing blob\n Name:{name} \n Size: {myBlob.Length} Bytes");
 
                 var hMACPrimitive = new HMACPrimitive();
                 var ipfsUploader = new IpfsService();
@@ -33,6 +33,7 @@ namespace TEEServerless
 
                 metadata.Add("containerName", "encrypted-content");
                 metadata.Add("name", name);
+                metadata.Add("signatureAddress", result.SignedContentIpfsAddress);
                 metadata.Add("encryptionKey", Convert.ToBase64String(result.EncryptionKey));
                 metadata.Add("vector", Convert.ToBase64String(result.Vector));
                 metadata.Add("signingKey", Convert.ToBase64String(result.SigningKey));
@@ -42,13 +43,13 @@ namespace TEEServerless
                 // Remove staged blob
                 await blobStorage.PurgeBlobAsync("original-content", name);
 
-                log.LogInformation($"C# Blob trigger function processed blob\n Name:{name} \n Size: {myBlob.Length} Bytes");
+                log.LogInformation($"EncryptOriginalContentFunction processed blob\n Name:{name} \n Size: {myBlob.Length} Bytes");
 
             }
             catch (Exception exc)
             {
                 log.LogInformation(
-                    $"C# Blob trigger failed for blob\n Name:{name}\n Size: {myBlob.Length} Bytes\n{exc.Message}");
+                    $"EncryptOriginalContentFunction failed for blob\n Name:{name}\n Size: {myBlob.Length} Bytes\n{exc.Message}");
             }
         }
     }

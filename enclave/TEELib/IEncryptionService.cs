@@ -8,5 +8,8 @@ namespace TEELib
     {
         Task<OriginalContentProcessedMessage> ProcessOriginalContentAsync(Stream sourceStream,
             string fileName);
+
+        Task<ReecnryptedContentProcessedMessage> ProcessContentForViewingAsync(Stream encryptedStream,
+            byte[] encryptionKey, byte[] vector, byte[] signingKey, string signatureAddress);
     }
 }

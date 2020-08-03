@@ -129,6 +129,30 @@ namespace TEELib.Primitives
                 // We don't want to dispose of the stream, thus outside the using
                 return outputStream;
             }
-        }        
+        }
+
+        public async Task<Stream> DecryptStreamAsync(Stream inputStream, KeyInfo keyInfo)
+        {
+            string tempFileName = Path.GetTempFileName();
+
+            using (AesManaged aes = new AesManaged())
+            {
+                var decryptor = aes.CreateDecryptor(keyInfo.Key, keyInfo.Vector);
+
+                using (FileStream fileStream = File.OpenRead(filePath))
+                {
+                    using (FileStream tempFile = File.Create(tempFileName))
+                    {
+                        using (var cryptoStream = new CryptoStream(tempFile, decryptor, CryptoStreamMode.Write))
+                        {
+                            await fileStream.CopyToAsync(cryptoStream);
+                        }
+                    }
+                }
+            }
+
+            File.Delete(filePath);
+            File.Move(tempFileName, filePath);
+        }
     }
 }

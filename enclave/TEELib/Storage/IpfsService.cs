@@ -5,7 +5,7 @@ using Ipfs.Http;
 
 namespace TEELib.Storage
 {
-    public class IpfsService : IUploader
+    public class IpfsService : IIpfsService
     {
         private IpfsClient GetClient()
         {
@@ -27,6 +27,13 @@ namespace TEELib.Storage
 
             var node = await ipfs.FileSystem.AddFileAsync(path);
             return node.Id;
+        }
+
+        public async Task<Stream> DownloadContentAsync(string ipfsHash)
+        {
+            var ipfs = GetClient();
+
+            return await ipfs.FileSystem.ReadFileAsync(ipfsHash);
         }
 
         public async Task DownloadFile(string hash, string targetLocation)
