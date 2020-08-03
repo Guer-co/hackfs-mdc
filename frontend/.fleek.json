@@ -1,0 +1,11 @@
+{
+  "build": {
+    "image": "fleek/next-js",
+    "command": "yarn && yarn build && yarn export",
+    "publicDir": "out",
+    "baseDir": "frontend",
+    "environment": {
+      "INFURA_ID": "57ba962356074ca1a05d7d58ca2f37b1"
+    }
+  }
+ }
