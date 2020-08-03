@@ -8,6 +8,8 @@ import { Grid, Container, Header, Button, Icon } from 'semantic-ui-react'
 import Chance from 'chance';
 import Moment from 'react-moment';
 
+const chance = new Chance()
+
 const useStyles = makeStyles({
     root: {
       background: 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)',
@@ -81,6 +83,7 @@ const SimpleDate = (props) => {
 
 const TopCell = (props) => {
     const maxRand = 10240;
+    const classes = useStyles();
     const [numFollower, setNumFollower] = useState(chance.integer({ min: 100, max: maxRand }));
     const [numUpload, setNumUpload] = useState(chance.integer({ min: 10, max: 1024 }));
     const [numLike, setNumLike] = useState(chance.integer({ min: 100, max: maxRand }));
