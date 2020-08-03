@@ -79,13 +79,80 @@ const SimpleDate = (props) => {
     return null;
 }
 
+const TopCell = (props) => {
+    const maxRand = 10240;
+    const [numFollower, setNumFollower] = useState(chance.integer({ min: 100, max: maxRand }));
+    const [numUpload, setNumUpload] = useState(chance.integer({ min: 10, max: 1024 }));
+    const [numLike, setNumLike] = useState(chance.integer({ min: 100, max: maxRand }));
+    const [numDownload, setNumDownload] = useState(chance.integer({ min: 100, max: maxRand }));
+    const [numRevenue, setNumRevenus] = useState(chance.integer({ min: 100, max: maxRand }));
+
+    return (
+        //<div class='verticallinewhitecontentcell'>
+        <div>
+        <Grid verticalAlign='middle'>
+              <Grid.Column width={3}>
+                <div class='textalignleft'>
+                    <Header as='h1' inverted>{props.title}</Header>
+                </div>
+              </Grid.Column>
+
+              <Grid.Column width={4}>
+              </Grid.Column>
+
+              <Grid.Column width={9}>
+                <Container fluid>
+                    <div class='textalignright'>
+                    <Button
+                        inverted
+                        color='green'
+                        icon='users'
+                        size='mini'
+                        label={{ as: 'a',basic: true,color: 'green',pointing: 'left', content: numFollower }}
+                      />
+                    <Button
+                        inverted
+                        color='purple'
+                        icon='upload'
+                        size='mini'
+                        label={{ as: 'a',basic: true,color: 'purple',pointing: 'left', content: numUpload }}
+                      />
+                      <Button
+                        inverted
+                        color='red'
+                        icon='heart'
+                        size='mini'
+                        label={{ as: 'a',basic: true,color: 'red',pointing: 'left', content: numLike }}
+                      />
+                      <Button
+                        inverted
+                        color='blue'
+                        icon='download'
+                        size='mini'
+                        label={{ as: 'a',basic: true,color: 'blue',pointing: 'left',content: numDownload }}
+                      />
+                      <Button
+                        inverted
+                        color='yellow'
+                        icon='dollar'
+                        size='mini'
+                        label={{ as: 'a',basic: true,color: 'yellow',pointing: 'left',content: numRevenue }}
+                      />
+                    </div>
+                </Container>
+              </Grid.Column>
+        </Grid>
+        </div>
+    );
+};
+
 const UploadCell = (props) => {
     const classes = useStyles();
     return (
         <div class='uploadcell'>
 
         <Grid verticalAlign='middle'>
-              <Grid.Column width={6}>
+              <Grid.Column width={3}>
               </Grid.Column>
 
               <Grid.Column width={4}>
@@ -116,7 +183,7 @@ const UploadCell = (props) => {
 
               </Grid.Column>
 
-              <Grid.Column width={6}>
+              <Grid.Column width={9}>
                 <Container fluid>
                     <Header as='h2' inverted>{
                         props.isLoading === true ? (
@@ -139,7 +206,7 @@ const PublishCell = (props) => {
         <div class='uploadcell'>
 
         <Grid verticalAlign='middle'>
-              <Grid.Column width={6}>
+              <Grid.Column width={3}>
               </Grid.Column>
 
               <Grid.Column width={4}>
@@ -162,13 +229,13 @@ const PublishCell = (props) => {
                   </div>
               </Grid.Column>
 
-              <Grid.Column width={6}>
+              <Grid.Column width={9}>
                 <Container fluid>
                     <Header as='h2' inverted>{
                         props.isLoading === true ? (
                                 "Uploading"
                             ) : (
-                                "Upload content here"
+                                "Ready to publish"
                                 )
                     }</Header>
                 </Container>
@@ -183,14 +250,15 @@ const ContentCell = (props) => {
     const maxRand = 10240;
     const maxRandLineHeight = 128;
     const classes = useStyles();
-    const [showDes, setShowDes] = useState(true);
+    const [showDes, setShowDes] = useState(false);
     const [randLineHeight, setRandLineHeight] = useState(chance.integer({ min: 32, max: maxRandLineHeight }));
     const [numLike, setNumLike] = useState(chance.integer({ min: 100, max: maxRand }));
     const [numDownload, setNumDownload] = useState(chance.integer({ min: 100, max: maxRand }));
     const [numRevenue, setNumRevenus] = useState(chance.integer({ min: 100, max: maxRand }));
 
     return (
-        <div class='verticallinewhitecontentcell'>
+        //<div class='verticallinewhitecontentcell'>
+        <div>
         <div style={{height: randLineHeight}}></div>
         <Grid verticalAlign='middle'>
               <Grid.Column width={3}>
@@ -261,6 +329,7 @@ const ContentCell = (props) => {
 };
 
 export {
+    TopCell,
     UploadCell,
     PublishCell,
     ContentCell,

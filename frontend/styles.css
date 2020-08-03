@@ -52,6 +52,10 @@ body {
     color:black;
 }
 
+.primarytextcolor {
+    color:white;
+}
+
 .verticallinecenteredwhite {
     background-image: linear-gradient(#fff, #fff);
     background-size: 2px 100%;
@@ -63,7 +67,7 @@ body {
     background-image: linear-gradient(#fff, #fff);
     background-size: 2px 100%;
     background-repeat: no-repeat;
-    background-position: 31.25% center;    
+    background-position: 30.9% center;    
 }
 
 .verticallineheight {
@@ -77,7 +81,11 @@ body {
 .textalignright {
   text-align: right;
 }
-  
+
+.textalignleft {
+  text-align: left;
+}
+    
 .displayinlineblock {
   display: inline-block;
 }

@@ -15,7 +15,7 @@ import {
 import Loader from 'react-loader-spinner';
 import GatewayContractObjSetup from '../utils/GatewayConstructor';
 import Moment from 'react-moment';
-import { UploadCell, PublishCell, ContentCell } from '../components/ContentCell'
+import { TopCell, UploadCell, PublishCell, ContentCell } from '../components/ContentCell'
 
 const Publish = () => {
   const [{ dapp }, dispatch] = useStateValue();
@@ -84,7 +84,7 @@ const Publish = () => {
       if (contentarray.length > 0 && allcontent.length === 0) {
         const contentdetails = async () => {
           let temparray = [];
-          for (let i = 0; i < contentarray.length; i++) {
+          for (let i = contentarray.length-1; i >= 0; i--) {
             await GatewayContractObj.methods
               .getContentInfo(contentarray[i])
               .call()
@@ -210,67 +210,21 @@ const Publish = () => {
   //const updateProfile = async () => {
   //};
 
-  const testContent = {
-    title:"SpaceX GPS III Space Vehicle 03 Mission", 
-    description:"Following stage separation, SpaceX landed Falcon 9’s first stage on the droneship, which was stationed in the Atlantic Ocean. The spacecraft was deployed approximately 1 hour and 29 minutes after liftoff. #spacex",
-    previewUrl:"https://hub.textile.io/ipns/bafzbeia3xeel532rph7k5drvvgtggdxcgr4aztewn6ajtwifedb7jlcfga/thumbnail.jpg"
-  };
-
   return (
+
     <Layout style={{ backgroundColor: '#041727' }}>
       {errorMessage && <Message error header='Oops!' content={errorMessage} />}
-      <Container>
-        <Grid.Row>
-          <UploadCell />
-        </Grid.Row>
-        <Grid.Row>
-          <UploadCell isLoading={true}/>
-        </Grid.Row>
-        <Grid.Row>
-          <PublishCell previewUrl={testContent.previewUrl}/>
-        </Grid.Row>
-        <Grid.Row>
-          <PublishCell />
-        </Grid.Row>
-        <Grid.Row>
-          <ContentCell content={testContent} />
-        </Grid.Row>
-        <Grid.Row>
-          <ContentCell content={testContent} />
-        </Grid.Row>
-      </Container>
+      <div class='verticallinewhitecontentcell'>
 
       <Grid centered>
         <Grid.Column width={16}>
-          <div style={{ textAlign: 'center' }}>
-            <h3>
-              Dashboard
-              <img
-                src=''
-                style={{
-                  width: '50px',
-                  backgroundColor: 'white',
-                  borderRadius: '25px'
-                }}
-              />
-            </h3>
-            <hr />
-          </div>
+          <TopCell title={'Dashboard'}/>
         </Grid.Column>
-        <Grid.Column width={3}>
-          <div style={{ padding: '25px', fontSize: '16px' }}>
-            <div>
-            <p><img style={{width:'50px;'}} src="https://hub.textile.io/ipns/bafzbeiats3a7igb7iuj7d667ye6nxooe437g2zsnmz6eo5s6a6ahdgquki/thumbnail.jpg"/></p>
-            <p>Publisher Account: {myprofile ? myprofile[0].substring(0, 4) + '...' + myprofile[0].substring(31, 36) : ''}</p>
-            <p>Creator's Account: {dapp.address ? dapp.address.substring(0, 4) + '...' + dapp.address.substring(31, 36) : ''}</p>
-            <p>Name: {myprofile[1]}</p>
-            <p>Email: {myprofile[2]}</p>
-            </div>
+          <div>
+            <div style={{height: 256}}></div>
           </div>
-        </Grid.Column>
-        <Grid.Column width={7}>
-          <div style={{ borderLeft: '1px solid #999', padding: '25px' }}>
-            <h3>Publish New Content</h3>
+        <Grid.Column width={16}>      
+        <div>
             {filehash === '' ? (
               loading === true ? (
                 <UploadCell isLoading={true}/>
@@ -283,135 +237,54 @@ const Publish = () => {
                     onChange={uploadToIPFS}
                   />
                   <UploadCell/>
-                  <br />
-                  <br />
                 </>
               )
             ) : (
-              <>
-                {filetype == 'image/png' ||
-                filetype == 'image/jpg' ||
-                filetype == 'image/jpeg' ||
-                filetype == 'image/gif' ? (
-                  <img
-                    style={{
-                      border: '1px dotted #999',
-                      width: '125px',
-                      height: '125px',
-                      margin: '5px'
-                    }}
-                    src={filepreview}
-                    onClick={() => setOpenmodal(true)}
-                  />
-                ) : (
-                  <div
-                    style={{
-                      border: '1px dotted #999',
-                      height: '125px',
-                      width: '125px'
-                    }}
-                  >
-                    <Icon
-                      style={{ margin: 'auto' }}
-                      name='file outline'
-                      size='massive'
-                      onClick={() => setOpenmodal(true)}
-                    />
-                  </div>
-                )}
-                <div id='name'>
-                  <strong>Name:</strong> {filename}
-                </div>
-                <div id='hash'>
-                <strong>IPNS HASH:</strong> {filehash.substring(0, 10) + '....' + filehash.substring(50, 86)}
-                </div>
-                <div id='link'>
-                  <strong>Link to file:</strong>{' '}
-                  <a target='_blank' rel='no-follow' href={filehash}>
-                    LINK
-                  </a>
-                </div>
-              </>
+              <PublishCell previewUrl={filepreview}/>
             )}
           </div>
+
         </Grid.Column>
-        <Grid.Column width={6}>
+
+        <Grid.Column width={3}>          
+        </Grid.Column>
+        <Grid.Column width={4}>
+        </Grid.Column>
+        <Grid.Column width={9}>
           {filehash === '' ? (
-            <div style={{ borderLeft: '1px solid #999', padding: '25px' }}>
-              <h5 style={{ margin: '0px' }}>Payments</h5>
-              <h2 style={{ margin: '0px' }}>$111.11 ETH</h2>
-              <br />
-              <h5 style={{ margin: '0px' }}>Costs</h5>
-              <h2 style={{ margin: '0px' }}>$222.22 ETH &nbsp;</h2>
-              <br />
-              <h5 style={{ margin: '0px' }}>Earnings $</h5>
-              <h2 style={{ margin: '0px' }}>
-                <Icon name='ethereum' />{' '}
-                {balance ? balance / 1000000000000000000 + ' eth' : '0.00'}
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <Popup
-                  content='Withdraw Funds'
-                  trigger={
-                    <Button
-                      icon='external square'
-                      onClick={() => withdrawEarnings()}
-                    />
-                  }
-                />
-                <button
-                  className='btn btn-warning'
-                  onClick={() => {
-                    doReceiveFunds();
-                  }}
-                >
-                  Test send $ to contract
-                </button>
-              </h2>
-              <br />
-              <h5 style={{ margin: '0px' }}>Users</h5>
-              <h2 style={{ margin: '0px' }}>
-                3333 users&nbsp;&nbsp;&nbsp;&nbsp;
-                <Popup
-                  content='View Subscriber Addresses'
-                  trigger={
-                    <Button icon='users' onClick={() => console.log('b')} />
-                  }
-                />
-              </h2>
+            <div style={{ padding: '25px' }}>
             </div>
           ) : (
             <div
               style={{
-                borderLeft: '1px solid #999',
                 padding: '25px'
               }}
             >
-              <Form>
+              <Form inverted>
                 <Form.Field>
-                  <label className='blacktext'>Title</label>
-                  <input
+                  <label>Title</label>
+                  <input placeholder={'Title'}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                   />
                 </Form.Field>
                 <Form.Field>
-                  <label className='blacktext'>Description</label>
-                  <input
+                  <label>Description</label>
+                  <input placeholder={'Description'}
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                   />
                 </Form.Field>
                 <Form.Field>
-                  <span className='blacktext'>Free? </span>
+                  <span className='primarytextcolor'>Free? </span>
                   <Checkbox
-                    className='blacktext'
                     checked={free}
                     onClick={() => setFree(!free)}
                   />
                 </Form.Field>
                 {!free ? (
                 <>
-                <div className='blacktext' style={{display:'inline-block'}}>
+                <div className='primarytextcolor' style={{display:'inline-block'}}>
                 One time price for this content in {usd ? "$USD" : <Icon name='ethereum'>Eth </Icon>} <Button onClick={() => setUsd(!usd)}>Use {usd ? "ETH" : "USD"}?</Button>
                 </div>
                 <Form.Field>
@@ -426,181 +299,44 @@ const Publish = () => {
                 )}
               </Form>
               <br />
-              <br />
-              <Button onClick={addContentToContract}>
-                Publish this content
-              </Button>
+              <div class='textalignright'>
+              <Button
+                circular
+                inverted
+                color='green'
+                content='Publish'
+                icon='paper plane'
+                size='huge'
+                onClick={addContentToContract}
+              />
+              </div>
             </div>
           )}
         </Grid.Column>
 
         <Grid.Column width={16}>
-{allcontent.map((result) => {
-  return (
-    <ContentCell title={result[4]}
-    description={result[5]}
-    previewUrl={result[1]}
-    filehash={result[0]}
-    filename={result[3]}
-    filetype={result[2]}
-    filedate={result[6]}
-    filefee={dapp.web3.utils.fromWei(result[7], 'ether').substring(0, 8)}
-    contentAddress={result[8]}
-    />
-  )
-})}
-        </Grid.Column>
-
-
-        <Grid.Column width={3}>
-          <div></div>
-        </Grid.Column>
-        <Grid.Column width={13}>
+          {allcontent.map((result) => {
+            return (
+              <ContentCell title={result[4]}
+              description={result[5]}
+              previewUrl={result[1]}
+              filehash={result[0]}
+              filename={result[3]}
+              filetype={result[2]}
+              filedate={result[6]}
+              filefee={dapp.web3.utils.fromWei(result[7], 'ether').substring(0, 8)}
+              contentAddress={result[8]}
+              />
+            )
+          })}
           <div>
-            <h3>Recent Uploaded Content</h3>
-            <hr />
-            <div style={{ display: 'flex' }}>
-              {allcontent.map((result) => {
-                console.log(result);
-                return (
-                  <div className='imagebox' key={result[0]}>
-                    <div
-                      onClick={() => {
-                        setModalfilehash(result[0]);
-                        setModalfilepreview(result[1]);
-                        setModalfilename(result[3]);
-                        setModalfiletype(result[2]);
-                        setModalfiletitle(result[4]);
-                        setModalfiledescription(result[5]);
-                        setModalfiledate(result[6]);
-                        setModalfilefee(dapp.web3.utils.fromWei(result[7], 'ether').substring(0, 8));
-                        setContentAddress(result[8]);
-                        setOpenmodal(true);
-                      }}
-                    >
-                      {result[2] == 'image/png' ||
-                      result[2] == 'image/jpg' ||
-                      result[2] == 'image/jpeg' ||
-                      result[2] == 'image/gif' ? (
-                        <img
-                          style={{
-                            border: '1px dotted #999',
-                            width: '125px',
-                            height: '125px',
-                            margin: '5px'
-                        }}
-                        src={result[1]}
-                        />
-                      ) : (
-                        <div
-                          style={{
-                            border: '1px dotted #999',
-                            height: '125px',
-                            width: '125px'
-                          }}
-                        >
-                          <Icon
-                            style={{ margin: 'auto' }}
-                            name='file outline'
-                            size='massive'
-                            onClick={() => setOpenmodal(true)}
-                          />
-                        </div>
-                      )}
-                    </div>
-                    <p>
-                      {result[3]}
-                      <br />
-                      <Moment format='MM/DD/YY HH:mm' unix>
-                        {result[6]}
-                      </Moment>
-                    </p>
-                    <Modal
-                      open={openmodal}
-                      size='small'
-                      closeIcon
-                      onClose={() => setOpenmodal(false)}
-                    >
-                      <Modal.Content style={{ backgroundColor: '#999' }}>
-                        <Modal.Description style={{ textAlign: 'center' }}>
-                          {result[2] == 'image/png' ||
-                          result[2] == 'image/jpg' ||
-                          result[2] == 'image/jpeg' ||
-                          result[2] == 'image/gif' ? (
-                            <a
-                              rel='noopener noreferrer'
-                              target='_blank'
-                              href={modalfilehash}
-                            >
-                              <img
-                                style={{
-                                  border: '1px dotted #999',
-                                  width: '125px',
-                                  height: '125px',
-                                  margin: '5px'
-                                }}
-                                src={modalfilepreview}
-                            />
-                            </a>
-                          ) : (
-                            <a
-                              rel='noopener noreferrer'
-                              target='_blank'
-                              href={modalfilehash}
-                            >
-                              <div
-                                style={{
-                                  border: '1px dotted #999',
-                                  height: '125px',
-                                  width: '125px',
-                                  margin: '0 auto'
-                                }}
-                              >
-                                <Icon
-                                  style={{ margin: 'auto' }}
-                                  name='file outline'
-                                  size='massive'
-                                  onClick={() => setOpenmodal(true)}
-                                />
-                              </div>
-                            </a>
-                          )}
-
-                          <br />
-                          <p style={{ fontSize: '18px' }}>
-                            Filename: {modalfilename}
-                            <br />
-                            Hash: {modalfilehash}
-                            <br />
-                            Type: {modalfiletype}
-                            <br />
-                            Title: {modalfiletitle}
-                            <br />
-                            Desc: {modalfiledescription}
-                            <br />
-                            Uploaded:&nbsp;
-                            <Moment format='MM/DD/YY HH:mm' unix>
-                              {modalfiledate}
-                            </Moment>
-                            <br />
-                            {modalfilefree
-                              ? 'Free content'
-                              : 'Price: ' + modalfilefee + ' ETH'}
-                          </p>
-                          <Button onClick={() => setOpenmodal(false)}>
-                            close
-                          </Button>
-                        </Modal.Description>
-                      </Modal.Content>
-                    </Modal>
-                  </div>
-                );
-              })}
-            </div>
+            <div style={{height: 256}}></div>
           </div>
         </Grid.Column>
       </Grid>
+      </div>
     </Layout>
+
   );
 };
 
