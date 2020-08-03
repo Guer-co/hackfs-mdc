@@ -50,8 +50,9 @@ contract Gateway {
         _publisher.transfer(msg.value);
         User userId = new User(_name, _email);
         userContract[msg.sender] = address(userId);
-        Publisher(_publisher).addSubscriber(msg.sender, _amount);
         User(userContract[msg.sender]).subscribe(_publisher);
+        // this function below is causing the fail
+        Publisher(_publisher).addSubscriber(msg.sender, _amount);
     }
 
     function purchaseContent(address payable _content, uint _contentCost) public payable {

@@ -42,20 +42,18 @@ const Content = ({
   useEffect(() => {
     const checkAuth = async () => {
       try {
-          setAccess(true);
         if (fee > 0 && dapp.address) {
           // const isSubscribed = await GatewayContractObj.methods
           //   .isSubscribed(publisher, dapp.address)
           //   .call();
-          //const isWhitelisted = await GatewayContractObj.methods
-          //  .isWhitelisted(address, dapp.address)
-          //  .call();
-          //console.log(isWhitelisted); // returns false even when you've paid for the content.
-          //if (isWhitelisted) {
-          //  setAccess(true);
-          //} else {
-          //  setPaymentModal(true);
-          //}
+          const isWhitelisted = await GatewayContractObj.methods
+            .isWhitelisted(address, dapp.address)
+            .call();
+          if (isWhitelisted) {
+            setAccess(true);
+          } else {
+            setPaymentModal(true);
+          }
         } else if (fee === 0) {
           setAccess(true);
         }
