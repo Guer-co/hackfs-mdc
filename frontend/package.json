@@ -8,7 +8,8 @@
     "dev": "next",
     "build": "next build",
     "start": "next start",
-    "test": "mocha"
+    "test": "mocha",
+    "export": "next export"
   },
   "author": "",
   "license": "ISC",
