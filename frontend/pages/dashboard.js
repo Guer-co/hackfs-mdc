@@ -66,6 +66,7 @@ const Publish = () => {
           }
         });
       }
+      console.log(myprofile);
 
     if (ethprice == '') {
     await fetch('https://api.infura.io/v1/ticker/ethusd')
@@ -232,11 +233,14 @@ const Publish = () => {
         <Grid.Column width={3}>
           <div style={{ padding: '25px', fontSize: '16px' }}>
             <div>
-            <p><img style={{width:'50px'}} src="https://hub.textile.io/ipns/bafzbeiats3a7igb7iuj7d667ye6nxooe437g2zsnmz6eo5s6a6ahdgquki/thumbnail.jpg"/></p>
-            <p>Publisher Account: {myprofile ? myprofile[0].substring(0, 4) + '...' + myprofile[0].substring(31, 36) : ''}</p>
-            <p>Creator's Account: {dapp.address ? dapp.address.substring(0, 4) + '...' + dapp.address.substring(31, 36) : ''}</p>
-            <p>Name: {myprofile[1]}</p>
-            <p>Email: {myprofile[2]}</p>
+            <p>Logo: <Icon style={{ margin: 'auto' }} name='book' size='large' /></p>
+            <p>Name: <strong>{myprofile[1]}</strong></p>
+            <p>Email: <strong>{myprofile[2]}</strong></p>
+            {myprofile[5] ?
+            <p>Subscription price: <strong>{dapp.web3.utils.fromWei(myprofile[5].toString(), 'ether').substring(0, 6)} ETH</strong></p>
+            : '' }
+            <p>Publisher Account: <strong>{myprofile ? myprofile[0].substring(0, 4) + '...' + myprofile[0].substring(31, 36) : ''}</strong></p>
+            <p>Creator's Account: <strong>{dapp.address ? dapp.address.substring(0, 4) + '...' + dapp.address.substring(31, 36) : ''}</strong></p>
             </div>
           </div>
         </Grid.Column>
@@ -338,10 +342,10 @@ const Publish = () => {
           {filehash === '' ? (
             <div style={{ borderLeft: '1px solid #999', padding: '25px' }}>
               <h5 style={{ margin: '0px' }}>Payments</h5>
-              <h2 style={{ margin: '0px' }}>$111.11 ETH</h2>
+              <h2 style={{ margin: '0px' }}>$111.11 USD</h2>
               <br />
               <h5 style={{ margin: '0px' }}>Costs</h5>
-              <h2 style={{ margin: '0px' }}>$222.22 ETH &nbsp;</h2>
+              <h2 style={{ margin: '0px' }}>$222.22 USD &nbsp;</h2>
               <br />
               <h5 style={{ margin: '0px' }}>Earnings $</h5>
               <h2 style={{ margin: '0px' }}>
@@ -357,14 +361,6 @@ const Publish = () => {
                     />
                   }
                 />
-                <button
-                  className='btn btn-warning'
-                  onClick={() => {
-                    doReceiveFunds();
-                  }}
-                >
-                  Test send $ to contract
-                </button>
               </h2>
               <br />
               <h5 style={{ margin: '0px' }}>Users</h5>

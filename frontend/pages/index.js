@@ -208,27 +208,28 @@ const Index = ({ contentContracts }) => {
   };
 
   const checkIfSubscribedOrBought = async () => {
-      console.log(modalfilecontent);
-    let ispurchased = await GatewayContractObj.methods
-    .isWhitelisted(modalfilecontent,dapp.address)
-    .call();
-    if (ispurchased) {
-        window.location.href = `/content/${modalfilecontent}`;
+    if (modalfilefee == 0) {
+        return window.location.href = `/content/${modalfilecontent}`;
     }
-    //console.log(ispurchased);
-    let issubbed = await GatewayContractObj.methods
-    .isSubscribed(modalfilepublisher, dapp.address)
-    .call();
-    //console.log(issubbed);
-    if (issubbed[0] == false) {
-        if( confirm(`oops, it looks like your subscription with this publisher is expired! Click yes to re-subscribe for ${modalfilepublisherfee}`) == true) {
-            if (subscribeToPublisher()){
-                window.location.href = `/content/${modalfilecontent}`;
-            }
+        let ispurchased = await GatewayContractObj.methods
+        .isWhitelisted(modalfilecontent,dapp.address)
+        .call();
+        if (ispurchased) {
+            window.location.href = `/content/${modalfilecontent}`;
         }
-    } else {
-        window.location.href = `/content/${modalfilecontent}`;
-    }
+        let issubbed = await GatewayContractObj.methods
+        .isSubscribed(modalfilepublisher, dapp.address)
+        .call();
+        console.log(issubbed);
+        if (issubbed[0] == false) {
+            if( confirm(`oops, it looks like your subscription with this publisher is expired! Click yes to re-subscribe for ${dapp.web3.utils.fromWei(modalfilepublisherfee, 'ether').substring(0, 8)}`) == true) {
+                if (subscribeToPublisher()){
+                    window.location.href = `/content/${modalfilecontent}`;
+                }
+            }
+        } else {
+            window.location.href = `/content/${modalfilecontent}`;
+        }
   }
 
   return (
@@ -263,7 +264,6 @@ const Index = ({ contentContracts }) => {
         <Grid.Column width={16}>
           <div style={{ padding: '25px', display: 'flex' }}>
             {contentinfo.map((result, i) => {
-                console.log(contentinfo);
               return (
                 <div
                   key={result[6]}
@@ -363,7 +363,7 @@ const Index = ({ contentContracts }) => {
               )}
               <br />
               {modalfilefee == 0 || (myuser[0] !== 0  || myprofile[0] !== 0  ? myuser[4].includes(modalfilecontent) || myuser[5].includes(modalfilepublisher) || myprofile[4].includes(modalfilecontent) : false) ? (
-                <Button style={{ backgroundColor: 'green', color: 'white' }} onClick={() => checkIfSubscribedOrBought()}>
+                <Button style={{ backgroundColor: 'green', color: 'white' }} onClick={() => {console.log('wtf');checkIfSubscribedOrBought()}}>
                 View the full content!
                 </Button>
               ) : (
