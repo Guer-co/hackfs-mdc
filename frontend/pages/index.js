@@ -192,6 +192,7 @@ const Index = ({ contentContracts }) => {
     };
 
   const subscribeToPublisher = async () => {
+      console.log(modalfilepublisher);
     dapp.web3.eth.sendTransaction(
     {
         to: modalfilepublisher,
@@ -209,6 +210,7 @@ const Index = ({ contentContracts }) => {
   };
 
   const checkIfSubscribedOrBought = async () => {
+      console.log(modalfilepublisher)
     if (modalfilefee == 0) {
         return window.location.href = `/content/${modalfilecontent}`;
     }
@@ -222,13 +224,14 @@ const Index = ({ contentContracts }) => {
         let issubbed = await GatewayContractObj.methods
         .isSubscribed(modalfilepublisher, dapp.address)
         .call();
-            if (issubbed[0] == false) {
+        console.log(issubbed);
+            if (issubbed[1] < issubbed[2]) {
                 if( confirm(`oops, it looks like your subscription with this publisher is expired! Click yes to re-subscribe for ${dapp.web3.utils.fromWei(modalfilepublisherfee, 'ether').substring(0, 8)} ETH`) == true ) {
-                    if (subscribeToPublisher()){
-                        window.location.href = `/content/${modalfilecontent}`;
-                    }
+                    subscribeToPublisher();
                 }
-            } 
+            } else {
+                window.location.href = `/content/${modalfilecontent}`;                
+            }
         }
   }
 

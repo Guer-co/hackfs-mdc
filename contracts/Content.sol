@@ -30,7 +30,7 @@ contract Content {
     receive() external payable {}
 
     constructor(address payable _creator, string memory _contentHash, string memory _previewHash, string memory _filename, string memory _fileType, string memory _title, string memory _description,uint _price, string memory _name, uint256 _subscriptionPrice) payable public {
-        ownerId = _creator;
+        ownerId = msg.sender;
         contractId = address(this);
         Info[contractId].locationHash = _contentHash;
         Info[contractId].previewHash = _previewHash;

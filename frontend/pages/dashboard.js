@@ -241,8 +241,8 @@ const Publish = () => {
             {myprofile[5] ?
             <p>Subscription : <strong><Icon name="dollar sign"/>{(dapp.web3.utils.fromWei(myprofile[5].toString(), 'ether') * ethprice).toString().substring(0, 5)}<br/><Icon name="ethereum"/>{dapp.web3.utils.fromWei(myprofile[5].toString(), 'ether').substring(0, 6)}</strong></p>
             : '' }
-            <p>Publisher Account: <strong>{myprofile ? myprofile[0].substring(0, 4) + '...' + myprofile[0].substring(31, 36) : ''}</strong></p>
-            <p>Creator's Account: <strong>{dapp.address ? dapp.address.substring(0, 4) + '...' + dapp.address.substring(31, 36) : ''}</strong></p>
+            <p>Publisher Account: <strong>{myprofile ? myprofile[0].substring(0, 5) + '...' + myprofile[0].substring(37, 42) : ''}</strong></p>
+            <p>Creator's Account: <strong>{dapp.address ? dapp.address.substring(0, 5) + '...' + dapp.address.substring(37, 42) : ''}</strong></p>
             </div>
           </div>
         </Grid.Column>
