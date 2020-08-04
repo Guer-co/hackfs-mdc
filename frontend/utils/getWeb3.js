@@ -1,6 +1,13 @@
 import Web3 from 'web3';
 
 let web3;
+let url = '';
+
+if (process.env.FLEEK) {
+    url = `https://goerli.infura.io/v3/${process.env.INFURA_ID}`;
+} else {
+    url = 'http://127.0.0.1:8545'
+}
 
 if (typeof window !== 'undefined') {
   // Modern dapp browsers...
@@ -19,7 +26,7 @@ if (typeof window !== 'undefined') {
 // Fallback to Infura Node.
 else {
   const provider = new Web3.providers.HttpProvider(
-    `https://rinkeby.infura.io/v3/${process.env.INFURA_ID}`
+    url
   );
   web3 = new Web3(provider);
 }

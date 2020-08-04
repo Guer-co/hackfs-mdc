@@ -1,7 +1,5 @@
 # S.I.M.P.L.E.
 
-Logos here???
-
 [![Build Status](https://travis-ci.org/joemccann/dillinger.svg?branch=master)](https://travis-ci.org/joemccann/dillinger)
 
 S.I.M.P.L.E. is :  **S**ervices for **I**nformation and **M**edia **P**ayments, **L**egitimacy and **E**ncryption
@@ -13,34 +11,108 @@ S.I.M.P.L.E. is :  **S**ervices for **I**nformation and **M**edia **P**ayments, 
 -- Guarantee provenance and authenticity of delivered content using Hash-based Message Authentication Codes (HMAC) and/or a Zero-knowledge Scheme
 
 ## Built with
-* [Truffle](https://www.google.com)
-* [Solidity](https://www.google.com)
-* [IPFS](https://www.google.com)
-* [FileCoin](https://www.google.com)
-* [Textile](https://www.google.com)
-* [React](https://www.google.com)
+* [Truffle](https://www.trufflesuite.com/)
+* [Solidity](https://github.com/ethereum/solidity)
+* [IPFS](https://github.com/ipfs/ipfs)
+* [Textile](https://textile.io/)
+* [Fleek](https://fleek.co/)
+* [React](https://reactjs.org/)
+* [semantic-ui](https://react.semantic-ui.com/)
+* [Web3](https://github.com/ethereum/web3.js/)
+
 
 
 ### Getting started for dev
 
 * **clone the repo:** git clone https://github.com/Guer-co/hackfs-mdc.git
-* **open the dir:** cd /whateverdirectoryyoucloneditin
+* **open the dir:** cd /hackfs-mdc
 
-(Backend)
-* cd frontend
-* go run go-api.go 
-* (You may have to install go / and do all the go-gets found in the go file)
-
-(Blockchain)
+## Blockchain
 * **install Truffle:** npm install -g truffle
 * **install Ganache (local ethereum blockchain):** [https://www.trufflesuite.com/ganache](https://www.trufflesuite.com/ganache) and run it
-* **BUILD:** truffle build --network development --reset    (I like doing reset each time)
+* **BUILD:** cd /hackfs-mdc truffle build --network development --reset
 
-(Frontend)
-* //once you are in the directory
-* cd frontend
+## Frontend
+* cd hackfs-mdc/frontend
 * npm i
 * npm run dev
 
-(Other)
-* ??????
+
+## Backend
+A libp2p based micro-service node, which provide service for storing, encrypting and decrypting contents.
+
+### Install protoc
+https://github.com/protocolbuffers/protobuf/releases/tag/v3.12.3
+
+### Install ffmpeg
+https://ffmpeg.org/download.html
+
+### ENV
+```
+export TEXTILE_HUB_USER_KEY=XXX
+export TEXTILE_HUB_USER_SECRET=XXX
+export TEXTILE_DB_THREAD_ID=XXX
+export TEXTILE_TEST_DB_THREAD_ID=XXX
+```
+
+### Start the server node
+```
+cd cmd/server
+go generate
+go build
+./server
+2020-07-20T08:12:15.268-0700	INFO	server	server/server.go:37	host.ID: QmeJ4nc8NZSiJhAM4gPA6chzdhjMFzhC51j5WLz5XA5pJn
+...
+2020-07-20T07:14:25.268-0700	INFO	common	server/server.go:80	Announcing this server node with rendezvous string: pay3-rendezvous-01EDC2XSADF7CRB5AJ6SCNWHCG
+```
+
+### Start the proxy client
+* On another terminal, start the proxy client with the "rend" value shown above i.e. pay3-rendezvous-01EDC2XSADF7CRB5AJ6SCNWHCG
+* It would take a few sec to discovery the server node, then starting the httpproxy.
+```
+cd ../proxyclient
+go build
+./proxyclient -rend [rend output from server]
+...
+2020-07-22T08:13:39.977-0700	INFO	common	proxyclient/proxyclient.go:78	Searching for server node with rend: pay3-rendezvous-01EDVHC0XY5G0JKEVM8C79N95Q
+2020-07-22T08:13:46.893-0700	INFO	common	proxyclient/proxyclient.go:90	serverAddrInfo: {QmcnVnqUQpbjWGbnm2LUEeFFQLiCeywysWm3rLMa2k4DNZ: [/ip4/127.0.0.1/tcp/60327 /ip4/192.168.86.193/tcp/60327 /ip6/::1/tcp/60328 /ip6/fe80::4088:f00d:bb5:5545/tcp/60328 /ip4/99.102.91.69/tcp/60327]}, p: {QmcnVnqUQpbjWGbnm2LUEeFFQLiCeywysWm3rLMa2k4DNZ: [/ip4/127.0.0.1/tcp/60327 /ip4/192.168.86.193/tcp/60327 /ip6/::1/tcp/60328 /ip6/fe80::4088:f00d:bb5:5545/tcp/60328 /ip4/99.102.91.69/tcp/60327]}
+start go server
+2020-07-22T08:13:46.893-0700	INFO	common	httpproxy/httpproxy.go:115	httpproxy running at :8888
+```
+
+### Upload test
+```
+curl -X POST http://localhost:8888/api/ipfs \
+    -F "file=@../../pkg/textilehelper/test01.png" \
+    -H "Content-Type: multipart/form-data"
+```
+```
+curl -X POST http://localhost:8888/api/ipfs \
+    -F "file=@../../pkg/tools/samplemedia/testVideo01.mov" \
+    -H "Content-Type: multipart/form-data"
+```
+```
+curl -X POST http://localhost:8888/api/upload \
+    -F "file=@/Users/sing.yiu/Playground/hackfs/hackfs-mdc/backend/pkg/textilehelper/test01.png" \
+    -F "ownerId=testowner02" \
+    -F "description=testdescription02" \
+    -H "Content-Type: multipart/form-data"
+
+return
+{"ownerId":"testowner02","fileName":"test01.png","fileType":"image","fileSize":500269,"description":"testdescription02","threadKey":"bafkqyvemctry6u5zbmzdmws5ubgwnnmitniribu7xe2qudfvhaqffka","bucketKey":"bafzbeihebjpoa6cj7j4nuqidgjxdatqep5f54nfta3oq543ij26y7i453u","encryptedUrl":"https://hub.textile.io/ipns/bafzbeihebjpoa6cj7j4nuqidgjxdatqep5f54nfta3oq543ij26y7i453u","previewUrl":"https://hub.textile.io/ipns/bafzbeics7vq3bg4tufogmczwtzsdb5cfvbxc3lz7ismpom3bqpagnslpry/thumbnail.jpg","receivedAt":1595814840773,"updatedAt":1595814843631}
+```
+
+### Download test
+```
+http://localhost:8888/api/download/testrequester01/bafzbeibbpbqs6oizlyg7dh7tkjxmlldp3l2xdg5yghbtw4ehxl2xiwkyba
+```
+
+### Database API
+* JSON query: i.e. query all ContentData records with field "ownerId" equals "testowner02"
+* N.B. the field "jsonInput" where the query parameters go into, is an escaped Json String !
+```
+curl -i -k -H "Content-Type: application/json" -d '{"requesterId":"testRequester01", "type":"query", "jsonInput":"{\"collection\":\"ContentData\", \"fieldPath\":\"ownerId\", \"operation\":\"Eq\", \"value\":\"testowner01\"}"}' http://localhost:8888/api/json
+
+return
+{"messageData":{"clientVersion":"pay3-server-node/0.0.1","timestamp":1595816336,"id":"01EE711Q5KJGJ2BB58SER22WJ0","nodeId":"QmR4adopEs97RKS737SCaT6jfCaPExbAN2ohE7nzhyLyLu","nodePubKey":"CAASpgIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC51cbCBoEhvZt61FmlGgWcbS7A3jPJuWRY0RZN8UKDkn79vkSubywbZQ4QUh9ivsKiIV82UE5p8qsJ7dtEFN1Jde+u3PtEeLhwLb5iwqumUO80Kjg6bkWsGG2v1vyAGu3VqqVNTmQ/JQ7xQ6yhcIXleFM61+wXHJMa9p5EA0dh9SAjILBHnlZIQqzsRDjLqWdaDwYiP96DltiGNtj3RhxTuHgUCHSJF5FI4x9dQMpAewqsdwhZC461g8RGMqUpopLDhflyZWLfzmLQ5XP6Xcl9EiwsB2kG8Dn/XBLeq1qDZlM6A8XVKL8MRGT8oybUOcNHkhnfkFwLExe3cC6AQeZzAgMBAAE=","sign":"M1ZvcQDIM50Iooh2ulnaeciR3Z2yQ1PnyXW4Tr2xw6wcN8RF1g0i7keRHakVm36WYnfNvm1nPDeyckYCOXRdbB3WBxQc8JUoj4I2/v01Z9BgwXrXK+Nk1E1rY7Gc/yzP3iSZPv4QGgRKAUIiBtQcp2w+lEcXUoSQCtV449swpJbo1mw1jwU5dplKtlt+eoDMmAHke4V1U4ZKrUzkCZMl0YU7BmHSlR/eC+EMPKrxdrJrZwhX6eg4FraMFLHJ03t3w5jLAv5E13PYPi+TvJ7JW+Yw7Un/zgV/kjHRlWnpAss+KM0zx9798YjXt/S8ZYWZAAPfPnsr28a+0FGqvRl3Fg=="},"responseData":{"code":200},"jsonData":{"requesterId":"testRequester01","type":"query","jsonOutput":"[{\"ownerId\":\"testowner01\",\"fileName\":\"test01.png\",\"fileType\":\"image\",\"fileSize\":500269,\"description\":\"test01\",\"threadKey\":\"bafkqyvemctry6u5zbmzdmws5ubgwnnmitniribu7xe2qudfvhaqffka\",\"bucketKey\":\"bafzbeig57kazgtszsil3vjk64ccgmtf34hqu43yqzdzzgqu45dy3edi3bu\",\"encryptedUrl\":\"https://hub.textile.io/ipns/bafzbeig57kazgtszsil3vjk64ccgmtf34hqu43yqzdzzgqu45dy3edi3bu\",\"previewUrl\":\"https://hub.textile.io/ipns/bafzbeidfjtnkf6dp472oxixfsdxksyivrysulmlomgfyq5gqumuuvxj5ui/test01.png\",\"receivedAt\":1595254379594,\"updatedAt\":1595254383095},...]","receivedAt":1595816336565,"updatedAt":1595816336728}}
+```

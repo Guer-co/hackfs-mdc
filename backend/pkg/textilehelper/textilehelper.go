@@ -6,7 +6,9 @@ import (
 	crand "crypto/rand"
 	"crypto/tls"
 	commontools "github.com/Guer-co/hackfs-mdc/backend/pkg/common"
+	pb "github.com/Guer-co/hackfs-mdc/backend/pkg/libp2pnode/pb"
 	"github.com/Guer-co/hackfs-mdc/backend/pkg/models"
+	"github.com/Guer-co/hackfs-mdc/backend/pkg/models/jsonapi"
 	"github.com/libp2p/go-libp2p-core/crypto"
 	tc "github.com/textileio/go-threads/api/client"
 	"github.com/textileio/go-threads/core/thread"
@@ -225,6 +227,42 @@ func QueryContentDB(q *db.Query, dummyInstanceable models.Instanceable) (interfa
 	return clients.Threads.Find(clients.ContextWithDBThreadId, clients.DBThreadId, dummyInstanceable.GetCollectionName(), q, dummyInstanceable)
 }
 
+func GetQueryFromJsonApiQuery(jq jsonapi.Query) (*db.Query, error) {
+	switch jq.Operation {
+	case "Eq":
+		return db.Where(jq.FieldPath).Eq(jq.Value), nil
+	case "Ge":
+		return db.Where(jq.FieldPath).Ge(jq.Value), nil
+	case "Le":
+		return db.Where(jq.FieldPath).Le(jq.Value), nil
+	case "Ne":
+		return db.Where(jq.FieldPath).Ne(jq.Value), nil
+	default:
+		return nil, commontools.Errorf(nil, "Unsupported operation: %s", jq.Operation)
+	}
+}
+
+func GetInstanceableFromCollection(collection string) (models.Instanceable, error) {
+	switch collection {
+	case "ContentData":
+		return &pb.ContentData{}, nil
+	default:
+		return nil, commontools.Errorf(nil, "Unsupported collection: %s", collection)
+	}
+}
+
+func QueryWithJsonApiQuery(jq jsonapi.Query) (interface{}, error) {
+	q, err := GetQueryFromJsonApiQuery(jq)
+	if err != nil {
+		return nil, commontools.Errorf(err, "GetQueryFromJsonApiQuery failed")
+	}
+	dummyInstanceable, err := GetInstanceableFromCollection(jq.Collection)
+	if err != nil {
+		return nil, commontools.Errorf(err, "GetInstanceableFromCollection failed")
+	}
+	return clients.Threads.Find(clients.ContextWithDBThreadId, clients.DBThreadId, jq.Collection, q, dummyInstanceable)
+}
+
 //return (threadKey, bucketKey, ipnsLink, err)
 func CreateBucketAndPushData(bucketName string, bucketFileName string, data []byte, isPrivate bool) (string, string, string, error) {
 	reader := bytes.NewReader(data)
@@ -244,4 +282,14 @@ func CreateBucketAndPushData(bucketName string, bucketFileName string, data []by
 		return "", "", "", commontools.Errorf(err, "clients.Buckets.Links failed")
 	}
 	return clients.DBThreadId.String(), bucketKey, links.IPNS, nil
+}
+
+func PullBytesFromBucket(bucketKey string, bucketFileName string) ([]byte, error) {
+	var buf bytes.Buffer
+	ctx := clients.ContextWithDBThreadId
+	err := clients.Buckets.PullPath(ctx, bucketKey, bucketFileName, &buf)
+	if err != nil {
+		return nil, commontools.Errorf(err, "clients.Buckets.PullPath failed")
+	}
+	return buf.Bytes(), nil
 }

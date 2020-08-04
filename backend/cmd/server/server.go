@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"github.com/Guer-co/hackfs-mdc/backend/pkg/common"
+	"github.com/Guer-co/hackfs-mdc/backend/pkg/libp2pnode"
 	"github.com/Guer-co/hackfs-mdc/backend/pkg/textilehelper"
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p-core/peer"
@@ -11,6 +12,8 @@ import (
 	multiaddr "github.com/multiformats/go-multiaddr"
 	"sync"
 )
+
+//go:generate protoc ../../pkg/libp2pnode/pb/p2p.proto -I../../pkg/libp2pnode/. --gofast_out=../../pkg/libp2pnode/.
 
 var logger = common.Logger
 var config Config
@@ -35,7 +38,7 @@ func main() {
 
 	//TODO: pass ctx to node, close the node upon ctx.Done()
 	//create new node
-	node := NewNode(host)
+	node := libp2pnode.NewNode(host)
 
 	// Start a DHT, for use in peer discovery. We can't just make a new DHT
 	// client because we want each peer to maintain its own local copy of the

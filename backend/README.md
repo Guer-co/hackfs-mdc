@@ -1,7 +1,13 @@
-For now, this is just a simple libp2p based server node,
-which accept a libp2p UploadRequest protocol for pushing file into Textile Bucket securely.
+## Backend
+A libp2p based micro-service node, which provide service for storing, encrypting and decrypting contents.
 
-ENV
+### Install protoc
+https://github.com/protocolbuffers/protobuf/releases/tag/v3.12.3
+
+### Install ffmpeg
+https://ffmpeg.org/download.html
+
+### ENV
 ```
 export TEXTILE_HUB_USER_KEY=XXX
 export TEXTILE_HUB_USER_SECRET=XXX
@@ -9,35 +15,64 @@ export TEXTILE_DB_THREAD_ID=XXX
 export TEXTILE_TEST_DB_THREAD_ID=XXX
 ```
 
-Build
+### Start the server node
 ```
 cd cmd/server
 go generate
 go build
-```
-
-Start the server node
-```
 ./server
 2020-07-20T08:12:15.268-0700	INFO	server	server/server.go:37	host.ID: QmeJ4nc8NZSiJhAM4gPA6chzdhjMFzhC51j5WLz5XA5pJn
-2020-07-20T08:12:15.269-0700	INFO	server	server/server.go:38	host.Addrs: [/ip4/127.0.0.1/tcp/62451 /ip6/::1/tcp/62452 /ip6/fe80::f1cb:8f59:5bee:341b/tcp/62452]
 ...
 2020-07-20T07:14:25.268-0700	INFO	common	server/server.go:80	Announcing this server node with rendezvous string: pay3-rendezvous-01EDC2XSADF7CRB5AJ6SCNWHCG
 ```
 
-On another terminal, start a test client with the "rend" value shown above i.e. pay3-rendezvous-01EDC2XSADF7CRB5AJ6SCNWHCG, and the following flags
+### Start the proxy client
+* On another terminal, start the proxy client with the "rend" value shown above i.e. pay3-rendezvous-01EDC2XSADF7CRB5AJ6SCNWHCG
+* It would take a few sec to discovery the server node, then starting the httpproxy.
 ```
-./server -client true -testfile ../../pkg/textilehelper/test01.png -rend [rend output from server]
+cd ../proxyclient
+go build
+./proxyclient -rend [rend output from server]
 ...
-2020-07-20T07:14:59.986-0700	INFO	common	server/clientmode.go:17	Searching for server node with rend: pay3-rendezvous-01EDP96QGG965N0GK95MV7PQ7Q
-2020-07-20T07:15:13.819-0700	INFO	common	server/clientmode.go:28	Server node found:{QmWDL75BnA36frp2WzYTCqvwcj7PgQrqB8dekRUs9o7JHq: [/ip6/fe80::aede:48ff:fe00:1122/tcp/61222 /ip4/99.102.91.69/tcp/61221 /ip4/127.0.0.1/tcp/61221 /ip6/::1/tcp/61222]}
-2020-07-20T07:15:13.819-0700	INFO	common	server/clientmode.go:32	Testing upload with test file: /Users/sing.yiu/Downloads/test01.png
-2020-07-20T07:15:16.130-0700	INFO	common	server/upload.go:204	QmY8Xwo9VGpjwfov2apN4YiSqbBUT64Sxmu1vUBjq2V5FE Received upload response from QmWDL75BnA36frp2WzYTCqvwcj7PgQrqB8dekRUs9o7JHq. Message id:01EDP98852WHGZWTEF14R7C1WM. resp: messageData:<clientVersion:"pay3-server-node/0.0.1" timestamp:1595254516 id:"01EDP98852WHGZWTEF14R7C1WM" nodeId:"QmWDL75BnA36frp2WzYTCqvwcj7PgQrqB8dekRUs9o7JHq" nodePubKey:"34\244&\234\32522cf@g\2672;)%\224j$e\327\236i\341\023}\265\0136\203\206\330\016\261\210X\373UG\002\250\205\014_`^\273m\007\034%cC\017+J\255&\254f\017\317^\240\372MEG\343h\033\t>\302\006x\360\212\305;j\023\352\224T};\204\200\224\354\330\205\341\321\273`\272\276\365\027k\335\307\002\003\001\000\001" sign:"h\3216\327\347V\211\336\212P\020j\372\243\021v|\222\377IWq\344*\326\375\204\374\271\304\3057|i\254\246@\372\275\352l\2646\360\244\214\353>0?\334\023\321\217M\344\034;@\207\342r*\325\351\355\341q\251d\031\245!OM9tG\367\276M%j\211pE\303\36234\357\002\340\3716\314ai\232\303\331\r<\0275\"\242\330z\030\002\312\n\257ONNMz\322I\316\370\261\233\337\311\031X8\221\\\206\373\230\354KPO\251<\2435\254\227\261\364V\300{\201\034p\001\013\312\225\202\3750\032v\212\3662\324\354\3278\366\002\341\207\252\004\215+sm\342\243\213\357@\035%\213\340\026\225\201F\010" > 
-responseData:<code:200 > contentData:<id:"01edp98adnvvphw0y4tsq8xrx6" ownerId:"testowner01" fileName:"test01.png" fileType:"image" fileSize:500269 description:"test01" threadKey:"bafkqyvemctry6u5zbmzdmws5ubgwnnmitniribu7xe2qudfvhaqffka" bucketKey:"bafzbeiaswjfdvicdsuzd2y7nd6g4wqrvwn73hahn4fsdzfflbvnwpmlijy" 
-encryptedUrl:"https://hub.textile.io/ipns/bafzbeiaswjfdvicdsuzd2y7nd6g4wqrvwn73hahn4fsdzfflbvnwpmlijy" 
-previewUrl:"https://hub.textile.io/ipns/bafzbeiaoadamxhid3fedqumcpnkevhxfc7ulm4ddqwoxb6ydqysd6fcxwi/test01.png" receivedAt:1595254513841 updatedAt:1595254516125 >
+2020-07-22T08:13:39.977-0700	INFO	common	proxyclient/proxyclient.go:78	Searching for server node with rend: pay3-rendezvous-01EDVHC0XY5G0JKEVM8C79N95Q
+2020-07-22T08:13:46.893-0700	INFO	common	proxyclient/proxyclient.go:90	serverAddrInfo: {QmcnVnqUQpbjWGbnm2LUEeFFQLiCeywysWm3rLMa2k4DNZ: [/ip4/127.0.0.1/tcp/60327 /ip4/192.168.86.193/tcp/60327 /ip6/::1/tcp/60328 /ip6/fe80::4088:f00d:bb5:5545/tcp/60328 /ip4/99.102.91.69/tcp/60327]}, p: {QmcnVnqUQpbjWGbnm2LUEeFFQLiCeywysWm3rLMa2k4DNZ: [/ip4/127.0.0.1/tcp/60327 /ip4/192.168.86.193/tcp/60327 /ip6/::1/tcp/60328 /ip6/fe80::4088:f00d:bb5:5545/tcp/60328 /ip4/99.102.91.69/tcp/60327]}
+start go server
+2020-07-22T08:13:46.893-0700	INFO	common	httpproxy/httpproxy.go:115	httpproxy running at :8888
 ```
-It would take a few sec to discovery the server node,
-then upload the test file,
-and get a response from the server node with IPNS link to the encrypted content and preview.
-(For now, the preview is simply a duplicated copy of the uploaded content in plain)
+
+### Upload test
+```
+curl -X POST http://localhost:8888/api/ipfs \
+    -F "file=@../../pkg/textilehelper/test01.png" \
+    -H "Content-Type: multipart/form-data"
+```
+```
+curl -X POST http://localhost:8888/api/ipfs \
+    -F "file=@../../pkg/tools/samplemedia/testVideo01.mov" \
+    -H "Content-Type: multipart/form-data"
+```
+```
+curl -X POST http://localhost:8888/api/upload \
+    -F "file=@/Users/sing.yiu/Playground/hackfs/hackfs-mdc/backend/pkg/textilehelper/test01.png" \
+    -F "ownerId=testowner02" \
+    -F "description=testdescription02" \
+    -H "Content-Type: multipart/form-data"
+
+return
+{"ownerId":"testowner02","fileName":"test01.png","fileType":"image","fileSize":500269,"description":"testdescription02","threadKey":"bafkqyvemctry6u5zbmzdmws5ubgwnnmitniribu7xe2qudfvhaqffka","bucketKey":"bafzbeihebjpoa6cj7j4nuqidgjxdatqep5f54nfta3oq543ij26y7i453u","encryptedUrl":"https://hub.textile.io/ipns/bafzbeihebjpoa6cj7j4nuqidgjxdatqep5f54nfta3oq543ij26y7i453u","previewUrl":"https://hub.textile.io/ipns/bafzbeics7vq3bg4tufogmczwtzsdb5cfvbxc3lz7ismpom3bqpagnslpry/thumbnail.jpg","receivedAt":1595814840773,"updatedAt":1595814843631}
+```
+
+### Download test
+```
+http://localhost:8888/api/download/testrequester01/bafzbeibbpbqs6oizlyg7dh7tkjxmlldp3l2xdg5yghbtw4ehxl2xiwkyba
+```
+
+### Database API
+* JSON query: i.e. query all ContentData records with field "ownerId" equals "testowner02"
+* N.B. the field "jsonInput" where the query parameters go into, is an escaped Json String !
+```
+curl -i -k -H "Content-Type: application/json" -d '{"requesterId":"testRequester01", "type":"query", "jsonInput":"{\"collection\":\"ContentData\", \"fieldPath\":\"ownerId\", \"operation\":\"Eq\", \"value\":\"testowner01\"}"}' http://localhost:8888/api/json
+
+return
+{"messageData":{"clientVersion":"pay3-server-node/0.0.1","timestamp":1595816336,"id":"01EE711Q5KJGJ2BB58SER22WJ0","nodeId":"QmR4adopEs97RKS737SCaT6jfCaPExbAN2ohE7nzhyLyLu","nodePubKey":"CAASpgIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC51cbCBoEhvZt61FmlGgWcbS7A3jPJuWRY0RZN8UKDkn79vkSubywbZQ4QUh9ivsKiIV82UE5p8qsJ7dtEFN1Jde+u3PtEeLhwLb5iwqumUO80Kjg6bkWsGG2v1vyAGu3VqqVNTmQ/JQ7xQ6yhcIXleFM61+wXHJMa9p5EA0dh9SAjILBHnlZIQqzsRDjLqWdaDwYiP96DltiGNtj3RhxTuHgUCHSJF5FI4x9dQMpAewqsdwhZC461g8RGMqUpopLDhflyZWLfzmLQ5XP6Xcl9EiwsB2kG8Dn/XBLeq1qDZlM6A8XVKL8MRGT8oybUOcNHkhnfkFwLExe3cC6AQeZzAgMBAAE=","sign":"M1ZvcQDIM50Iooh2ulnaeciR3Z2yQ1PnyXW4Tr2xw6wcN8RF1g0i7keRHakVm36WYnfNvm1nPDeyckYCOXRdbB3WBxQc8JUoj4I2/v01Z9BgwXrXK+Nk1E1rY7Gc/yzP3iSZPv4QGgRKAUIiBtQcp2w+lEcXUoSQCtV449swpJbo1mw1jwU5dplKtlt+eoDMmAHke4V1U4ZKrUzkCZMl0YU7BmHSlR/eC+EMPKrxdrJrZwhX6eg4FraMFLHJ03t3w5jLAv5E13PYPi+TvJ7JW+Yw7Un/zgV/kjHRlWnpAss+KM0zx9798YjXt/S8ZYWZAAPfPnsr28a+0FGqvRl3Fg=="},"responseData":{"code":200},"jsonData":{"requesterId":"testRequester01","type":"query","jsonOutput":"[{\"ownerId\":\"testowner01\",\"fileName\":\"test01.png\",\"fileType\":\"image\",\"fileSize\":500269,\"description\":\"test01\",\"threadKey\":\"bafkqyvemctry6u5zbmzdmws5ubgwnnmitniribu7xe2qudfvhaqffka\",\"bucketKey\":\"bafzbeig57kazgtszsil3vjk64ccgmtf34hqu43yqzdzzgqu45dy3edi3bu\",\"encryptedUrl\":\"https://hub.textile.io/ipns/bafzbeig57kazgtszsil3vjk64ccgmtf34hqu43yqzdzzgqu45dy3edi3bu\",\"previewUrl\":\"https://hub.textile.io/ipns/bafzbeidfjtnkf6dp472oxixfsdxksyivrysulmlomgfyq5gqumuuvxj5ui/test01.png\",\"receivedAt\":1595254379594,\"updatedAt\":1595254383095},...]","receivedAt":1595816336565,"updatedAt":1595816336728}}
+```

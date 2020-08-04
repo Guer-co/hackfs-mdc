@@ -1,14 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&display=swap');
 body {
-font-family: 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Helvetica',
-    'Arial', sans-serif;
-width:100%;
-height:100%;
-margin: 0 auto;
-background-color:#041727;
-color:white;
+    font-family: 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Helvetica','Arial', sans-serif;
+    width:100%;
+    height:100%;
+    margin: 0 auto;
+    background-color:#f6f6f6;
+    color:black;
 }
 
-.hex {
-font-size: 180px;
-margin:0px;
+.maintitle {
+    font-family: 'Cormorant Garamond', serif;
+}
+
+.contentholder {
+    margin: 0 20px;
+    height:200px;
+    width:200px;
+    border-radius:50px;
+    text-align:center;
+    vertical-align:middle;
+    box-shadow:black 2px 2px 2px;
+    cursor:pointer;
+    color:#f6f6f6;
+}
+
+.freeflag {
+    background-color:green;
+    position:absolute;
+    bottom:20px;
+    right:20px;
+    border-radius:5px;
+    padding:5px;
+    opacity:.8;
+    cursor:pointer;
+    box-shadow:black 2px 2px 2px;
+
+}
+
+.titleblock {
+    background-color:grey;
+    opacity:.8;
+    width:90%;
+    vertical-align:middle;
+    display:inline-block;
+    cursor:pointer;
+    border-radius:5px;
+    margin-top:10px;
+}
+
+.whitetext {
+    color:#f6f6f6;
+}
+
+.blacktext {
+    color:black;
+}
+
+.mymodal, .ui.modal, .content {
+    background-color:#041727!important;
+    color:#f6f6f6;
+    border-radius:20px;
+    border:2px solid 3;   
+}
+
+.field, .ui.form .field > label, .ui.checkbox label, .ui.checkbox input:focus, .ui.checkbox input:focus ~ label{
+    color:#f6f6f6;
+    font-size:1.1em;
 }

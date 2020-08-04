@@ -1,29 +1,5 @@
 package models
 
-import (
-	core "github.com/textileio/go-threads/core/db"
-)
-
-type ContentData struct {
-	Id      core.InstanceID `json:"_id"`
-	OwnerId string `json:"ownerId,omitempty"`
-	FileName string `json:"fileName,omitempty"`
-	FileType string `json:"fileType,omitempty"`
-	FileSize int64 `json:"fileSize,omitempty"`
-	Description string `json:"description,omitempty"`
-	ThreadKey string `json:"threadKey,omitempty"`
-	BucketKey string `json:"bucketKey,omitempty"`
-	EncryptedUrl string `json:"encryptedUrl,omitempty"`
-	PreviewUrl string `json:"previewUrl,omitempty"`
-	ReceivedAt int64 `json:"receivedAt,omitempty"`
-	UpdatedAt int64 `json:"updatedAt,omitempty"`
-}
-
-//ContentData implement Instanceable
-func (c *ContentData) GetCollectionName() string {
-	return ContentDataCollectionName
-}
-
 //https://jsonschema.net/home
 
 /*
