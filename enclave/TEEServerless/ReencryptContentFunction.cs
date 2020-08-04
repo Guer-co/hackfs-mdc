@@ -70,6 +70,9 @@ namespace TEEServerless
                 var result = await service.ProcessContentForViewingAsync(myBlob, encryptionKey, vector,
                     signingKey, signatureAddress);
 
+                // Set the pointer at the beginning of the file
+                result.EncryptedStream.Position = 0;
+
                 var metadata = new Dictionary<string, string>();
 
                 metadata.Add("containerName", "reencrypted-content");

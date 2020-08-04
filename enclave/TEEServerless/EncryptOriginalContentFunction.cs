@@ -29,6 +29,9 @@ namespace TEEServerless
 
                 var result = await service.ProcessOriginalContentAsync(myBlob, name);
 
+                // Reset position to first byte
+                result.EncryptedStream.Position = 0;
+
                 var metadata = new Dictionary<string, string>();
 
                 metadata.Add("containerName", "encrypted-content");

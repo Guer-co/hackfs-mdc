@@ -21,6 +21,9 @@ namespace TEELib.UnitTests
             {                
                 var firstEncryption = await service.ProcessOriginalContentAsync(sourceStream, "hmac-demo.mp4");
 
+                // Go back to the beginning of the stream
+                firstEncryption.EncryptedStream.Position = 0;
+
                 var secondEncryption = await service.ProcessContentForViewingAsync(firstEncryption.EncryptedStream,
                     firstEncryption.EncryptionKey, firstEncryption.Vector, firstEncryption.SigningKey, firstEncryption.SignedContentIpfsAddress);
 

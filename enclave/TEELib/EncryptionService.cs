@@ -52,6 +52,10 @@ namespace TEELib
             using (var signedStream = await _hMACPrimitive.SignStreamAsync(message.SigningKey,
                 sourceStream))
             {
+                // Set the position at the beginning of both streams
+                signedStream.Position = 0;
+                sourceStream.Position = 0;
+
                 // Upload HMAC to IPFS
                 message.SignedContentIpfsAddress = await _ipfsService.UploadStreamAsync(signedStream, GetIpfsMetadata(blobName));
             }
@@ -61,9 +65,6 @@ namespace TEELib
             message.Vector = keyInfo.Vector;
             message.EncryptedStream = await _aES128Primitive.EncryptStreamAsync(sourceStream, keyInfo);
 
-            // Reset position to first byte
-            message.EncryptedStream.Position = 0;
-
             return message;
         }
 
@@ -72,6 +73,9 @@ namespace TEELib
         {   
             // Get Signed Content from IPFS
             var signedContent = await _ipfsService.DownloadContentAsync(signatureAddress);
+
+            // Reset position to first byte
+            signedContent.Position = 0;
 
             var message = new ReecnryptedContentProcessedMessage();
 
@@ -84,6 +88,7 @@ namespace TEELib
 
                 // Unencrypt
                 var originalContentStream = await _aES128Primitive.DecryptStreamAsync(encryptedStream, keyInfo);
+                originalContentStream.Position = 0;
 
                 // Rencrypt
                 keyInfo = new KeyInfo();
@@ -91,9 +96,6 @@ namespace TEELib
                 message.Vector = keyInfo.Vector;
                 message.EncryptedStream = await _aES128Primitive.EncryptStreamAsync(originalContentStream,
                     keyInfo);
-
-                // Reset position to first byte
-                message.EncryptedStream.Position = 0;
             }
 
             return message;
