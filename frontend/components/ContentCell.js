@@ -1,10 +1,9 @@
-import React from 'react'
+import React from 'react';
 import { useState, useEffect } from 'react';
-//import { useStateValue } from '../state';
-//import Link from 'next/link';
-import makeStyles from '@material-ui/styles/makeStyles'
+import makeStyles from '@material-ui/styles/makeStyles';
+import Badge from '@material-ui/core/Badge';
 import Avatar from '@material-ui/core/Avatar';
-import { Grid, Container, Header, Button, Icon } from 'semantic-ui-react'
+import { Grid, Container, Header, Button, Icon } from 'semantic-ui-react';
 import Chance from 'chance';
 import Moment from 'react-moment';
 
@@ -253,7 +252,7 @@ const ContentCell = (props) => {
     const maxRand = 10240;
     const maxRandLineHeight = 128;
     const classes = useStyles();
-    const [showDes, setShowDes] = useState(false);
+    const [showDes, setShowDes] = useState(props.defaultShowDes ? true : false);
     const [randLineHeight, setRandLineHeight] = useState(chance.integer({ min: 32, max: maxRandLineHeight }));
     const [numLike, setNumLike] = useState(chance.integer({ min: 100, max: maxRand }));
     const [numDownload, setNumDownload] = useState(chance.integer({ min: 100, max: maxRand }));
@@ -296,9 +295,7 @@ const ContentCell = (props) => {
 
 
                     <SimpleDate show={showDes} text={"Published"} date={props.filedate} alignRight/>
-                    <SimpleP show={showDes} text={props.filefee
-                    ? 'Free'
-                    : 'Price: ' + props.filefee + ' ETH'} alignRight/>
+                    <SimpleP show={showDes} text={ props.filefee == 0 ? 'Free' : 'Price: ' + props.filefee + ' ETH'} alignRight/>
 
                     <div class='textalignright'>
                       <Button
@@ -308,7 +305,11 @@ const ContentCell = (props) => {
                         size='mini'
                         label={{ as: 'a',basic: true,color: 'red',pointing: 'left', content: numLike }}
                       />
-                      <Button
+                      { props.isConsumerMode ? (
+                          <></>
+                      ) : (
+                        <>  
+                        <Button
                         inverted
                         color='blue'
                         icon='download'
@@ -322,10 +323,90 @@ const ContentCell = (props) => {
                         size='mini'
                         label={{ as: 'a',basic: true,color: 'yellow',pointing: 'left',content: numRevenue }}
                       />
+                      </>
+                      ) }
                     </div>
                 </Container>
               </Grid.Column>
         </Grid>
+        <div style={{height: randLineHeight}}></div>
+        </div>
+    );
+};
+
+const ConsumeCell = (props) => {
+    const classes = useStyles();
+    const maxRandLineHeight = 128;
+    const [randLineHeight, setRandLineHeight] = useState(chance.integer({ min: 32, max: maxRandLineHeight }));
+
+    const maxRand = 10240;
+    const [showDes, setShowDes] = useState(false);
+    const [numLike, setNumLike] = useState(chance.integer({ min: 100, max: maxRand }));
+
+    return (
+        <div>
+        <div style={{height: randLineHeight}}></div>
+        <Grid.Row verticalAlign='middle'>
+              <Grid.Column width={4}>
+                  <div class='textaligncenter'>
+                      <div class='displayinlineblock'>
+                          <div class='circlewhite circlesizemedium'>
+                              <div class='cellcenter circlesizemedium'>
+                                { props.isPlayable ? (
+                                      <Badge
+                                      overlap="circle"
+                                      anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'right',
+                                      }}    
+                                      badgeContent={<Button circular color='green' icon='play' size='mini' onClick={props.playFunc}/>}
+                                      >
+                                      <Avatar alt="Preview" src={props.previewUrl} className={classes.bigAvatar} />
+                                      </Badge>      
+                                  ) : (
+                                      <Badge
+                                      overlap="circle"
+                                      anchorOrigin={{
+                                        vertical: 'bottom',
+                                        horizontal: 'right',
+                                      }}    
+                                      badgeContent={<Button circular color='yellow' icon='dollar' size='mini' onClick={props.modelFunc}/>}
+                                      >
+                                      <Avatar alt="Preview" src={props.previewUrl} className={classes.bigAvatar} />
+                                      </Badge>      
+                                  ) }
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </Grid.Column>
+
+            { showDes ? (
+              <Grid.Column width={4} onClick={() => {setShowDes(!showDes)}}>
+              <Container fluid>
+                  <Header as='h3' inverted>{props.title}</Header>
+                  <SimpleP show={showDes} text={props.description}/>
+
+                  <SimpleDate show={showDes} text={"Published"} date={props.filedate} alignRight/>
+                  <SimpleP show={showDes} text={props.filefee
+                  ? 'Free'
+                  : 'Price: ' + props.filefee + ' ETH'} alignRight/>
+
+                  <div class='textalignright'>
+                    <Button
+                      inverted
+                      color='red'
+                      icon='heart'
+                      size='mini'
+                      label={{ as: 'a',basic: true,color: 'red',pointing: 'left', content: numLike }}
+                    />
+                  </div>
+              </Container>
+            </Grid.Column>
+            ) : (
+                <></>
+            ) }
+        </Grid.Row>
         <div style={{height: randLineHeight}}></div>
         </div>
     );
@@ -336,4 +417,5 @@ export {
     UploadCell,
     PublishCell,
     ContentCell,
+    ConsumeCell,
 };

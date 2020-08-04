@@ -14,6 +14,7 @@ import {
 } from 'semantic-ui-react';
 import GatewayObjSetup from '../utils/GatewayConstructor';
 import Moment from 'react-moment';
+import { ConsumeCell, ContentCell } from '../components/ContentCell'
 
 const Index = ({ contentContracts }) => {
   const [{ dapp }, dispatch] = useStateValue();
@@ -251,8 +252,48 @@ const Index = ({ contentContracts }) => {
           </div>
           
         </Grid.Column>
-        <Grid.Column width={16}>
+        <Grid.Column width={16}>          
           <div style={{ padding: '25px', display: 'flex' }}>
+            {contentinfo.map((result, i) => {
+              return (
+                <div style={{ padding: '32px', position: 'relative' }}>
+                  <ConsumeCell 
+                  filehash={result[0]}
+                  previewUrl={result[1]}
+                  filetype={result[2]}
+                  filename={result[3]}
+                  title={result[4]}
+                  description={result[5]}
+                  filedate={result[6]}
+                  filefee={result[7]}
+                  filepublisher={result[8]}
+                  filepublishername={result[9]}
+                  filepublisherfee={result[10]}
+                  contentAddress={contentContracts[i]}
+                  filecontent={contentContracts[i]}
+                  playFunc={() => window.open( `http://localhost:8888/api/download/${myprofile[0]}/${result[0]}`, "_blank") }
+                  isPlayable={result[7] == 0 || (myuser[0] !== 0  || myprofile[0] !== 0  ? myuser[4].includes(filecontent) || myuser[5].includes(filepublisher) || myprofile[4].includes(filecontent) : false)}
+                  modelFunc={() => {
+                    setModalfilehash(result[0]);
+                    setModalfilepreview(result[1]);
+                    setModalfiletype(result[2]);
+                    setModalfilename(result[3]);
+                    setModalfiletitle(result[4]);
+                    setModalfiledescription(result[5]);
+                    setModalfiledate(result[6]);
+                    setModalfilefee(result[7]);
+                    setModalfilepublisher(result[8]);
+                    setModalfilepublishername(result[9]);
+                    setModalfilepublisherfee(result[10]);
+                    setContentAddress(contentContracts[i]);
+                    setModalfilecontent(contentContracts[i]);
+                    setContentmodal(true);
+                  }}
+                  />
+                </div>
+              )
+            })}
+
             {contentinfo.map((result, i) => {
               return (
                 <div
@@ -329,42 +370,39 @@ const Index = ({ contentContracts }) => {
         onClose={() => setContentmodal(false)}
       >
         <Modal.Content>
-          <Modal.Description style={{ textAlign: 'center' }}>
+          <Modal.Description style={{ textAlign:'left' }}>
             <div>
-              <h2 style={{ margin: '0px' }}>{modalfiletitle}</h2>
-              <h4 style={{ margin: '0px 0px 0px 0px' }}>
-                {modalfiledescription}
-              </h4>
-              <h4 style={{ margin: '0px 0px 10px 0px' }}>
-                <Moment format='MM/DD/YY HH:mm' unix>
-                  {modalfiledate}
-                </Moment>
-              </h4>
-              {modalfiletype == 'image/png' ||
-              modalfiletype == 'image/jpg' ||
-              modalfiletype == 'image/jpeg' ||
-              modalfiletype == 'image/gif' ? (
-                <img src={modalfilepreview} />
-              ) : (
-                <Icon
-                  style={{ margin: 'auto', color: 'white' }}
-                  name='file outline'
-                  size='massive'
-                />
-              )}
-              <br />
+            <ContentCell title={modalfiletitle}
+              description={modalfiledescription}
+              previewUrl={modalfilepreview}
+              filehash={modalfilehash}
+              filename={modalfilename}
+              filetype={modalfiletype}
+              filedate={modalfiledate}
+              filefee={dapp.web3.utils.fromWei(modalfilefee, 'ether').substring(0, 8)}
+              contentAddress={modalfilecontent}
+              defaultShowDes={true}
+              isConsumerMode={true}
+              />
+
               {modalfilefee == 0 || (myuser[0] !== 0  || myprofile[0] !== 0  ? myuser[4].includes(modalfilecontent) || myuser[5].includes(modalfilepublisher) || myprofile[4].includes(modalfilecontent) : false) ? (
-                <Button disabled={loading} style={{ backgroundColor: 'green', color: 'white' }} onClick={() => {checkIfSubscribedOrBought(); setLoading(true);}}>
-                View the full content!
-                </Button>
+                <Grid textAlign='right'>
+                  <Grid.Column width={16} textAlign='right'>
+                  <Button inverted circular color='green' icon='play' size='huge'
+                    onClick={() => window.open( `http://localhost:8888/api/download/${myprofile[0]}/${modalfilehash}`, "_blank")}
+                  ></Button>
+                  </Grid.Column>
+                </Grid>
               ) : (
-                <Form style={{ margin: 'auto', color: 'white' }}>
-                This content costs : {dapp.web3.utils.fromWei(modalfilefee, 'ether').substring(0, 8)} Eth to Buy now!
+                <Grid>
+                  <Grid.Column width={3}></Grid.Column>
+                  <Grid.Column width={10}>
+                  <Form inverted>
                 <Form.Field>
                     <Checkbox
                         checked={buynow}
                         onChange={() => setBuynow(!buynow)}
-                        label={`Buy now! ${dapp.web3.utils.fromWei(modalfilefee, 'ether').substring(0, 8)} ETH`} 
+                        label={`Buy with ${dapp.web3.utils.fromWei(modalfilefee, 'ether').substring(0, 8)} ETH`} 
                         disabled={subscribe}
                     />
                 </Form.Field>
@@ -375,24 +413,17 @@ const Index = ({ contentContracts }) => {
                         label={`Subscribe to ${modalfilepublishername} for ${dapp.web3.utils.fromWei(modalfilepublisherfee, 'ether')} ETH per month!`}
                         disabled={buynow}
                     />
-                </Form.Field>
-                {myuser[0] !== 0  || myprofile[0] !== 0  ?
-                    <Button
-                        style={{ backgroundColor: 'green', color: 'white' }}
-                        onClick={() => {buynow ? purchaseContent() : subscribeToPublisher()}}
-                    >
-                    {buynow ? "Purchase Content" : subscribe ? "Subscribe to Publisher" : "Purchase" }
-                    </Button>
-                :
-                    <Button
-                        style={{ backgroundColor: 'green', color: 'white' }}
-                        onClick={() => {buynow ? createUserAndPurchase() : createUserAndSubscribe()}}
-                    >
-                    {buynow ? "Purchase Content" : subscribe ? "Subscribe to Publisher" : "Purchase" }
-                    </Button>
-                }
+                </Form.Field>                
                 </Form>
+                  </Grid.Column>
+                  <Grid.Column width={3} textAlign='right'>
+                  <Button disabled={!(buynow || subscribe)} inverted circular color='yellow' icon='shop' size='massive'
+                onClick={() => {buynow ? purchaseContent() : subscribeToPublisher()}}
+                ></Button>
+                  </Grid.Column>
+                </Grid>
               )}
+
             </div>
           </Modal.Description>
         </Modal.Content>

@@ -308,7 +308,7 @@ const Publish = () => {
               <Button
                 circular
                 inverted
-                color='green'
+                color='yellow'
                 content='Publish'
                 icon='paper plane'
                 size='huge'
