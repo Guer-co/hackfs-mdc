@@ -1,7 +1,5 @@
 using System.IO;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
-using TEELib;
 using TEELib.Primitives;
 using TEELib.Storage;
 using Xunit;
@@ -21,7 +19,12 @@ namespace TEELib.UnitTests
 
             using (var sourceStream = File.Open("hmac-demo.mp4", FileMode.Open))
             {                
-                var result = await service.ProcessOriginalContentAsync(sourceStream, "hmac-demo.mp4");
+                var firstEncryption = await service.ProcessOriginalContentAsync(sourceStream, "hmac-demo.mp4");
+
+                var secondEncryption = await service.ProcessContentForViewingAsync(firstEncryption.EncryptedStream,
+                    firstEncryption.EncryptionKey, firstEncryption.Vector, firstEncryption.SigningKey, firstEncryption.SignedContentIpfsAddress);
+
+                Assert.True(secondEncryption.ContentIsValid);
             }
         }
     }

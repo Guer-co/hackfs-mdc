@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <Folder Include="Primitives\" />
+    <Folder Include="Storage\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TEELib\TEELib.csproj" />

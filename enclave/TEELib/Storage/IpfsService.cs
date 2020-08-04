@@ -12,14 +12,6 @@ namespace TEELib.Storage
             return new IpfsClient("https://ipfs.infura.io:5001");
         }
 
-        public async Task<string> UploadStreamAsync(Stream stream, IDictionary<string, string> metadata = null)
-        {
-            var ipfs = GetClient();
-
-            var node = await ipfs.FileSystem.AddAsync(stream, name: metadata["name"]);
-            return node.Id;
-        }
-
         public async Task<string> UploadFileAsync(string path,
             IDictionary<string, string> metadata = null)
         {
@@ -29,11 +21,12 @@ namespace TEELib.Storage
             return node.Id;
         }
 
-        public async Task<Stream> DownloadContentAsync(string ipfsHash)
+        public async Task<string> UploadStreamAsync(Stream stream, IDictionary<string, string> metadata = null)
         {
             var ipfs = GetClient();
 
-            return await ipfs.FileSystem.ReadFileAsync(ipfsHash);
+            var node = await ipfs.FileSystem.AddAsync(stream);
+            return node.Id;
         }
 
         public async Task DownloadFile(string hash, string targetLocation)
@@ -48,5 +41,18 @@ namespace TEELib.Storage
                 }
             }
         }
+
+        public async Task<Stream> DownloadContentAsync(string ipfsHash)
+        {
+            var ipfs = GetClient();
+            var outputStream = new MemoryStream();
+
+            using (var downloadStream = await ipfs.FileSystem.ReadFileAsync(ipfsHash))
+            {                
+                downloadStream.CopyTo(outputStream);                
+            }
+
+            return outputStream;
+        }        
     }
 }
