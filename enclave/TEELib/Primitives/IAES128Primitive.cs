@@ -19,9 +19,9 @@ namespace TEELib.Primitives
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="inputStream"></param>
+        /// <param name="encryptedStream"></param>
         /// <param name="keyInfo"></param>
         /// <returns></returns>
-        Task<Stream> DecryptStreamAsync(Stream inputStream, KeyInfo keyInfo);
+        Task<Stream> DecryptStreamAsync(Stream encryptedStream, KeyInfo keyInfo);
     }
 }

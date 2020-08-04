@@ -33,10 +33,12 @@ namespace TEEServerless
 
                 metadata.Add("containerName", "encrypted-content");
                 metadata.Add("name", name);
-                metadata.Add("signatureAddress", result.SignedContentIpfsAddress);
-                metadata.Add("encryptionKey", Convert.ToBase64String(result.EncryptionKey));
-                metadata.Add("vector", Convert.ToBase64String(result.Vector));
-                metadata.Add("signingKey", Convert.ToBase64String(result.SigningKey));
+
+                // To be persisted
+                metadata.Add(Constants.SignatureAddress, result.SignedContentIpfsAddress);
+                metadata.Add(Constants.EncryptionKey, Convert.ToBase64String(result.EncryptionKey));
+                metadata.Add(Constants.Vector, Convert.ToBase64String(result.Vector));
+                metadata.Add(Constants.SigningKey, Convert.ToBase64String(result.SigningKey));
 
                 await blobStorage.UploadStreamAsync(result.EncryptedStream, metadata);
 
