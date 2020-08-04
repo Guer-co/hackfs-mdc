@@ -250,7 +250,7 @@ const Index = ({ contentContracts }) => {
                   I want to publish on Pay3
                 </Button>
               )}
-            <h2 className="maintitle">New Content</h2>
+            <h1 className="maintitle">New Today on Pay3!</h1>
           </div>
           
         </Grid.Column>

@@ -41,20 +41,22 @@ const Content = ({
 
   useEffect(() => {
     const checkAuth = async () => {
+        console.log(fee);
       try {
         if (fee > 0 && dapp.address) {
-          // const isSubscribed = await GatewayContractObj.methods
-          //   .isSubscribed(publisher, dapp.address)
-          //   .call();
+        let isSubscribed = await GatewayContractObj.methods
+        .isSubscribed(publisher, dapp.address)
+        .call();
+        console.log(isSubscribed);
           const isWhitelisted = await GatewayContractObj.methods
             .isWhitelisted(address, dapp.address)
             .call();
-          if (isWhitelisted) {
+          if (isWhitelisted || isSubscribed[1] > isSubscribed[2]) {
             setAccess(true);
           } else {
             setPaymentModal(true);
           }
-        } else if (fee === 0) {
+        } else if (fee == 0) {
           setAccess(true);
         }
       } catch (err) {
@@ -278,7 +280,7 @@ const Content = ({
                   className='blacktext'
                   checked={subscribe}
                   onChange={() => setSubscribe(!subscribe)}
-                  label={`Subscribe to ${publisherName} for ${publisherFee} ETH per month!`}
+                  label={`Subscribe to ${publisherName} for ${dapp.web3.utils.fromWei(publisherFee, 'ether')} ETH per month!`}
                   disabled={buynow}
                 />
               </Form.Field>
