@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useStateValue } from '../state';
 import Link from 'next/link';
-import { Menu, Message, Icon } from 'semantic-ui-react';
+import { Menu, Message, Icon,Grid,Button } from 'semantic-ui-react';
 import MiningIndicator from './MiningIndicator';
 import addrShortener from '../utils/addrShortener';
 import web3 from '../utils/getWeb3';
@@ -80,26 +80,67 @@ const Header = () => {
 
   return (
     <>
-      <Menu style={{ marginTop: '10px' }}>
-        <Link href='/'>
-          <a href='/'>
-            <Menu.Item>
-              <Icon name='home' />
-            </Menu.Item>
-          </a>
-        </Link>
-        <Menu.Menu position='right'>
-          <Menu.Item onClick={handleSignInClick} onKeyUp={handleSignInClick}>
-            {dapp.address === undefined ? (
-              <div>
-                <Icon name='ethereum' /> Connect Wallet
-              </div>
-            ) : (
-              addrShortener(dapp.address)
-            )}
+
+    <Menu style={{ marginTop: '10px' }}>
+      <Link href='/'>
+        <a href='/'>
+          <Menu.Item>
+            <Icon name='home' />
           </Menu.Item>
-        </Menu.Menu>
-      </Menu>
+        </a>
+      </Link>
+      <Menu.Menu position='right'>
+        <Menu.Item onClick={handleSignInClick} onKeyUp={handleSignInClick}>
+          {dapp.address === undefined ? (
+            <div>
+              <Icon name='ethereum' /> Connect Wallet
+            </div>
+          ) : (
+            addrShortener(dapp.address)
+          )}
+        </Menu.Item>
+      </Menu.Menu>
+    </Menu>
+    {errorMessage && <Message error header='Oops!' content={errorMessage} />}
+    {dapp.currentlyMining && (
+      <div className='mining-state'>
+        <span>Mining... &nbsp;</span>
+        <MiningIndicator />
+      </div>
+    )}
+
+{/* 
+    <Grid columns={3} divided='vertically' style={{borderBottom:'2px solid #666'}}>
+        <Grid.Row style={{paddingBottom:'0px'}}>
+        <Grid.Column>
+            <Link href='/'>
+            <Button>
+                     <Icon name='home' style={{color:'black'}} />
+            </Button>
+            </Link>
+
+        </Grid.Column>
+        <Grid.Column style={{textAlign:'center'}}>
+            <div>
+            <Icon style={{ margin: 'auto' }} name='book' size='big' /><br/>
+            <h3 style={{margin:'0px',padding:'0px'}}>Pay3</h3> 
+            </div>
+        </Grid.Column>
+        <Grid.Column style={{textAlign:'right'}}>
+            <Button onClick={handleSignInClick} onKeyUp={handleSignInClick}>
+                {dapp.address === undefined ? (
+                <div>
+                    <Icon name='ethereum' /> Connect Wallet
+                </div>
+                ) : (
+                addrShortener(dapp.address)
+                )}
+            </Button>
+        </Grid.Column>
+        </Grid.Row>
+    </Grid>
+*/}
+
       {errorMessage && <Message error header='Oops!' content={errorMessage} />}
       {dapp.currentlyMining && (
         <div className='mining-state'>

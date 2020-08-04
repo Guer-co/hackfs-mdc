@@ -68,10 +68,13 @@ const Publish = () => {
           }
         });
       }
+      console.log(myprofile);
 
+    if (ethprice == '') {
     await fetch('https://api.infura.io/v1/ticker/ethusd')
     .then((resp) => resp.json())
     .then(resp => setEthprice(resp.ask));
+    }
     
       if (dapp.address && contentarray.length === 0) {
         const contentaddresses = await GatewayContractObj.methods
@@ -118,7 +121,6 @@ const Publish = () => {
     })
       .then((res) => res.json())
       .then((res) => {
-        console.log(res);
         setFilehash(res.bucketKey);
         setFilepreview(res.previewUrl);
         setLoading(false);
@@ -142,7 +144,10 @@ const Publish = () => {
             finalprice = dapp.web3.utils.toWei(price);
         }
     }
-    let msg = (finalprice === 0 ? "Publish this content for free!" : usd === true ? "Publish this content for " + calcprice.toFixed(6) + " ETH?" : "Publish this content for " + price + " ETH?");
+    let msg = (finalprice === 0 ? "Publish this content for free!" : usd === true ? 
+    "Publish this content for $" + price + ' USD / ' + calcprice.toFixed(6) + " ETH?"
+     : 
+     "Publish this content for $" + (dapp.web3.utils.fromWei(myprofile[5].toString(), 'ether') * ethprice).toString().substring(0, 5) + ' USD / ' + price + " ETH?");
     if (confirm(msg) == true) {
     console.log(myprofile[0]);
     console.log(myprofile[1]);
@@ -290,7 +295,7 @@ const Publish = () => {
                 <Form.Field>
                     <div className="ui labeled input">
                     <div className="ui label label">{usd ? <Icon name='usd'> USD</Icon> : <Icon name='ethereum'> ETH</Icon>}</div>
-                    <input type="text" value={price} onChange={(e) => setPrice(e.target.value)} />
+                    <input placeholder=".50" type="text" value={price} onChange={(e) => setPrice(e.target.value)} />
                     </div>
                 </Form.Field>
                 </>

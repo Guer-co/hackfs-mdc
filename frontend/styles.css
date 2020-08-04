@@ -1,11 +1,15 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;500&display=swap');
 body {
-    font-family: 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Helvetica',
-        'Arial', sans-serif;
+    font-family: 'SF Pro Text', 'SF Pro Icons', 'Helvetica Neue', 'Helvetica','Arial', sans-serif;
     width:100%;
     height:100%;
     margin: 0 auto;
     background-color:#041727;
     color:white;
+}
+
+.maintitle {
+    font-family: 'Cormorant Garamond', serif;
 }
 
 .contentholder {
@@ -17,7 +21,7 @@ body {
     vertical-align:middle;
     box-shadow:black 2px 2px 2px;
     cursor:pointer;
-    color:white;
+    color:#f6f6f6;
 }
 
 .freeflag {
@@ -45,7 +49,7 @@ body {
 }
 
 .whitetext {
-    color:white;
+    color:#f6f6f6;
 }
 
 .blacktext {
@@ -117,4 +121,16 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.mymodal, .ui.modal, .content {
+    background-color:#041727!important;
+    color:#f6f6f6;
+    border-radius:20px;
+    border:2px solid 3;   
+}
+
+.field, .ui.form .field > label, .ui.checkbox label, .ui.checkbox input:focus, .ui.checkbox input:focus ~ label{
+    color:#f6f6f6;
+    font-size:1.1em;
 }

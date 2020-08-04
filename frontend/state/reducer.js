@@ -24,8 +24,8 @@ function dappReducer(state = {}, action) {
     case 'SET_PUBLISHER':
       newState.publisher = action.payload;
       return { ...state, ...newState };
-    case 'SET_content':
-      newState.content = action.payload;
+    case 'SET_USER_CONTRACT':
+      newState.userContract = action.payload;
       return { ...state, ...newState };
     default:
       return state;

@@ -41,7 +41,7 @@ contract Gateway {
         _publisher.transfer(msg.value);
         User userId = new User(_name, _email);
         userContract[msg.sender] = address(userId);
-        Content(_content).purchaseContent(_contentCost);
+        Content(_content).purchaseContent(msg.sender,_contentCost);
         User(userContract[msg.sender]).purchase(_content);
     }
 
@@ -50,16 +50,17 @@ contract Gateway {
         _publisher.transfer(msg.value);
         User userId = new User(_name, _email);
         userContract[msg.sender] = address(userId);
-        Publisher(_publisher).addSubscriber(msg.sender, _amount);
         User(userContract[msg.sender]).subscribe(_publisher);
+        // this function below is causing the fail
+        Publisher(_publisher).addSubscriber(msg.sender, _amount);
     }
 
     function purchaseContent(address payable _content, uint _contentCost) public payable {
-        Content(_content).purchaseContent(_contentCost);
+        Content(_content).purchaseContent(msg.sender, _contentCost);
         User(userContract[msg.sender]).purchase(_content);
     }
 
-    function addSubscriber(address payable _publisher, uint256 _amount) public
+    function addSubscriber(address payable _publisher, uint256 _amount) public returns (uint,uint)
     {
         Publisher(_publisher).addSubscriber(msg.sender, _amount);
         User(userContract[msg.sender]).subscribe(_publisher);
@@ -98,9 +99,9 @@ contract Gateway {
         return Publisher(publisherContract[_publisher]).subscriberCount();
     }
 
-    function isSubscribed(address _publisher, address _consumer) public returns (bool)
+    function isSubscribed(address payable _publisher, address _consumer) public view returns (bool, uint, uint)
     {
-        return Publisher(publisherContract[_publisher]).isSubscribed(_consumer);
+        return Publisher(_publisher).isSubscribed(_consumer);
     }
 
     function removeSubscriber(address payable _publisher, address _subscriber) public
@@ -121,7 +122,7 @@ contract Gateway {
 
     function createContent(address payable _publisher,string memory _contentHash, string memory _previewHash, string memory _filename, string memory _fileType, string memory _title, string memory _description, uint _price, string memory _pubname, uint256 _pubfee) public
     {
-        address contractId = Publisher(_publisher).createContent(_contentHash, _previewHash, _fileType, _filename, _title, _description,  _price, _pubname, _pubfee);
+        address contractId = Publisher(_publisher).createContent(msg.sender, _contentHash, _previewHash, _fileType, _filename, _title, _description,  _price, _pubname, _pubfee);
         contentContracts.push(address(contractId));
     }
 
