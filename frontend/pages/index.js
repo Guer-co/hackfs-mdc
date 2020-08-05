@@ -14,6 +14,7 @@ import {
 } from 'semantic-ui-react';
 import GatewayObjSetup from '../utils/GatewayConstructor';
 import Moment from 'react-moment';
+import { ConsumeCell, ContentCell } from '../components/ContentCell'
 
 const Index = ({ contentContracts }) => {
   const [{ dapp }, dispatch] = useStateValue();
@@ -258,10 +259,24 @@ const Index = ({ contentContracts }) => {
           <div style={{ padding: '25px', display: 'flex' }}>
             {contentinfo.map((result, i) => {
               return (
-                <div
-                  key={result[6]}
-                  style={{ position: 'relative' }}
-                  onClick={() => {
+                <div style={{ padding: '32px', position: 'relative' }}>
+                  <ConsumeCell                  
+                  filehash={result[0]}
+                  previewUrl={result[1]}
+                  filetype={result[2]}
+                  filename={result[3]}
+                  title={result[4]}
+                  description={result[5]}
+                  filedate={result[6]}
+                  filefee={result[7]}
+                  filepublisher={result[8]}
+                  filepublishername={result[9]}
+                  filepublisherfee={result[10]}
+                  contentAddress={contentContracts[i]}
+                  filecontent={contentContracts[i]}
+                  playFunc={() => window.open( `http://localhost:8888/api/download/${myprofile[0]}/${result[0]}`, "_blank") }
+                  isPlayable={false}
+                  modelFunc={() => {
                     setModalfilehash(result[0]);
                     setModalfilepreview(result[1]);
                     setModalfiletype(result[2]);
@@ -277,47 +292,7 @@ const Index = ({ contentContracts }) => {
                     setModalfilecontent(contentContracts[i]);
                     setContentmodal(true);
                   }}
-                >
-                  {result[2] == 'image/png' ||
-                  result[2] == 'image/jpg' ||
-                  result[2] == 'image/jpeg' ||
-                  result[2] == 'image/gif' ? (
-                    <div
-                      className='contentholder'
-                      style={{
-                        backgroundImage: 'url(' + result[1] + ')',
-                        backgroundPosition: 'center'
-                      }}
-                    >
-                      <div className='titleblock'>{result[3]}</div>
-                      {result[7] == 0 ? (
-                        <div className='freeflag'>Free!</div>
-                      ) : (
-                        ''
-                      )}
-                    </div>
-                  ) : (
-                    <div
-                      className='contentholder'
-                      style={{
-                        backgroundColor: 'black',
-                        backgroundPosition: 'center'
-                      }}
-                    >
-                      <div className='titleblock'>{result[3]}</div>
-
-                      <Icon
-                        style={{ margin: 'auto', color: 'white' }}
-                        name='file outline'
-                        size='massive'
-                      />
-                      {result[7] == 0 ? (
-                        <div className='freeflag'>Free!</div>
-                      ) : (
-                        ''
-                      )}
-                    </div>
-                  )}
+                  />
                 </div>
               );
             })}
