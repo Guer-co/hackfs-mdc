@@ -15,7 +15,9 @@ namespace TEEServerless
         [FunctionName("EncryptOriginalContentFunction")]
         public async static Task RunAsync(
             [BlobTrigger("original-content/{name}", Connection = "StorageConnection")]
-            Stream myBlob, string name, ILogger log)
+            Stream myBlob, 
+            string name, 
+            ILogger log)
         {
             try
             {

@@ -14,12 +14,10 @@ namespace TEEServerless
     public static class ReencryptContentFunction
     {               
         [FunctionName("ReencryptContentFunction")]
-        public async static Task RunAsync([BlobTrigger("reencrypting-content/{ name}", Connection = "StorageConnection")]Stream myBlob,
-            string name, string blobExtension,
-            string blobTrigger, // full path to triggering blob
-            Uri uri, // blob primary location
+        public async static Task RunAsync([BlobTrigger("reencrypting-content/{name}", Connection = "StorageConnection")]
+            Stream myBlob,
+            string name,
             IDictionary<string, string> metaData, // user-defined blob metadata
-            BlobProperties properties, // blob system properties, e.g. LastModified
             ILogger log)
         {
             try
