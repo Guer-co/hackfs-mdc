@@ -11,7 +11,8 @@ import {
   Form,
   Checkbox,
   Card,
-  Header
+  Header,
+  Image
 } from 'semantic-ui-react';
 import GatewayObjSetup from '../utils/GatewayConstructor';
 import Moment from 'react-moment';
@@ -240,6 +241,7 @@ const Index = ({ contentContracts }) => {
   return (
     <Layout style={{ backgroundColor: '#041727' }}>
       {errorMessage && <Message error header='Oops!' content={errorMessage} />}
+      <div className='backgroundcircle'>
       <Grid centered>
         <Grid.Column width={8} textAlign='left'>
           <Header as='h1' inverted>P3 Discovery</Header>
@@ -493,6 +495,8 @@ const Index = ({ contentContracts }) => {
           </Modal.Description>
         </Modal.Content>
       </Modal>
+      <div style={{height: 512}}></div>
+      </div>
     </Layout>
   );
 };

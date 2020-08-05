@@ -136,3 +136,10 @@ body {
   justify-content: center;
   align-items: center;
 }
+
+.backgroundcircle {
+    background-image: radial-gradient(circle at 0 0,#041727 50%,#fff 50.1%,#041727 50.2%);
+    background-size: 120% 120%;
+    background-repeat: no-repeat;
+    background-position: 0 0;    
+}
