@@ -28,7 +28,7 @@ namespace TEEServerless
 
                 var service = new EncryptionService(hMACPrimitive, ipfsUploader, aES128Primitive);
 
-                var result = await service.ProcessOriginalContentAsync(myBlob, name);
+                var result = await service.ProcessOriginalContentAsync(myBlob, name, log);
 
                 // Reset position to first byte
                 result.EncryptedStream.Position = 0;

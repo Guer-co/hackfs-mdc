@@ -68,7 +68,7 @@ namespace TEEServerless
                 var service = new EncryptionService(hMACPrimitive, ipfsUploader, aES128Primitive);
 
                 var result = await service.ProcessContentForViewingAsync(myBlob, encryptionKey, vector,
-                    signingKey, signatureAddress);
+                    signingKey, signatureAddress, log);
 
                 // Set the pointer at the beginning of the file
                 result.EncryptedStream.Position = 0;

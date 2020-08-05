@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using TEELib.Messages;
 using TEELib.Primitives;
 using TEELib.Storage;
@@ -43,44 +44,57 @@ namespace TEELib
         #region IEncryptionService
 
         public async Task<OriginalContentProcessedMessage> ProcessOriginalContentAsync(Stream sourceStream,
-            string blobName)
+            string blobName, ILogger logger)
         {
             var message = new OriginalContentProcessedMessage();
+
+            logger.LogInformation($"Generating HMAC key for signing {blobName}.");
 
             message.SigningKey = _hMACPrimitive.GenerateHmacKey();
             
             using (var signedStream = await _hMACPrimitive.SignStreamAsync(message.SigningKey,
                 sourceStream))
             {
+                logger.LogInformation($"Signing {blobName}.");
+
                 // Set the position at the beginning of both streams
                 signedStream.Position = 0;
                 sourceStream.Position = 0;
 
                 // Upload HMAC to IPFS
                 message.SignedContentIpfsAddress = await _ipfsService.UploadStreamAsync(signedStream, GetIpfsMetadata(blobName));
+
+                logger.LogInformation($"Persisted signature for {blobName}.");
             }
 
             var keyInfo = new KeyInfo();
             message.EncryptionKey = keyInfo.Key;
             message.Vector = keyInfo.Vector;
+
             message.EncryptedStream = await _aES128Primitive.EncryptStreamAsync(sourceStream, keyInfo);
+
+            logger.LogInformation($"Encrypted {blobName}. Ready for decentralized storage.");
 
             return message;
         }
 
-        public async Task<ReecnryptedContentProcessedMessage> ProcessContentForViewingAsync(Stream encryptedStream,
-            byte[] encryptionKey, byte[] vector, byte[] signingKey, string signatureAddress)
-        {   
+        public async Task<ReencryptedContentProcessedMessage> ProcessContentForViewingAsync(Stream encryptedStream,
+            byte[] encryptionKey, byte[] vector, byte[] signingKey, string signatureAddress, ILogger logger)
+        {
+            logger.LogInformation("Obtaining signed content");
+
             // Get Signed Content from IPFS
             var signedContent = await _ipfsService.DownloadContentAsync(signatureAddress);
 
             // Reset position to first byte
             signedContent.Position = 0;
 
-            var message = new ReecnryptedContentProcessedMessage();
+            var message = new ReencryptedContentProcessedMessage();
 
             message.ContentIsValid = await _hMACPrimitive.IsSignatureValidAsync(signingKey,
                 signedContent);
+
+            logger.LogInformation("Validating content.");
 
             if (message.ContentIsValid)
             {
@@ -90,12 +104,16 @@ namespace TEELib
                 var originalContentStream = await _aES128Primitive.DecryptStreamAsync(encryptedStream, keyInfo);
                 originalContentStream.Position = 0;
 
+                logger.LogInformation("Unencrypted original content.");
+
                 // Rencrypt
                 keyInfo = new KeyInfo();
                 message.EncryptionKey = keyInfo.Key;
                 message.Vector = keyInfo.Vector;
                 message.EncryptedStream = await _aES128Primitive.EncryptStreamAsync(originalContentStream,
                     keyInfo);
+
+                logger.LogInformation("Reencrypted original content.");
             }
 
             return message;

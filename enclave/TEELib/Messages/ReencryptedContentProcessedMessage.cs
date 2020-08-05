@@ -3,7 +3,7 @@ using System.IO;
 
 namespace TEELib.Messages
 {
-    public class ReecnryptedContentProcessedMessage
+    public class ReencryptedContentProcessedMessage
     {
         public Stream EncryptedStream { get; set; }
 
