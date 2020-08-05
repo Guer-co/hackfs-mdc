@@ -244,7 +244,7 @@ const Index = ({ contentContracts }) => {
       <div className='backgroundcircle'>
       <Grid centered>
         <Grid.Column width={8} textAlign='left'>
-          <Header as='h1' inverted>P3 Discovery</Header>
+          <Header as='h1' inverted>Discovery</Header>
         </Grid.Column>
         <Grid.Column width={8} textAlign='right'>
         {myprofile[0] !== 0 ? (
@@ -258,10 +258,10 @@ const Index = ({ contentContracts }) => {
               )}
         </Grid.Column>
         <Grid.Column width={16}>
-          <div style={{ padding: '25px', display: 'flex' }}>
+          <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap-reverse', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             {contentinfo.map((result, i) => {
               return (
-                <div style={{ padding: '32px', position: 'relative' }}>
+                <div style={{ width:'256px' }}>
                   <ConsumeCell                  
                   filehash={result[0]}
                   previewUrl={result[1]}

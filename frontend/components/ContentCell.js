@@ -345,9 +345,7 @@ const ConsumeCell = (props) => {
 
     return (
         <div>
-        <div style={{height: 32}}></div>
-        <Grid.Row verticalAlign='middle'>
-              <Grid.Column width={4}>
+                <div style={{height: 32}}></div>
                   <div class='textaligncenter'>
                       <div class='displayinlineblock'>
                           <div class='circlewhite circlesizemedium'>
@@ -379,35 +377,7 @@ const ConsumeCell = (props) => {
                           </div>
                       </div>
                   </div>
-              </Grid.Column>
-
-            { showDes ? (
-              <Grid.Column width={4} onClick={() => {setShowDes(!showDes)}}>
-              <Container fluid>
-                  <Header as='h3' inverted>{props.title}</Header>
-                  <SimpleP show={showDes} text={props.description}/>
-
-                  <SimpleDate show={showDes} text={"Published"} date={props.filedate} alignRight/>
-                  <SimpleP show={showDes} text={props.filefee
-                  ? 'Free'
-                  : 'Price: ' + props.filefee + ' ETH'} alignRight/>
-
-                  <div class='textalignright'>
-                    <Button
-                      inverted
-                      color='red'
-                      icon='heart'
-                      size='mini'
-                      label={{ as: 'a',basic: true,color: 'red',pointing: 'left', content: numLike }}
-                    />
-                  </div>
-              </Container>
-            </Grid.Column>
-            ) : (
-                <></>
-            ) }
-        </Grid.Row>
-        <div style={{height: 32}}></div>
+                  <div style={{height: 32}}></div>
         </div>
     );
 };
