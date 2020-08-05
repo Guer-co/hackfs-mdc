@@ -259,7 +259,7 @@ const Index = ({ contentContracts }) => {
         </Grid.Column>
         <Grid.Column width={16}>
           <div style={{ padding: '25px', display: 'flex' }}>
-            {contentinfo.map((result, i) => {
+            {contentinfo.slice(0).reverse().map((result, i) => {
               return (
                 <div style={{ padding: '32px', position: 'relative' }}>
                   <ConsumeCell                  

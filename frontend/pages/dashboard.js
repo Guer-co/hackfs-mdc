@@ -318,7 +318,7 @@ const Publish = () => {
         </Grid.Column>
 
         <Grid.Column width={16}>
-          {allcontent.map((result) => {
+          {allcontent.slice(0).reverse().map((result) => {
             return (
               <ContentCell title={result[4]}
               description={result[5]}
