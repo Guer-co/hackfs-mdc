@@ -84,7 +84,7 @@ const Header = () => {
     <Grid columns={2} style={{paddingBottom:'0px'}}>
         <Grid.Row style={{paddingBottom:'0px'}}>
         <Grid.Column>
-            <div style={{float:'left', padding:'3px'}}>
+            <div style={{float:'left', padding:'3px', width:'48px', height:'48px'}}>
             <Avatar alt="Preview" src={'https://hub.textile.io/ipns/bafzbeiarux6ifauh5czd3nkkiqk5khsm75o5x6t2rc6w3vnldiaxznhbxy/thumbnail.jpg'} />
             </div>
             <div style={{float:'left', padding:'6px'}}>

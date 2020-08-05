@@ -261,7 +261,7 @@ const Index = ({ contentContracts }) => {
           <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap-reverse', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             {contentinfo.map((result, i) => {
               return (
-                <div style={{ width:'256px' }}>
+                <div style={{ width:'200px' }}>
                   <ConsumeCell                  
                   filehash={result[0]}
                   previewUrl={result[1]}
