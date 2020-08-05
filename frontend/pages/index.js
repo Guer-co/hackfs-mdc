@@ -241,7 +241,7 @@ const Index = ({ contentContracts }) => {
       {errorMessage && <Message error header='Oops!' content={errorMessage} />}
       <Grid centered>
         <Grid.Column width={8} textAlign='left'>
-          <h1 className="maintitle">Discovery</h1>
+          <h1 className="maintitle">P3 Discovery</h1>
         </Grid.Column>
         <Grid.Column width={8} textAlign='right'>
         {myprofile[0] !== 0 ? (

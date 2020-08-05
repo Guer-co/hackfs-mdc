@@ -80,27 +80,19 @@ const Header = () => {
 
   return (
     <>
-    <Grid columns={3} style={{paddingBottom:'0px'}}>
+    <Grid columns={2} style={{paddingBottom:'0px'}}>
         <Grid.Row style={{paddingBottom:'0px'}}>
         <Grid.Column>
             <Link href='/'>
-            <Button>
-                     <Icon name='home' style={{color:'black'}} />
+            <Button inverted circular icon='home' color='white'>
             </Button>
             </Link>
-
-        </Grid.Column>
-        <Grid.Column style={{textAlign:'center'}}>
-            <div>
-            <Icon style={{ margin: 'auto' }} name='book' size='big' /><br/>
-            {/* <h3 style={{margin:'0px',padding:'0px'}}>Pay3</h3> */}
-            </div>
         </Grid.Column>
         <Grid.Column style={{textAlign:'right'}}>
-            <Button onClick={handleSignInClick} onKeyUp={handleSignInClick}>
+            <Button inverted circular icon='ethereum' color='white' onClick={handleSignInClick} onKeyUp={handleSignInClick}>
                 {dapp.address === undefined ? (
                 <div>
-                    <Icon name='ethereum' /> Connect Wallet
+                    Connect Wallet
                 </div>
                 ) : (
                 addrShortener(dapp.address)
