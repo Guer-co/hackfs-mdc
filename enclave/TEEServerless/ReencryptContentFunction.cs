@@ -45,7 +45,7 @@ namespace TEEServerless
 
                 if (!metaData.ContainsKey(Constants.SigningKey))
                 {
-                    log.LogInformation($"ReencryptContentFunction failed for blob\n Name:{name} \n Size: {myBlob.Length} Bytes\Signing Key is missing.");
+                    log.LogInformation($"ReencryptContentFunction failed for blob\n Name:{name} \n Size: {myBlob.Length} Bytes\nSigning Key is missing.");
                     return;
                 }
 
@@ -53,7 +53,7 @@ namespace TEEServerless
 
                 if (!metaData.ContainsKey(Constants.SignatureAddress))
                 {
-                    log.LogInformation($"ReencryptContentFunction failed for blob\n Name:{name} \n Size: {myBlob.Length} Bytes\Signature Address is missing.");
+                    log.LogInformation($"ReencryptContentFunction failed for blob\n Name:{name} \n Size: {myBlob.Length} Bytes\nSignature Address is missing.");
                     return;
                 }
 
