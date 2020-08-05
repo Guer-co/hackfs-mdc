@@ -6,6 +6,7 @@ import MiningIndicator from './MiningIndicator';
 import addrShortener from '../utils/addrShortener';
 import web3 from '../utils/getWeb3';
 import ENS from 'ethereum-ens';
+import Avatar from '@material-ui/core/Avatar';
 
 const Header = () => {
   const [{ dapp }, dispatch] = useStateValue();
@@ -83,12 +84,18 @@ const Header = () => {
     <Grid columns={2} style={{paddingBottom:'0px'}}>
         <Grid.Row style={{paddingBottom:'0px'}}>
         <Grid.Column>
+            <div style={{float:'left', padding:'3px'}}>
+            <Avatar alt="Preview" src={'https://hub.textile.io/ipns/bafzbeiarux6ifauh5czd3nkkiqk5khsm75o5x6t2rc6w3vnldiaxznhbxy/thumbnail.jpg'} />
+            </div>
+            <div style={{float:'left', padding:'6px'}}>
             <Link href='/'>
-            <Button inverted circular icon='home' color='white'>
-            </Button>
-            </Link>
+              <Button inverted circular icon='home' color='white'>
+              </Button>
+              </Link>
+            </div>
         </Grid.Column>
         <Grid.Column style={{textAlign:'right'}}>
+            <div style={{float:'right', padding:'6px'}}>
             <Button inverted circular icon='ethereum' color='white' onClick={handleSignInClick} onKeyUp={handleSignInClick}>
                 {dapp.address === undefined ? (
                 <div>
@@ -98,6 +105,7 @@ const Header = () => {
                 addrShortener(dapp.address)
                 )}
             </Button>
+            </div>
         </Grid.Column>
         </Grid.Row>
     </Grid>
