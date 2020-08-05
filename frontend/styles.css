@@ -4,8 +4,8 @@ body {
     width:100%;
     height:100%;
     margin: 0 auto;
-    background-color:#f6f6f6;
-    color:black;
+    background-color:#041727;
+    color:white;
 }
 
 .maintitle {
@@ -66,4 +66,71 @@ body {
 .field, .ui.form .field > label, .ui.checkbox label, .ui.checkbox input:focus, .ui.checkbox input:focus ~ label{
     color:#f6f6f6;
     font-size:1.1em;
+}
+
+.primarytextcolor {
+    color:white;
+}
+
+.verticallinecenteredwhite {
+    background-image: linear-gradient(#fff, #fff);
+    background-size: 2px 100%;
+    background-repeat: no-repeat;
+    background-position: center center;    
+}
+
+.verticallinewhitecontentcell {
+    background-image: linear-gradient(#fff, #fff);
+    background-size: 2px 100%;
+    background-repeat: no-repeat;
+    background-position: 30.9% center;    
+}
+
+.verticallineheight {
+    height: 100;
+}
+
+.textaligncenter {
+  text-align: center;
+}
+
+.textalignright {
+  text-align: right;
+}
+
+.textalignleft {
+  text-align: left;
+}
+    
+.displayinlineblock {
+  display: inline-block;
+}
+
+.circlewhite {
+    border:2px solid white;
+    margin: 0px;
+    border-radius:50%;
+    -moz-border-radius:50%;
+    -webkit-border-radius:50%;
+    background: #041727;
+}
+
+.circlesizelarge {
+    width: 226px;
+    height: 226px;
+}
+
+.circlesizemedium {
+    width: 128px;
+    height: 128px;
+}
+
+.uploadcell {
+    height: 256px;
+}
+
+.cellcenter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
