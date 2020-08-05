@@ -274,7 +274,7 @@ const Index = ({ contentContracts }) => {
                   contentAddress={contentContracts[i]}
                   filecontent={contentContracts[i]}
                   playFunc={() => window.open( `http://localhost:8888/api/download/${myprofile[0]}/${result[0]}`, "_blank") }
-                  isPlayable={false}
+                  isPlayable={result[7] == 0 || (myuser[0] !== 0  || myprofile[0] !== 0  ? myuser[4].includes(contentContracts[i]) || myuser[5].includes(result[8]) || myprofile[4].includes(contentContracts[i]) : false)}
                   modelFunc={() => {
                     setModalfilehash(result[0]);
                     setModalfilepreview(result[1]);

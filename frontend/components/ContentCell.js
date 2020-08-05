@@ -345,7 +345,7 @@ const ConsumeCell = (props) => {
 
     return (
         <div>
-        <div style={{height: randLineHeight}}></div>
+        <div style={{height: 32}}></div>
         <Grid.Row verticalAlign='middle'>
               <Grid.Column width={4}>
                   <div class='textaligncenter'>
@@ -407,7 +407,7 @@ const ConsumeCell = (props) => {
                 <></>
             ) }
         </Grid.Row>
-        <div style={{height: randLineHeight}}></div>
+        <div style={{height: 32}}></div>
         </div>
     );
 };
