@@ -240,20 +240,19 @@ const Index = ({ contentContracts }) => {
     <Layout style={{ backgroundColor: '#041727' }}>
       {errorMessage && <Message error header='Oops!' content={errorMessage} />}
       <Grid centered>
-        <Grid.Column width={16}>
-          <div style={{ textAlign: 'center' }}>
-              {myprofile[0] !== 0 ? (
-                <Button href='/dashboard'>My Publisher Dashboard</Button>
+        <Grid.Column width={8} textAlign='left'>
+          <h1 className="maintitle">Discovery</h1>
+        </Grid.Column>
+        <Grid.Column width={8} textAlign='right'>
+        {myprofile[0] !== 0 ? (
+                <Button inverted circular icon='paper plane' color='orange' href='/dashboard'>Publish</Button>
                 ) 
                 :
                 (
-                <Button onClick={() => setProfilemodal(true)}>
-                  I want to publish on Pay3
+                <Button inverted circular icon='paper plane' color='orange' onClick={() => setProfilemodal(true)}>
+                  Publish
                 </Button>
               )}
-            <h1 className="maintitle">New Today on Pay3!</h1>
-          </div>
-          
         </Grid.Column>
         <Grid.Column width={16}>
           <div style={{ padding: '25px', display: 'flex' }}>

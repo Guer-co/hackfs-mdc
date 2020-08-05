@@ -80,7 +80,7 @@ const Header = () => {
 
   return (
     <>
-    <Grid columns={3} divided='vertically' style={{borderBottom:'2px solid #666'}}>
+    <Grid columns={3} style={{paddingBottom:'0px'}}>
         <Grid.Row style={{paddingBottom:'0px'}}>
         <Grid.Column>
             <Link href='/'>
@@ -93,7 +93,7 @@ const Header = () => {
         <Grid.Column style={{textAlign:'center'}}>
             <div>
             <Icon style={{ margin: 'auto' }} name='book' size='big' /><br/>
-            <h3 style={{margin:'0px',padding:'0px'}}>Pay3</h3>
+            {/* <h3 style={{margin:'0px',padding:'0px'}}>Pay3</h3> */}
             </div>
         </Grid.Column>
         <Grid.Column style={{textAlign:'right'}}>
