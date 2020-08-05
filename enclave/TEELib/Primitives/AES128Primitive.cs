@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace TEELib.Primitives
 {
-    public class AES128Primitive
+    public class AES128Primitive : IAES128Primitive
     {
         public string EncryptText(string plainText, KeyInfo keyInfo)
         {
@@ -109,6 +109,44 @@ namespace TEELib.Primitives
 
             File.Delete(filePath);
             File.Move(tempFileName, filePath);
+        }
+
+        public async Task<Stream> EncryptStreamAsync(Stream inputStream, KeyInfo keyInfo)
+        {
+            // Create a new AesManaged   
+            using (AesManaged aes = new AesManaged())
+            {
+                // Create encryptor
+                var encryptor = aes.CreateEncryptor(keyInfo.Key, keyInfo.Vector);
+
+                var outputStream = new MemoryStream();
+
+                using (var cryptoStream = new CryptoStream(outputStream, encryptor, CryptoStreamMode.Write, true))
+                {
+                    await inputStream.CopyToAsync(cryptoStream);
+                }
+
+                // We don't want to dispose of the stream, thus outside the using
+                return outputStream;
+            }
+        }
+
+        public async Task<Stream> DecryptStreamAsync(Stream encryptedStream, KeyInfo keyInfo)
+        {
+            using (AesManaged aes = new AesManaged())
+            {
+                var decryptor = aes.CreateDecryptor(keyInfo.Key, keyInfo.Vector);
+
+                var outputStream = new MemoryStream();
+
+                using (var cryptoStream = new CryptoStream(outputStream, decryptor, CryptoStreamMode.Write, true))
+                {
+                    await encryptedStream.CopyToAsync(cryptoStream);
+                }
+
+                // We don't want to dispose of the stream, thus outside the using
+                return outputStream;
+            }
         }
     }
 }
