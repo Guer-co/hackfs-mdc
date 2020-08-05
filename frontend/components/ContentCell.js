@@ -138,7 +138,7 @@ const TopCell = (props) => {
                         color='yellow'
                         icon='dollar'
                         size='mini'
-                        label={{ as: 'a',basic: true,color: 'yellow',pointing: 'left',content: numRevenue }}
+                        label={{ as: 'a',basic: true,color: 'yellow',pointing: 'left',content: props.balance ? (props.balance / 1000000000000000000).toFixed(4) : '0.00' }}
                       />
                     </div>
                 </Container>
