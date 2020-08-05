@@ -309,6 +309,20 @@ const Index = ({ contentContracts }) => {
         <Modal.Content>
           <Modal.Description style={{ textAlign: 'center' }}>
             <div>
+            <ContentCell title={modalfiletitle}
+              description={modalfiledescription}
+              previewUrl={modalfilepreview}
+              filehash={modalfilehash}
+              filename={modalfilename}
+              filetype={modalfiletype}
+              filedate={modalfiledate}
+              filefee={dapp.web3.utils.fromWei(modalfilefee, 'ether').substring(0, 8)}
+              contentAddress={modalfilecontent}
+              defaultShowDes={true}
+              isConsumerMode={true}
+              />
+
+              {/*
               <h2 style={{ margin: '0px' }}>{modalfiletitle}</h2>
               <h4 style={{ margin: '0px 0px 0px 0px' }}>
                 {modalfiledescription}
@@ -331,10 +345,12 @@ const Index = ({ contentContracts }) => {
                 />
               )}
               <br />
+              */}
+
               {modalfilefee == 0 || (myuser[0] !== 0  || myprofile[0] !== 0  ? myuser[4].includes(modalfilecontent) || myuser[5].includes(modalfilepublisher) || myprofile[4].includes(modalfilecontent) : false) ? (
-                <Button disabled={loading} style={{ backgroundColor: 'green', color: 'white' }} onClick={() => {checkIfSubscribedOrBought(); setLoading(true);}}>
-                View the full content!
-                </Button>
+                <Button disabled={loading} inverted circular color='green' icon='play' size='huge'
+                  onClick={() => window.open( `http://localhost:8888/api/download/${myprofile[0]}/${modalfilehash}`, "_blank")}
+                ></Button>
               ) : (
                 <Form style={{ margin: 'auto', color: 'white' }}>
                 This content costs : {dapp.web3.utils.fromWei(modalfilefee, 'ether').substring(0, 8)} Eth to Buy now!
