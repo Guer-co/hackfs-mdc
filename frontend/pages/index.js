@@ -10,7 +10,8 @@ import {
   Modal,
   Form,
   Checkbox,
-  Card
+  Card,
+  Header
 } from 'semantic-ui-react';
 import GatewayObjSetup from '../utils/GatewayConstructor';
 import Moment from 'react-moment';
@@ -241,7 +242,7 @@ const Index = ({ contentContracts }) => {
       {errorMessage && <Message error header='Oops!' content={errorMessage} />}
       <Grid centered>
         <Grid.Column width={8} textAlign='left'>
-          <h1 className="maintitle">P3 Discovery</h1>
+          <Header as='h1' inverted>P3 Discovery</Header>
         </Grid.Column>
         <Grid.Column width={8} textAlign='right'>
         {myprofile[0] !== 0 ? (
