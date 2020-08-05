@@ -307,7 +307,7 @@ const Index = ({ contentContracts }) => {
         onClose={() => setContentmodal(false)}
       >
         <Modal.Content>
-          <Modal.Description style={{ textAlign: 'center' }}>
+          <Modal.Description style={{ textAlign: 'left' }}>
             <div>
             <ContentCell title={modalfiletitle}
               description={modalfiledescription}
@@ -348,43 +348,53 @@ const Index = ({ contentContracts }) => {
               */}
 
               {modalfilefee == 0 || (myuser[0] !== 0  || myprofile[0] !== 0  ? myuser[4].includes(modalfilecontent) || myuser[5].includes(modalfilepublisher) || myprofile[4].includes(modalfilecontent) : false) ? (
+                <div style={{ textAlign: 'center' }}>
                 <Button disabled={loading} inverted circular color='green' icon='play' size='huge'
                   onClick={() => window.open( `http://localhost:8888/api/download/${myprofile[0]}/${modalfilehash}`, "_blank")}
                 ></Button>
+                </div>
               ) : (
-                <Form style={{ margin: 'auto', color: 'white' }}>
-                This content costs : {dapp.web3.utils.fromWei(modalfilefee, 'ether').substring(0, 8)} Eth to Buy now!
-                <Form.Field>
-                    <Checkbox
+                <Form inverted>
+                  <Form.Group>
+                  <Form.Field width={2}>
+                  </Form.Field>
+                  <Form.Field width={10}>
+                  <Checkbox
                         checked={buynow}
                         onChange={() => setBuynow(!buynow)}
-                        label={`Buy now! ${dapp.web3.utils.fromWei(modalfilefee, 'ether').substring(0, 8)} ETH`} 
+                        label={`Buy now with ${dapp.web3.utils.fromWei(modalfilefee, 'ether').substring(0, 8)} ETH`} 
                         disabled={subscribe}
                     />
+                  </Form.Field>                    
+                  </Form.Group>
+
+                <Form.Group>
+                <Form.Field width={2}>
                 </Form.Field>
-                <Form.Field>
+                <Form.Field width={10}>
                     <Checkbox
                         checked={subscribe}
                         onChange={() => setSubscribe(!subscribe)}
-                        label={`Subscribe to ${modalfilepublishername} for ${dapp.web3.utils.fromWei(modalfilepublisherfee, 'ether')} ETH per month!`}
+                        label={`Subscribe to ${modalfilepublishername} with ${dapp.web3.utils.fromWei(modalfilepublisherfee, 'ether')} ETH per month!`}
                         disabled={buynow}
                     />
                 </Form.Field>
+                <Form.Field width={4}>
+                <div style={{ textAlign: 'center' }}>
                 {myuser[0] !== 0  || myprofile[0] !== 0  ?
-                    <Button
-                        style={{ backgroundColor: 'green', color: 'white' }}
+                    <Button disabled={!(buynow || subscribe)} inverted circular color='yellow' icon='shop' size='massive'
                         onClick={() => {buynow ? purchaseContent() : subscribeToPublisher()}}
                     >
-                    {buynow ? "Purchase Content" : subscribe ? "Subscribe to Publisher" : "Purchase" }
                     </Button>
                 :
-                    <Button
-                        style={{ backgroundColor: 'green', color: 'white' }}
+                    <Button disabled={!(buynow || subscribe)} inverted circular color='yellow' icon='shop' size='massive'
                         onClick={() => {buynow ? createUserAndPurchase() : createUserAndSubscribe()}}
                     >
-                    {buynow ? "Purchase Content" : subscribe ? "Subscribe to Publisher" : "Purchase" }
                     </Button>
                 }
+                </div>
+                </Form.Field>
+                </Form.Group>
                 </Form>
               )}
             </div>
