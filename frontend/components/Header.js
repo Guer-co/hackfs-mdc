@@ -5,11 +5,11 @@ import { Menu, Message, Icon,Grid,Button } from 'semantic-ui-react';
 import MiningIndicator from './MiningIndicator';
 import addrShortener from '../utils/addrShortener';
 import web3 from '../utils/getWeb3';
-import ENS from 'ethereum-ens';
+//import ENS from 'ethereum-ens';
 
 const Header = () => {
   const [{ dapp }, dispatch] = useStateValue();
-  const [ensName, setName] = useState(null);
+  //const [ensName, setName] = useState(null);
   const [errorMessage, setError] = useState('');
 
   useEffect(() => {
@@ -35,12 +35,12 @@ const Header = () => {
             type: 'SET_BALANCE',
             payload: balance
           });
-          const ens = new ENS(ethereum);
-          let name = await ens.reverse(address).name();
-          // Check to be sure the reverse record is correct.
-          if (address != (await ens.resolver(name).addr())) {
-            name = null;
-          }
+          //const ens = new ENS(ethereum);
+          //let name = await ens.reverse(address).name();
+          //// Check to be sure the reverse record is correct.
+          //if (address != (await ens.resolver(name).addr())) {
+          //  name = null;
+          //}
           setName(name);
         }
         // refreshes the dapp when a different address is selected in metamask
@@ -92,7 +92,7 @@ const Header = () => {
         </Grid.Column>
         <Grid.Column style={{textAlign:'center'}}>
             <div>
-            <Icon style={{ margin: 'auto' }} name='book' size='big' /><br/>
+            <img alt="Preview" src={'https://hub.textile.io/ipns/bafzbeiarux6ifauh5czd3nkkiqk5khsm75o5x6t2rc6w3vnldiaxznhbxy/thumbnail.jpg'} style={{width:'100px',borderRadius:'50px'}}/>
             <h3 style={{margin:'0px',padding:'0px'}}>Pay3</h3>
             </div>
         </Grid.Column>
@@ -106,6 +106,7 @@ const Header = () => {
                 addrShortener(dapp.address)
                 )}
             </Button>
+            
         </Grid.Column>
         </Grid.Row>
     </Grid>
