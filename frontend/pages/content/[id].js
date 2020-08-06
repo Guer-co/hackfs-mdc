@@ -12,6 +12,8 @@ import {
 import Moment from 'react-moment';
 import Loader from 'react-loader-spinner';
 import GatewayObjSetup from '../../utils/GatewayConstructor';
+import marked from 'marked';
+
 
 const Content = ({
   address,
@@ -39,22 +41,25 @@ const Content = ({
   const [buynow, setBuynow] = useState(false);
   const [subscribe, setSubscribe] = useState(false);
 
+
   useEffect(() => {
     const checkAuth = async () => {
+        console.log(fee);
       try {
         if (fee > 0 && dapp.address) {
-          // const isSubscribed = await GatewayContractObj.methods
-          //   .isSubscribed(publisher, dapp.address)
-          //   .call();
+        let isSubscribed = await GatewayContractObj.methods
+        .isSubscribed(publisher, dapp.address)
+        .call();
+        console.log(isSubscribed);
           const isWhitelisted = await GatewayContractObj.methods
             .isWhitelisted(address, dapp.address)
             .call();
-          if (isWhitelisted) {
+          if (isWhitelisted || isSubscribed[1] > isSubscribed[2]) {
             setAccess(true);
           } else {
             setPaymentModal(true);
           }
-        } else if (fee === 0) {
+        } else if (fee == 0) {
           setAccess(true);
         }
       } catch (err) {
@@ -204,33 +209,31 @@ const Content = ({
           />
         </Grid>
       ) : (
-        <Grid centered>
-          <Grid.Row>
-            <Grid.Column width={16}>
-              <div style={{ textAlign: 'center' }}>
-                <h1>{title}</h1>
-              </div>
-              <br />
-              <div style={{ textAlign: 'center' }}>
-                <h3>by: {publisherName}</h3>
-              </div>
-            </Grid.Column>
-          </Grid.Row>
-          <Grid.Row>
-            <Grid.Column width={8}>
-              <div style={{ textAlign: 'right' }}>
-                <Moment format='Do MMM YYYY' unix>
-                  {date}
-                </Moment>
-              </div>
-              <br />
-              <div style={{ textAlign: 'center' }}>
-                <h3>{description}</h3>
-              </div>
-            </Grid.Column>
-            <Grid.Column width={8}>{image && <img src={image} />}</Grid.Column>
-          </Grid.Row>
-        </Grid>
+    <Grid centered>
+    <Grid.Row>
+        <Grid.Column width={16}>
+        <div style={{ textAlign: 'center' }}>
+            <h1>{title}</h1>
+            <h3>{description}</h3>
+        </div>
+        <br />
+        <div style={{ textAlign: 'center' }}>
+            <p><strong>by:</strong> {publisherName}&nbsp;&nbsp;<strong> on:</strong> <Moment format='Do MMM YYYY' unix>{date}</Moment></p>
+        </div>
+        </Grid.Column>
+        <Grid.Column width={16}>
+            <div style={{ textAlign: 'center' }}>
+            <br/>
+            {image ? 
+            <img src={image} />
+            :
+            ''
+            }
+            </div>
+        </Grid.Column>
+    </Grid.Row>
+    
+    </Grid>
       )}
       <Modal open={paymentModal} size='small'>
         <Modal.Header style={{ textAlign: 'center' }}>Paywall</Modal.Header>
@@ -278,7 +281,7 @@ const Content = ({
                   className='blacktext'
                   checked={subscribe}
                   onChange={() => setSubscribe(!subscribe)}
-                  label={`Subscribe to ${publisherName} for ${publisherFee} ETH per month!`}
+                  label={`Subscribe to ${publisherName} for ${dapp.web3.utils.fromWei(publisherFee, 'ether')} ETH per month!`}
                   disabled={buynow}
                 />
               </Form.Field>
@@ -311,12 +314,9 @@ export async function getStaticProps({ params }) {
     .getContentInfo(params.id)
     .call();
 
-  const image = await fetch(
-    `http://localhost:8888/api/download/${contentSummary[8]}/${contentSummary[0]}`,
-    {
-      method: 'GET'
-    }
-  );
+  const image = await fetch(`http://localhost:8888/api/download/${contentSummary[8]}/${contentSummary[0]}`);
+
+const http = new XMLHttpRequest();
 
   return {
     props: {

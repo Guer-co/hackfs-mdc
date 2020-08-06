@@ -235,11 +235,12 @@ const Publish = () => {
         <Grid.Column width={3}>
           <div style={{ padding: '25px', fontSize: '16px' }}>
             <div>
-            <p>Logo: <Icon style={{ margin: 'auto' }} name='newspaper' size='big' /></p>
+            <p>Logo: <img alt="Preview" src={'https://hub.textile.io/ipns/bafzbeiarux6ifauh5czd3nkkiqk5khsm75o5x6t2rc6w3vnldiaxznhbxy/thumbnail.jpg'} style={{width:'50px',borderRadius:'25px'}}/></p>
             <p>Name: <strong>{myprofile[1]}</strong></p>
             <p>Email: <strong>{myprofile[2]}</strong></p>
             {myprofile[5] ?
-            <p>Subscription : <strong><Icon name="dollar sign"/>{(dapp.web3.utils.fromWei(myprofile[5].toString(), 'ether') * ethprice).toString().substring(0, 5)}<br/><Icon name="ethereum"/>{dapp.web3.utils.fromWei(myprofile[5].toString(), 'ether').substring(0, 6)}</strong></p>
+            <p>Subscription: <strong>
+            <br/>$ {(dapp.web3.utils.fromWei(myprofile[5].toString(), 'ether') * ethprice).toString().substring(0, 5)}<br/><Icon name="ethereum"/>{dapp.web3.utils.fromWei(myprofile[5].toString(), 'ether').substring(0, 6)}</strong></p>
             : '' }
             <p>Publisher Account: <strong>{myprofile ? myprofile[0].substring(0, 5) + '...' + myprofile[0].substring(37, 42) : ''}</strong></p>
             <p>Creator's Account: <strong>{dapp.address ? dapp.address.substring(0, 5) + '...' + dapp.address.substring(37, 42) : ''}</strong></p>
@@ -344,10 +345,10 @@ const Publish = () => {
           {filehash === '' ? (
             <div style={{ borderLeft: '1px solid #999', padding: '25px' }}>
               <h5 style={{ margin: '0px' }}>Payments</h5>
-              <h2 style={{ margin: '0px' }}>$111.11 USD</h2>
+              <h2 style={{ margin: '0px' }}>$395.11 USD</h2>
               <br />
               <h5 style={{ margin: '0px' }}>Costs</h5>
-              <h2 style={{ margin: '0px' }}>$222.22 USD &nbsp;</h2>
+              <h2 style={{ margin: '0px' }}>$7.28 USD &nbsp;</h2>
               <br />
               <h5 style={{ margin: '0px' }}>Earnings $</h5>
               <h2 style={{ margin: '0px' }}>
@@ -367,9 +368,9 @@ const Publish = () => {
                 />
               </h2>
               <br />
-              <h5 style={{ margin: '0px' }}>Users</h5>
+              <h5 style={{ margin: '0px' }}>Subscribers</h5>
               <h2 style={{ margin: '0px' }}>
-                3333 users&nbsp;&nbsp;&nbsp;&nbsp;
+                276 users&nbsp;&nbsp;&nbsp;&nbsp;
                 <Popup
                   content='View Subscriber Addresses'
                   trigger={
@@ -504,10 +505,10 @@ const Publish = () => {
                     >
                       <Modal.Content style={{ backgroundColor: '#999' }}>
                         <Modal.Description style={{ textAlign: 'center' }}>
-                          {result[2] == 'image/png' ||
-                          result[2] == 'image/jpg' ||
-                          result[2] == 'image/jpeg' ||
-                          result[2] == 'image/gif' ? (
+                          {modalfiletype == 'image/png' ||
+                            modalfiletype == 'image/jpg' ||
+                            modalfiletype == 'image/jpeg' ||
+                            modalfiletype == 'image/gif' ? (
                             <a
                               rel='noopener noreferrer'
                               target='_blank'
