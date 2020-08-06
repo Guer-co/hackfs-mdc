@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useStateValue } from '../state';
 import Link from 'next/link';
-import { Menu, Message, Icon,Grid,Button } from 'semantic-ui-react';
+import { Menu, Message, Icon, Grid, Button, Image } from 'semantic-ui-react';
 import MiningIndicator from './MiningIndicator';
 import addrShortener from '../utils/addrShortener';
 import web3 from '../utils/getWeb3';
@@ -85,7 +85,7 @@ const Header = () => {
         <Grid.Row style={{paddingBottom:'0px'}}>
         <Grid.Column>
             <div style={{float:'left', padding:'3px', width:'48px', height:'48px'}}>
-            <Avatar alt="Preview" src={'https://hub.textile.io/ipns/bafzbeiarux6ifauh5czd3nkkiqk5khsm75o5x6t2rc6w3vnldiaxznhbxy/thumbnail.jpg'} />
+            <Image src='https://hub.textile.io/ipns/bafzbeiarux6ifauh5czd3nkkiqk5khsm75o5x6t2rc6w3vnldiaxznhbxy/thumbnail.jpg' circular size='small' />
             </div>
             <div style={{float:'left', padding:'6px'}}>
             <Link href='/'>
