@@ -15,7 +15,9 @@ namespace TEEServerless
         [FunctionName("EncryptOriginalContentFunction")]
         public async static Task RunAsync(
             [BlobTrigger("original-content/{name}", Connection = "StorageConnection")]
-            Stream myBlob, string name, ILogger log)
+            Stream myBlob, 
+            string name, 
+            ILogger log)
         {
             try
             {
@@ -28,7 +30,7 @@ namespace TEEServerless
 
                 var service = new EncryptionService(hMACPrimitive, ipfsUploader, aES128Primitive);
 
-                var result = await service.ProcessOriginalContentAsync(myBlob, name);
+                var result = await service.ProcessOriginalContentAsync(myBlob, name, log);
 
                 // Reset position to first byte
                 result.EncryptedStream.Position = 0;
