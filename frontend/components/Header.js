@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useStateValue } from '../state';
 import Link from 'next/link';
-import { Menu, Message, Icon,Grid,Button } from 'semantic-ui-react';
+import { Menu, Message, Icon, Grid, Button, Image } from 'semantic-ui-react';
 import MiningIndicator from './MiningIndicator';
 import addrShortener from '../utils/addrShortener';
 import web3 from '../utils/getWeb3';
 import ENS from 'ethereum-ens';
+import Avatar from '@material-ui/core/Avatar';
 
 const Header = () => {
   const [{ dapp }, dispatch] = useStateValue();
@@ -80,32 +81,31 @@ const Header = () => {
 
   return (
     <>
-    <Grid columns={3} divided='vertically' style={{borderBottom:'2px solid #666'}}>
+    <Grid columns={2} style={{paddingBottom:'0px'}}>
         <Grid.Row style={{paddingBottom:'0px'}}>
         <Grid.Column>
+            <div style={{float:'left', padding:'3px', width:'48px', height:'48px'}}>
+            <Image src='https://hub.textile.io/ipns/bafzbeiarux6ifauh5czd3nkkiqk5khsm75o5x6t2rc6w3vnldiaxznhbxy/thumbnail.jpg' circular size='small' />
+            </div>
+            <div style={{float:'left', padding:'6px'}}>
             <Link href='/'>
-            <Button>
-                     <Icon name='home' style={{color:'black'}} />
-            </Button>
-            </Link>
-
-        </Grid.Column>
-        <Grid.Column style={{textAlign:'center'}}>
-            <div>
-            <Icon style={{ margin: 'auto' }} name='book' size='big' /><br/>
-            <h3 style={{margin:'0px',padding:'0px'}}>Pay3</h3>
+              <Button inverted circular icon='home' color='white'>
+              </Button>
+              </Link>
             </div>
         </Grid.Column>
         <Grid.Column style={{textAlign:'right'}}>
-            <Button onClick={handleSignInClick} onKeyUp={handleSignInClick}>
+            <div style={{float:'right', padding:'6px'}}>
+            <Button inverted circular icon='ethereum' color='white' onClick={handleSignInClick} onKeyUp={handleSignInClick}>
                 {dapp.address === undefined ? (
                 <div>
-                    <Icon name='ethereum' /> Connect Wallet
+                    Connect Wallet
                 </div>
                 ) : (
                 addrShortener(dapp.address)
                 )}
             </Button>
+            </div>
         </Grid.Column>
         </Grid.Row>
     </Grid>

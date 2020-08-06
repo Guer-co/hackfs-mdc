@@ -10,10 +10,13 @@ import {
   Modal,
   Form,
   Checkbox,
-  Card
+  Card,
+  Header,
+  Image
 } from 'semantic-ui-react';
 import GatewayObjSetup from '../utils/GatewayConstructor';
 import Moment from 'react-moment';
+import { ConsumeCell, ContentCell } from '../components/ContentCell'
 
 const Index = ({ contentContracts }) => {
   const [{ dapp }, dispatch] = useStateValue();
@@ -238,30 +241,44 @@ const Index = ({ contentContracts }) => {
   return (
     <Layout style={{ backgroundColor: '#041727' }}>
       {errorMessage && <Message error header='Oops!' content={errorMessage} />}
+      <div className='backgroundcircle'>
       <Grid centered>
-        <Grid.Column width={16}>
-          <div style={{ textAlign: 'center' }}>
-              {myprofile[0] !== 0 ? (
-                <Button href='/dashboard'>My Publisher Dashboard</Button>
+        <Grid.Column width={8} textAlign='left'>
+          <Header as='h1' inverted>Discovery</Header>
+        </Grid.Column>
+        <Grid.Column width={8} textAlign='right'>
+        {myprofile[0] !== 0 ? (
+                <Button inverted circular icon='paper plane' color='orange' href='/dashboard'>Publish</Button>
                 ) 
                 :
                 (
-                <Button onClick={() => setProfilemodal(true)}>
-                  I want to publish on Pay3
+                <Button inverted circular icon='paper plane' color='orange' onClick={() => setProfilemodal(true)}>
+                  Publish
                 </Button>
               )}
-            <h1 className="maintitle">New Today on Pay3!</h1>
-          </div>
-          
         </Grid.Column>
         <Grid.Column width={16}>
-          <div style={{ padding: '25px', display: 'flex' }}>
+          <div style={{ width: '100%', display: 'flex', flexWrap: 'wrap-reverse', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
             {contentinfo.map((result, i) => {
               return (
-                <div
-                  key={result[6]}
-                  style={{ position: 'relative' }}
-                  onClick={() => {
+                <div style={{ width:'200px' }}>
+                  <ConsumeCell                  
+                  filehash={result[0]}
+                  previewUrl={result[1]}
+                  filetype={result[2]}
+                  filename={result[3]}
+                  title={result[4]}
+                  description={result[5]}
+                  filedate={result[6]}
+                  filefee={result[7]}
+                  filepublisher={result[8]}
+                  filepublishername={result[9]}
+                  filepublisherfee={result[10]}
+                  contentAddress={contentContracts[i]}
+                  filecontent={contentContracts[i]}
+                  playFunc={() => window.open( `http://localhost:8888/api/download/${myprofile[0]}/${result[0]}`, "_blank") }
+                  isPlayable={result[7] == 0 || (myuser[0] !== 0  || myprofile[0] !== 0  ? myuser[4].includes(contentContracts[i]) || myuser[5].includes(result[8]) || myprofile[4].includes(contentContracts[i]) : false)}
+                  modelFunc={() => {
                     setModalfilehash(result[0]);
                     setModalfilepreview(result[1]);
                     setModalfiletype(result[2]);
@@ -277,47 +294,7 @@ const Index = ({ contentContracts }) => {
                     setModalfilecontent(contentContracts[i]);
                     setContentmodal(true);
                   }}
-                >
-                  {result[2] == 'image/png' ||
-                  result[2] == 'image/jpg' ||
-                  result[2] == 'image/jpeg' ||
-                  result[2] == 'image/gif' ? (
-                    <div
-                      className='contentholder'
-                      style={{
-                        backgroundImage: 'url(' + result[1] + ')',
-                        backgroundPosition: 'center'
-                      }}
-                    >
-                      <div className='titleblock'>{result[3]}</div>
-                      {result[7] == 0 ? (
-                        <div className='freeflag'>Free!</div>
-                      ) : (
-                        ''
-                      )}
-                    </div>
-                  ) : (
-                    <div
-                      className='contentholder'
-                      style={{
-                        backgroundColor: 'black',
-                        backgroundPosition: 'center'
-                      }}
-                    >
-                      <div className='titleblock'>{result[3]}</div>
-
-                      <Icon
-                        style={{ margin: 'auto', color: 'white' }}
-                        name='file outline'
-                        size='massive'
-                      />
-                      {result[7] == 0 ? (
-                        <div className='freeflag'>Free!</div>
-                      ) : (
-                        ''
-                      )}
-                    </div>
-                  )}
+                  />
                 </div>
               );
             })}
@@ -332,8 +309,22 @@ const Index = ({ contentContracts }) => {
         onClose={() => setContentmodal(false)}
       >
         <Modal.Content>
-          <Modal.Description style={{ textAlign: 'center' }}>
+          <Modal.Description style={{ textAlign: 'left' }}>
             <div>
+            <ContentCell title={modalfiletitle}
+              description={modalfiledescription}
+              previewUrl={modalfilepreview}
+              filehash={modalfilehash}
+              filename={modalfilename}
+              filetype={modalfiletype}
+              filedate={modalfiledate}
+              filefee={dapp.web3.utils.fromWei(modalfilefee, 'ether').substring(0, 8)}
+              contentAddress={modalfilecontent}
+              defaultShowDes={true}
+              isConsumerMode={true}
+              />
+
+              {/*
               <h2 style={{ margin: '0px' }}>{modalfiletitle}</h2>
               <h4 style={{ margin: '0px 0px 0px 0px' }}>
                 {modalfiledescription}
@@ -356,44 +347,56 @@ const Index = ({ contentContracts }) => {
                 />
               )}
               <br />
+              */}
+
               {modalfilefee == 0 || (myuser[0] !== 0  || myprofile[0] !== 0  ? myuser[4].includes(modalfilecontent) || myuser[5].includes(modalfilepublisher) || myprofile[4].includes(modalfilecontent) : false) ? (
-                <Button disabled={loading} style={{ backgroundColor: 'green', color: 'white' }} onClick={() => {checkIfSubscribedOrBought(); setLoading(true);}}>
-                View the full content!
-                </Button>
+                <div style={{ textAlign: 'center' }}>
+                <Button disabled={loading} inverted circular color='green' icon='play' size='huge'
+                  onClick={() => window.open( `http://localhost:8888/api/download/${myprofile[0]}/${modalfilehash}`, "_blank")}
+                ></Button>
+                </div>
               ) : (
-                <Form style={{ margin: 'auto', color: 'white' }}>
-                This content costs : {dapp.web3.utils.fromWei(modalfilefee, 'ether').substring(0, 8)} Eth to Buy now!
-                <Form.Field>
-                    <Checkbox
+                <Form inverted>
+                  <Form.Group>
+                  <Form.Field width={2}>
+                  </Form.Field>
+                  <Form.Field width={10}>
+                  <Checkbox
                         checked={buynow}
                         onChange={() => setBuynow(!buynow)}
-                        label={`Buy now! ${dapp.web3.utils.fromWei(modalfilefee, 'ether').substring(0, 8)} ETH`} 
+                        label={`Buy now with ${dapp.web3.utils.fromWei(modalfilefee, 'ether').substring(0, 8)} ETH`} 
                         disabled={subscribe}
                     />
+                  </Form.Field>                    
+                  </Form.Group>
+
+                <Form.Group>
+                <Form.Field width={2}>
                 </Form.Field>
-                <Form.Field>
+                <Form.Field width={10}>
                     <Checkbox
                         checked={subscribe}
                         onChange={() => setSubscribe(!subscribe)}
-                        label={`Subscribe to ${modalfilepublishername} for ${dapp.web3.utils.fromWei(modalfilepublisherfee, 'ether')} ETH per month!`}
+                        label={`Subscribe to ${modalfilepublishername} with ${dapp.web3.utils.fromWei(modalfilepublisherfee, 'ether')} ETH per month!`}
                         disabled={buynow}
                     />
                 </Form.Field>
+                <Form.Field width={4}>
+                <div style={{ textAlign: 'center' }}>
                 {myuser[0] !== 0  || myprofile[0] !== 0  ?
-                    <Button
-                        style={{ backgroundColor: 'green', color: 'white' }}
+                    <Button disabled={!(buynow || subscribe)} inverted circular color='yellow' icon='shop' size='massive'
                         onClick={() => {buynow ? purchaseContent() : subscribeToPublisher()}}
                     >
-                    {buynow ? "Purchase Content" : subscribe ? "Subscribe to Publisher" : "Purchase" }
                     </Button>
                 :
-                    <Button
-                        style={{ backgroundColor: 'green', color: 'white' }}
+                    <Button disabled={!(buynow || subscribe)} inverted circular color='yellow' icon='shop' size='massive'
                         onClick={() => {buynow ? createUserAndPurchase() : createUserAndSubscribe()}}
                     >
-                    {buynow ? "Purchase Content" : subscribe ? "Subscribe to Publisher" : "Purchase" }
                     </Button>
                 }
+                </div>
+                </Form.Field>
+                </Form.Group>
                 </Form>
               )}
             </div>
@@ -492,6 +495,8 @@ const Index = ({ contentContracts }) => {
           </Modal.Description>
         </Modal.Content>
       </Modal>
+      <div style={{height: 512}}></div>
+      </div>
     </Layout>
   );
 };

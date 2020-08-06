@@ -14,6 +14,7 @@ import {
 import Loader from 'react-loader-spinner';
 import GatewayContractObjSetup from '../utils/GatewayConstructor';
 import Moment from 'react-moment';
+import { TopCell, UploadCell, PublishCell, ContentCell } from '../components/ContentCell'
 
 const Publish = () => {
   const [{ dapp }, dispatch] = useStateValue();
@@ -216,6 +217,129 @@ const Publish = () => {
   return (
     <Layout style={{ backgroundColor: '#041727' }}>
       {errorMessage && <Message error header='Oops!' content={errorMessage} />}
+
+      <div class='verticallinewhitecontentcell'>
+      <Grid centered>
+        <Grid.Column width={16}>
+          <TopCell title={'Dashboard'} balance={balance}/>
+        </Grid.Column>
+          <div>
+            <div style={{height: 256}}></div>
+          </div>
+        <Grid.Column width={16}>      
+        <div>
+            {filehash === '' ? (
+              loading === true ? (
+                <UploadCell isLoading={true}/>
+              ) : (
+                <>
+                  <input
+                    id='data_file'
+                    type='file'
+                    style={{ display: 'none' }}
+                    onChange={uploadToIPFS}
+                  />
+                  <UploadCell/>
+                </>
+              )
+            ) : (
+              <PublishCell previewUrl={filepreview}/>
+            )}
+          </div>
+
+        </Grid.Column>
+
+        <Grid.Column width={3}>          
+        </Grid.Column>
+        <Grid.Column width={4}>
+        </Grid.Column>
+        <Grid.Column width={9}>
+          {filehash === '' ? (
+            <div style={{ padding: '25px' }}>
+            </div>
+          ) : (
+            <div
+              style={{
+                padding: '25px'
+              }}
+            >
+              <Form inverted>
+                <Form.Field>
+                  <label>Title</label>
+                  <input placeholder={'Title'}
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <label>Description</label>
+                  <input placeholder={'Description'}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
+                </Form.Field>
+                <Form.Field>
+                  <span className='primarytextcolor'>Free? </span>
+                  <Checkbox
+                    checked={free}
+                    onClick={() => setFree(!free)}
+                  />
+                </Form.Field>
+                {!free ? (
+                <>
+                <div className='primarytextcolor' style={{display:'inline-block'}}>
+                One time price for this content in {usd ? "$USD" : <Icon name='ethereum'>Eth </Icon>} <Button onClick={() => setUsd(!usd)}>Use {usd ? "ETH" : "USD"}?</Button>
+                </div>
+                <Form.Field>
+                    <div className="ui labeled input">
+                    <div className="ui label label">{usd ? <Icon name='usd'> USD</Icon> : <Icon name='ethereum'> ETH</Icon>}</div>
+                    <input placeholder=".50" type="text" value={price} onChange={(e) => setPrice(e.target.value)} />
+                    </div>
+                </Form.Field>
+                </>
+                ) : (
+                ''
+                )}
+              </Form>
+              <br />
+              <div class='textalignright'>
+              <Button
+                circular
+                inverted
+                color='yellow'
+                content='Publish'
+                icon='paper plane'
+                size='huge'
+                onClick={addContentToContract}
+              />
+              </div>
+            </div>
+          )}
+        </Grid.Column>
+
+        <Grid.Column width={16}>
+          {allcontent.slice(0).reverse().map((result) => {
+            return (
+              <ContentCell title={result[4]}
+              description={result[5]}
+              previewUrl={result[1]}
+              filehash={result[0]}
+              filename={result[3]}
+              filetype={result[2]}
+              filedate={result[6]}
+              filefee={dapp.web3.utils.fromWei(result[7], 'ether').substring(0, 8)}
+              contentAddress={result[8]}
+              />
+            )
+          })}
+          <div>
+            <div style={{height: 256}}></div>
+          </div>
+        </Grid.Column>
+      </Grid>
+      </div>
+
+{/*
       <Grid centered>
         <Grid.Column width={16}>
           <div style={{ textAlign: 'center' }}>
@@ -581,6 +705,7 @@ const Publish = () => {
           </div>
         </Grid.Column>
       </Grid>
+*/}
     </Layout>
   );
 };
