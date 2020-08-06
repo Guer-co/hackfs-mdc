@@ -1,6 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using TEELib.Primitives;
 using TEELib.Storage;
@@ -14,35 +15,73 @@ namespace TEEConsole
             Undefined,
 
             /// <summary>
-            /// Upload file to IPFS
-            /// </summary>
-            UploadFile,
-
-            /// <summary>
-            /// Download from IPFS
-            /// </summary>
-            DownloadFile,
-
-            /// <summary>
-            /// 
+            /// Upload original content to Azure Blob for encryption
             /// </summary>
             EncryptFile,
 
             /// <summary>
-            /// 
+            /// Download file from encrypted location
             /// </summary>
-            DecryptFile,
+            DownloadEncryptedFile,
 
             /// <summary>
-            /// 
+            /// Content needs to be reencrypted for viewing
             /// </summary>
-            UploadToServerless,
+            ReEncryptFile,
 
             /// <summary>
-            /// 
+            /// Download file from re-encrypted location
             /// </summary>
-            DownloadFromServerless,
+            DownloadReEncryptedFile,
         };
+
+        private ActionType ParseActionType(string arg)
+        {
+            switch (arg.ToLower())
+            {
+                case "-en":
+                    return ActionType.EncryptFile;
+                case "-doe":
+                    return ActionType.DownloadEncryptedFile;
+                case "-ren":
+                    return ActionType.ReEncryptFile;
+                case "-dor":
+                    return ActionType.DownloadReEncryptedFile;
+                default:
+                    throw new NotSupportedException($"Invalid action flag '{arg}'.");
+            }
+        }
+
+        private Dictionary<string, string> GetContainerNameMetadata(string containerName)
+        {
+            var dictionary = new Dictionary<string, string>(1);
+
+            dictionary.Add("containerName", containerName);
+
+            return dictionary;
+        }
+
+        private async Task EncryptFileAsync(Action action)
+        {
+            const string CONTAINER = "original-content";
+
+            // Upload file to Azure Blob
+            var service = new AzureBlobService();
+
+            var etag = await service.UploadFileAsync(action.SourceFilePath,
+                GetContainerNameMetadata(CONTAINER));
+
+            var fileName = new FileInfo(action.SourceFilePath).Name;            
+
+            while (!service.FileExists("encrypted-content", fileName)) ;
+
+            //var metadata 
+
+
+
+            // Download file
+            Console.WriteLine($"Successfully encrypted file '{action.SourceFilePath}' with {string.Empty}");
+        }
 
         class Action
         {
@@ -57,23 +96,6 @@ namespace TEEConsole
             public string Key { get; set; }
 
             public string Vector { get; set; }
-        }
-
-        private ActionType ParseActionType(string arg)
-        {
-            switch (arg.ToLower())
-            {
-                case "-up":
-                    return ActionType.UploadFile;
-                case "-do":
-                    return ActionType.DownloadFile;
-                case "-en":
-                    return ActionType.EncryptFile;
-                case "-de":
-                    return ActionType.DecryptFile;
-                default:
-                    throw new NotSupportedException($"Invalid action flag '{arg}'.");
-            }
         }
 
         private string CheckFile(string path)
@@ -102,11 +124,10 @@ namespace TEEConsole
 
             switch (action.ActionType)
             {
-                case ActionType.UploadFile:
                 case ActionType.EncryptFile:
-                case ActionType.DecryptFile:
+                
                     action.SourceFilePath = CheckFile(args[1]);
-
+                    /*
                     if (action.ActionType == ActionType.EncryptFile)
                     {
                         if (args.Length < 4)
@@ -134,13 +155,13 @@ namespace TEEConsole
                             action.Key = args[2];
                             action.Vector = args[3];
                         }
-                    }
+                    }*/
 
                     break;
-                case ActionType.DownloadFile:
+                /*case ActionType.DownloadFile:
                     action.IpfsHash = args[1];
                     action.TargetFilePath = args[2];
-                    break;
+                    break;*/
                 default:
                     throw new NotSupportedException();
             }
@@ -168,16 +189,7 @@ namespace TEEConsole
             Console.WriteLine($"Successfully download file with hash '{action.IpfsHash}'.");
         }
 
-        private async Task EncryptFileAsync(Action action)
-        {
-            var primitive = new AES128Primitive();
-            var keyInfo = new KeyInfo(action.Key, action.Vector);
-
-            await primitive.EncryptFileAsync(action.SourceFilePath,
-                keyInfo);
-            
-            Console.WriteLine($"Successfully encrypted file '{action.SourceFilePath}' with {keyInfo}");
-        }
+        
 
         private async Task DecryptFileAsync(Action action)
         {
@@ -200,10 +212,10 @@ namespace TEEConsole
 
                 switch (action.ActionType)
                 {
-                    case ActionType.UploadFile:
-                        await program.ProcessFileUploadAsync(action);
+                    case ActionType.EncryptFile:
+                        await program.EncryptFileAsync(action);
                         break;
-                    case ActionType.DownloadFile:
+                    /*case ActionType.DownloadFile:
                         await program.ProcessFileDownloadAsync(action);
                         break;
                     case ActionType.EncryptFile:
@@ -212,10 +224,12 @@ namespace TEEConsole
                     case ActionType.DecryptFile:
                         await program.DecryptFileAsync(action);
                         break;
+                    case ActionType.UploadToServerless:
+                        await program.UploadFileToServerlessAsync(action);
+                        break;*/
                     default:
                         throw new NotSupportedException("Undefined action.");
                 }
-
                 
                 Console.WriteLine("Trusted Execution Environment CLI completed.");
             }

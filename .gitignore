@@ -15,6 +15,7 @@ next.config.js
 
 # production
 /build
+out
 
 # misc
 .DS_Store
@@ -36,3 +37,4 @@ enclave/TEELib/bin/
 enclave/TEELib/obj/
 enclave/TEELib.UnitTests/bin/
 enclave/TEELib.UnitTests/obj/
+/.vs
