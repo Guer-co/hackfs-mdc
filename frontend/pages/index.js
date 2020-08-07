@@ -246,16 +246,16 @@ const Index = ({ contentContracts }) => {
                 ) 
                 :
                 (
-                <Button onClick={() => setProfilemodal(true)}>
-                  I want to publish on Pay3
-                </Button>
-              )}
+                    <Button onClick={() => setProfilemodal(true)}>
+                    I want to publish on Pay3
+                    </Button>
+                )}
             <h1 className="maintitle">New Today on Pay3!</h1>
           </div>
           
         </Grid.Column>
         <Grid.Column width={16}>
-          <div style={{ padding: '25px', display: 'flex' }}>
+          <div style={{ padding: '25px', display: 'flex', flexWrap:'wrap' }}>
             {contentinfo.map((result, i) => {
               return (
                 <div

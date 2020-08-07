@@ -240,7 +240,7 @@ const Publish = () => {
             <p>Email: <strong>{myprofile[2]}</strong></p>
             {myprofile[5] ?
             <p>Subscription: <strong>
-            <br/>$ {(dapp.web3.utils.fromWei(myprofile[5].toString(), 'ether') * ethprice).toString().substring(0, 5)}<br/><Icon name="ethereum"/>{dapp.web3.utils.fromWei(myprofile[5].toString(), 'ether').substring(0, 6)}</strong></p>
+            <br/>$ {(dapp.web3.utils.fromWei(myprofile[5].toString(), 'ether') * ethprice).toString().substring(0, 5) + '/mo  or'}<br/><Icon name="ethereum"/>{dapp.web3.utils.fromWei(myprofile[5].toString(), 'ether').substring(0, 6) + '/mo'}</strong></p>
             : '' }
             <p>Publisher Account: <strong>{myprofile ? myprofile[0].substring(0, 5) + '...' + myprofile[0].substring(37, 42) : ''}</strong></p>
             <p>Creator's Account: <strong>{dapp.address ? dapp.address.substring(0, 5) + '...' + dapp.address.substring(37, 42) : ''}</strong></p>

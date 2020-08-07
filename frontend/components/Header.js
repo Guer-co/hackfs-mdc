@@ -93,7 +93,7 @@ const Header = () => {
         <Grid.Column style={{textAlign:'center'}}>
             <div>
             <img alt="Preview" src={'https://hub.textile.io/ipns/bafzbeiarux6ifauh5czd3nkkiqk5khsm75o5x6t2rc6w3vnldiaxznhbxy/thumbnail.jpg'} style={{width:'100px',borderRadius:'50px'}}/>
-            <h3 style={{margin:'0px',padding:'0px'}}>Pay3</h3>
+            
             </div>
         </Grid.Column>
         <Grid.Column style={{textAlign:'right'}}>

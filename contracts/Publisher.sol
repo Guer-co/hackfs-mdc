@@ -98,7 +98,7 @@ contract Publisher {
         balance += msg.value;
         subscribers[_subscriber] = true;
         numberSubscribers++;
-        subscriberExpiration[_subscriber] = now + (30 minutes);
+        subscriberExpiration[_subscriber] = now + (30 days);
         //subscriberExpiration[_subscriber] = now;
         return (now, subscriberExpiration[_subscriber]);
     }

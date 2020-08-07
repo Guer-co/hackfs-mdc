@@ -14,7 +14,6 @@ import Loader from 'react-loader-spinner';
 import GatewayObjSetup from '../../utils/GatewayConstructor';
 import marked from 'marked';
 
-
 const Content = ({
   address,
   locationHash,
@@ -40,7 +39,6 @@ const Content = ({
   const [loading, setLoading] = useState(false);
   const [buynow, setBuynow] = useState(false);
   const [subscribe, setSubscribe] = useState(false);
-
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -195,6 +193,12 @@ const Content = ({
     }
   };
 
+const getMarkdownText = () => {
+    //if not image, read file, push in here \/
+    var rawMarkup = marked();
+    return { __html: rawMarkup };
+}
+
   return (
     <Layout style={{ backgroundColor: '#041727' }}>
       {errorMessage && <Message error header='Oops!' content={errorMessage} />}
@@ -218,16 +222,16 @@ const Content = ({
         </div>
         <br />
         <div style={{ textAlign: 'center' }}>
-            <p><strong>by:</strong> {publisherName}&nbsp;&nbsp;<strong> on:</strong> <Moment format='Do MMM YYYY' unix>{date}</Moment></p>
+            <p><strong>by:</strong> {publisherName}&nbsp;&nbsp;<strong> on:</strong> <Moment format='Do MMM YYYY' unix>{date}</Moment></p><br/><br/>
         </div>
         </Grid.Column>
-        <Grid.Column width={16}>
+        <Grid.Column width={16} style={{border:'1px solid #333',borderRadius:'10px', height:'100%'}}>
             <div style={{ textAlign: 'center' }}>
             <br/>
-            {image ? 
+            {fileType == 'image/jpg' || fileType == 'image/jpeg' ||fileType == 'image/png' || fileType == 'image/gif' ? 
             <img src={image} />
             :
-            ''
+                <div dangerouslySetInnerHTML={getMarkdownText()} />
             }
             </div>
         </Grid.Column>
@@ -315,8 +319,6 @@ export async function getStaticProps({ params }) {
     .call();
 
   const image = await fetch(`http://localhost:8888/api/download/${contentSummary[8]}/${contentSummary[0]}`);
-
-const http = new XMLHttpRequest();
 
   return {
     props: {
