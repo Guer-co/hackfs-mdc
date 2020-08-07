@@ -4,7 +4,7 @@ let web3;
 let url = '';
 
 if (process.env.FLEEK) {
-    url = `https://goerli.infura.io/v3/${process.env.INFURA_ID}`;
+    url = `https://ropsten.infura.io/v3/${process.env.INFURA_ID}`;
 } else {
     url = 'http://127.0.0.1:8545'
 }
