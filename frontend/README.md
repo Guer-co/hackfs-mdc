@@ -9,7 +9,7 @@ Providing content producers more secure methods to legitatemely distribute their
 #### Content Authentication: 
 Cryptographically authenticated copies help ensure consumers receive untampered content, and producers can verify if a user should have access to that copy
 
-[Development Area](#dev-zone)
+Take me right to the [Development Area](#development-area)!
 
 ## Context
 Cryptocurrencies as payment for subscriptions is not enough to fundamentally improve relationships between digital platforms, content producers, and content consumers. While theoretically "programmable money" has obvious advantages over credit cards, in practice, it does not provide sufficient utility over existing systems to warrant overcoming unfamiliarity. 
@@ -140,8 +140,7 @@ control over distribution
 * [Web3](https://github.com/ethereum/web3.js/)
 * [UnstoppableDomains](unstoppabledomains.com)
 
-## Development area
-(#dev-zone)
+## Development Area
 
 * **clone the repo:** git clone https://github.com/Guer-co/hackfs-mdc.git
 * **open the dir:** cd /hackfs-mdc
